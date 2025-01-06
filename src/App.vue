@@ -5,7 +5,7 @@ import Navbar from './layouts/Navbar.vue'
 </script>
 
 <template>
-<div style="background-color:bisque;">
+<div>
   <div>
     <Navbar />
   </div>

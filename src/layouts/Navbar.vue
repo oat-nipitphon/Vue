@@ -21,7 +21,6 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener("click", closeDropdown);
 });
-
 </script>
 <template>
   <div class="header">
@@ -29,6 +28,8 @@ onUnmounted(() => {
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
           <div class="flex items-center">
+
+            <!-- Image icon tailwind -->
             <div class="shrink-0">
               <img
                 class="size-8"
@@ -36,6 +37,8 @@ onUnmounted(() => {
                 alt="Your Company"
               />
             </div>
+
+            <!-- Main Menu -->
             <div class="hidden md:block">
               <div class="ml-10 flex items-baseline space-x-4">
                 <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
@@ -43,7 +46,7 @@ onUnmounted(() => {
                   href="#"
                   class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
                   aria-current="page"
-                  >Dashboard</a
+                  >Home</a
                 >
                 <a
                   href="#"
@@ -67,7 +70,10 @@ onUnmounted(() => {
                 >
               </div>
             </div>
+
           </div>
+
+          <!-- View notifications hidden -->
           <div class="hidden md:block">
             <div class="ml-4 flex items-center md:ml-6">
               <button
@@ -95,8 +101,8 @@ onUnmounted(() => {
 
               <!-- Profile dropdown -->
               <div class="relative ml-3">
+                <!-- Button image profile dropdown -->
                 <div>
-                  <!-- Button image profile dropdown -->
                   <button
                     type="button"
                     @click="toggleDropdown"
@@ -115,16 +121,6 @@ onUnmounted(() => {
                   </button>
                 </div>
 
-                <!--
-                Dropdown menu, show/hide based on menu state.
-
-                Entering: "transition ease-out duration-100"
-                  From: "transform opacity-0 scale-95"
-                  To: "transform opacity-100 scale-100"
-                Leaving: "transition ease-in duration-75"
-                  From: "transform opacity-100 scale-100"
-                  To: "transform opacity-0 scale-95"
-              -->
                 <!-- Menu image profile dropdown -->
                 <div
                   v-if="isDropdownOpen"
@@ -134,6 +130,15 @@ onUnmounted(() => {
                   aria-labelledby="user-menu-button"
                   tabindex="-1"
                 >
+                  <!--Dropdown menu, show/hide based on menu state.
+                    Entering: "transition ease-out duration-100"
+                      From: "transform opacity-0 scale-95"
+                      To: "transform opacity-100 scale-100"
+                      Leaving: "transition ease-in duration-75"
+                      From: "transform opacity-100 scale-100"
+                      To: "transform opacity-0 scale-95"
+                  -->
+
                   <!-- Active: "bg-gray-100 outline-none", Not Active: "" -->
                   <a
                     href="#"
@@ -163,8 +168,9 @@ onUnmounted(() => {
               </div>
             </div>
           </div>
+
+          <!-- Mobile menu button -->
           <div class="-mr-2 flex md:hidden">
-            <!-- Mobile menu button -->
             <button
               type="button"
               class="relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
@@ -298,6 +304,7 @@ onUnmounted(() => {
           </div>
         </div>
       </div>
+
     </nav>
   </div>
 </template>
