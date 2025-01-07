@@ -1,6 +1,42 @@
 <script setup>
-import { reactive, onMounted } from "vue";
+import axios from "axios";
+import { ref, reactive, onMounted, computed } from "vue";
 import { useRouter, RouterLink } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
+import { storeToRefs } from "pinia";
+
+const { errors } = storeToRefs(useAuthStore());
+const { apiStoreRegister } = useAuthStore();
+
+const userStatusID = ref(null);
+const statusUser = async () => {
+  const response = await axios.get("http://localhost:8000/api/status_user");
+  userStatusID.value = response.data.status;
+  console.log("Status user :: ", userStatusID.value);
+};
+
+const formRegis = reactive({
+  email: "",
+  username: "",
+  password: "",
+  confirmPassword: "",
+  statusID: "",
+});
+
+const passwordConfirmErrorMessage = computed( () => {
+  if (!formRegis.confirmPassword) {
+    return "Please input confirm password"
+  }
+  if (formRegis.confirmPassword && formRegis.password !== formRegis.confirmPassword) {
+    return "Password do not match."
+  }
+  return ""
+})
+
+onMounted(async () => {
+  statusUser();
+});
+
 </script>
 <template>
   <div class="w-full flex items-center justify-center mt-10">
@@ -26,7 +62,38 @@ import { useRouter, RouterLink } from "vue-router";
         >
           Create an account
         </h1>
-        <form class="space-y-4 md:space-y-6" action="#">
+        <form
+          class="space-y-4 md:space-y-6"
+          @submit.prevent="apiStoreRegister('register', formRegis)"
+        >
+          <div v-if="userStatusID">
+            <label
+              for="status"
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >Select your status account</label
+            >
+            <select
+              id="status"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              v-model="formRegis.statusID"
+            >
+              <option value="" disabled selected>Select your status</option>
+              <option
+                v-for="status in userStatusID"
+                :key="status.id"
+                :value="status.id"
+              >
+                {{ status.status_name }}
+              </option>
+            </select>
+            <p
+              v-if="!formRegis.statusID"
+              class="mt-2 text-sm text-red-600 dark:text-red-400"
+            >
+              Please select a status before proceeding.
+            </p>
+          </div>
+
           <div>
             <label
               for="email-address-icon"
@@ -53,11 +120,17 @@ import { useRouter, RouterLink } from "vue-router";
                 </svg>
               </div>
               <input
+                v-model="formRegis.email"
                 type="text"
                 id="email-address-icon"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="name@flowbite.com"
               />
+              <p v-if="!formRegis.email"
+                class="mt-2 text-sm text-red-600 dark:text-red-400"
+              >
+                Please input email your account new.
+              </p>
             </div>
           </div>
           <div>
@@ -83,11 +156,17 @@ import { useRouter, RouterLink } from "vue-router";
                 </svg>
               </span>
               <input
+                v-model="formRegis.username"
                 type="text"
                 id="website-admin"
                 class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Bonnie Green"
               />
+              <p v-if="!formRegis.username"
+                class="mt-2 text-sm text-red-600 dark:text-red-400"
+              >
+                Please input username your account new.
+              </p>
             </div>
           </div>
           <div>
@@ -97,6 +176,7 @@ import { useRouter, RouterLink } from "vue-router";
               >Password</label
             >
             <input
+              v-model="formRegis.password"
               type="password"
               name="password"
               id="password"
@@ -104,6 +184,11 @@ import { useRouter, RouterLink } from "vue-router";
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               required=""
             />
+            <p v-if="!formRegis.password"
+                class="mt-2 text-sm text-red-600 dark:text-red-400"
+              >
+                Please input confirm password.
+              </p>
           </div>
           <div>
             <label
@@ -112,6 +197,7 @@ import { useRouter, RouterLink } from "vue-router";
               >Confirm password</label
             >
             <input
+              v-model="formRegis.confirmPassword"
               type="confirm-password"
               name="confirm-password"
               id="confirm-password"
@@ -119,6 +205,11 @@ import { useRouter, RouterLink } from "vue-router";
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               required=""
             />
+            <p v-if="passwordConfirmErrorMessage"
+                class="mt-2 text-sm text-red-600 dark:text-red-400"
+              >
+                {{ passwordConfirmErrorMessage }}
+              </p>
           </div>
           <div class="flex items-start">
             <button
