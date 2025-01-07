@@ -44,7 +44,9 @@ const btnLogout = async () => {
                 alt="Your Company"
               />
             </div>
-            <div class="hidden md:block">
+            <div class="hidden md:block"
+              v-if="authStore.storeUser"
+            >
               <div class="ml-10 flex items-baseline space-x-4">
                 <RouterLink
                   class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
@@ -65,7 +67,7 @@ const btnLogout = async () => {
           <!-- Main Menu Login and Register Auth (อยู่ทางขวา) -->
           <div 
             class="ml-10 flex space-x-4"
-          
+            v-if="!authStore.storeUser"
           >
             <div>
               <RouterLink
@@ -86,7 +88,7 @@ const btnLogout = async () => {
           </div>
           <div 
             class="ml-10 flex space-x-4"
-         
+            v-if="authStore.storeUser"
           >
             <button
                 type="button"

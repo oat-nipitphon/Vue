@@ -8,6 +8,10 @@ import DashboardView from '@/views/DashboardView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    // {
+    //   path: '/:pathMatch(.*)*',
+    //   component: () => import('')
+    // },
     {
       path: '/',
       name: 'HomeView',
