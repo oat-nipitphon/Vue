@@ -1,26 +1,35 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
-import { RouterLink } from "vue-router";
+import { ref, onMounted, onUnmounted } from "vue"
+import { RouterLink } from "vue-router"
+import { useAuthStore } from "@/stores/auth"
+const { apiStoreLogout } = useAuthStore()
+const authStore = useAuthStore()
+
 // สถานะสำหรับ dropdown
-const isDropdownOpen = ref(false);
+const isDropdownOpen = ref(false)
 // ฟังก์ชันเปิด/ปิด dropdown
 const toggleDropdown = () => {
-  isDropdownOpen.value = !isDropdownOpen.value;
-};
+  isDropdownOpen.value = !isDropdownOpen.value
+}
 // ฟังก์ชันปิด dropdown เมื่อคลิกนอก
 const closeDropdown = (event) => {
-  const menuButton = document.getElementById("user-menu-button");
+  const menuButton = document.getElementById("user-menu-button")
   if (menuButton && !menuButton.contains(event.target)) {
-    isDropdownOpen.value = false;
+    isDropdownOpen.value = false
   }
-};
+}
 // เพิ่ม event listener เมื่อ component ถูก mount และลบออกเมื่อ unmount
 onMounted(() => {
-  window.addEventListener("click", closeDropdown);
-});
+  window.addEventListener("click", closeDropdown)
+})
 onUnmounted(() => {
-  window.removeEventListener("click", closeDropdown);
-});
+  window.removeEventListener("click", closeDropdown)
+})
+
+const btnLogout = async () => {
+  await apiStoreLogout()
+}
+
 </script>
 <template>
   <div class="header">
@@ -54,7 +63,10 @@ onUnmounted(() => {
           </div>
 
           <!-- Main Menu Login and Register Auth (อยู่ทางขวา) -->
-          <div class="ml-10 flex space-x-4">
+          <div 
+            class="ml-10 flex space-x-4"
+          
+          >
             <div>
               <RouterLink
                 class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
@@ -71,6 +83,18 @@ onUnmounted(() => {
                 Register
               </RouterLink>
             </div>
+          </div>
+          <div 
+            class="ml-10 flex space-x-4"
+         
+          >
+            <button
+                type="button"
+                class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                @click="btnLogout"
+              >
+                logout
+              </button>
           </div>
         </div>
       </div>

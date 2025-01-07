@@ -4,41 +4,114 @@ import Swal from 'sweetalert2'
 
 export const useAuthStore = defineStore('authStore', {
     state: () => ({
-        reqUser: null,
+        storeUser: null,
         errors: {},
     }),
     actions: {
 
-        async apiStoreUsers () {
-            const response = await fetch(`/api/users_test_api`, {
-                method: "GET"
-            })
-            const data = await response.json()
-            return data.users
+        async apiStoreUsers() {
+            try { 
+                const response = await fetch(`/api/users_test_api`, {
+                    method: "GET",
+                    headers: {
+                        authorization: `Bearer ${token}`
+                    }
+                })
+                
+                if (response.ok) {
+                    const data = await response.json()
+                    this.storeUser =  data.users
+                } else {
+                    console.log("api store users response false ", response)
+                }
+            } catch (error) {
+                console.error("api store function error :", error)
+            }
         },
 
-        async apiStoreRegister () {
+        async apiAuthStore() {
             try {
-                const response = await fetch(`/api/users`, {
+                const token = localStorage.getItem('token');
+                if (token) {
+                    const response = await fetch(`/api/user`, {
+                        method: "GET", // Add the method
+                        headers: {
+                            authorization: `Bearer ${token}`,
+                        },
+                    });
+
+                    if (response.ok) {
+                        this.storeUser = await response.json()
+                    } else {
+                        console.error("Failed to fetch user data")
+                    }
+
+                } else {
+                    console.log("No token found.");
+                }
+            } catch (error) {
+                console.error("Error in apiAuthStore:", error);
+            }
+        },
+
+        async apiStoreRegister(apiRouter, formData) {
+            try {
+                const response = await fetch(`/api/${apiRouter}`, {
                     method: "POST",
-                    body: JSON.stringify()
-                })
-                const data = await response.json()
+                    body: JSON.stringify(formData),
+                });
+
                 if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('token', data.token);
+                    this.storeUser = data.user;
                     Swal.fire({
                         title: "New Account.",
-                        content: "Register account successfully.",
+                        text: "Register account successfully.",
+                        icon: "success",
+                    }).then(() => {
+                        console.log('register success.', data)
+                        this.router.push({ name: 'DashboardView' }); // Use router instance
+                    });
+                } else {
+                    console.error("Registration failed:", response);
+                }
+            } catch (error) {
+                console.error("Error in apiStoreRegister:", error);
+            }
+        },
+
+        async apiStoreLogout () {
+            try {
+                const token = localStorage.getItem('token')
+                if (!token) {
+                    console.error('token false.')
+                    return
+                }
+                const response = await fetch(`/api/logout`, {
+                    method: "POST",
+                    headers: {
+                        authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+
+                if (response.ok) {
+                    this.storeUser = null
+                    this.errors = {}
+                    localStorage.removeItem('token')
+                    Swal.fire({
+                        title: "Logout",
+                        content: "Byeeeeee.",
                         icon: "success"
-                    }).then((result) => {
-                        const router = useRouter()
-                        this.router.push({ name: 'LoginView' })
+                    }).then(() => {
+                        this.router.push({ name: 'HomeView' })
                     })
                 } else {
-
+                    console.log("api store logout response false :: ", response)
                 }
-            } 
-            catch (error) {
-                console.error(error)
+
+            } catch (error) {
+                console.error("api store logout function error :: ", error)
             }
         },
 
