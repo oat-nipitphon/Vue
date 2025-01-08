@@ -11,12 +11,14 @@ export const useAuthStore = defineStore('authStore', {
 
         // call token auth login router index vue 
         async apiAuthStore() {
-            try {
 
+            try {
                 const token = localStorage.getItem('token');
+
                 if (token) {
+
                     const response = await fetch(`/api/user`, {
-                        method: "GET", // Add the method
+                        method: "GET",
                         headers: {
                             authorization: `Bearer ${token}`,
                         },
@@ -39,8 +41,8 @@ export const useAuthStore = defineStore('authStore', {
 
         // register
         async apiStoreRegister(apiRouter, formData) {
-            try {
 
+            try {
                 const response = await fetch(`/api/${apiRouter}`, {
                     method: "POST",
                     body: JSON.stringify(formData),
@@ -49,16 +51,40 @@ export const useAuthStore = defineStore('authStore', {
                 if (response.ok) {
 
                     const data = await response.json();
-                    localStorage.setItem('token', data.token);
-                    this.storeUser = data.user;
 
                     Swal.fire({
                         title: "New Account.",
                         text: "Register account successfully.",
                         icon: "success",
                     }).then(() => {
+
+                        localStorage.setItem('token', data.token);
+                        this.storeUser = data.user;
                         this.router.push({ name: 'DashboardView' }); // Use router instance
+
                     });
+
+                    // Swal.fire({
+                    //     title: "Are you sure?",
+                    //     text: "You won't be able to revert this!",
+                    //     icon: "warning",
+                    //     showCancelButton: true,
+                    //     confirmButtonColor: "#3085d6",
+                    //     cancelButtonColor: "#d33",
+                    //     confirmButtonText: "Yes, delete it!",
+                    //     cancelButtonText: "Cancel",
+                    // }).then((result) => {
+                    //     if (result.isConfirmed) {
+                    //         Swal.fire({
+                    //             title: "Deleted!",
+                    //             text: "Your file has been deleted.",
+                    //             icon: "success",
+                    //         }).then(() => {
+                    //             axios.delete(`/api/delete_invoice/${id}`);
+                    //             location.reload();
+                    //         });
+                    //     }
+                    // });
 
                 } else {
                     console.error("Registration failed:", response);
@@ -69,6 +95,7 @@ export const useAuthStore = defineStore('authStore', {
             }
         },
 
+        // login
         async apiStoreLogin(apiRouter, formData) {
             try {
 
@@ -86,7 +113,6 @@ export const useAuthStore = defineStore('authStore', {
                         Swal.close
                     })
                 } else {
-
                     const data = await response.json()
                     localStorage.setItem('token', data.token)
                     Swal.fire({
@@ -97,7 +123,6 @@ export const useAuthStore = defineStore('authStore', {
                         Swal.close
                         this.router.push({ name: 'DashboardView' })
                     })
-
                 }
 
             } catch (error) {
@@ -108,22 +133,19 @@ export const useAuthStore = defineStore('authStore', {
         // logout
         async apiStoreLogout() {
             try {
-
                 const token = localStorage.getItem('token')
+
                 if (!token) {
                     console.error('token false.')
                     return
                 }
-
                 const response = await fetch(`/api/logout`, {
                     method: "POST",
                     headers: {
                         authorization: `Bearer ${localStorage.getItem('token')}`
                     }
                 })
-
                 if (response.ok) {
-
                     this.storeUser = null
                     this.errors = {}
                     localStorage.removeItem('token')
@@ -134,46 +156,90 @@ export const useAuthStore = defineStore('authStore', {
                     }).then(() => {
                         this.router.push({ name: 'HomeView' })
                     })
-
                 } else {
-
                     console.log("api store logout response false :: ", response)
-
                 }
 
             } catch (error) {
-
                 console.error("api store logout function error :: ", error)
-
             }
         },
 
         // get all user data
         async apiStoreUsers() {
             try {
-
                 const response = await fetch(`/api/users_test_api`, {
                     method: "GET",
                     headers: {
                         authorization: `Bearer ${localStorage.getItem('token')}`
                     }
                 })
+                if (response.ok) {
+                    const data = await response.json()
+                    this.storeUser = data.users
+                } else {
+                    console.log("api store users response false ", response)
+                }
+            } catch (error) {
+                console.error("api store function error :", error)
+            }
+        },
+
+        // forget your password
+        async apiStoreResetPassword (formData) {
+            try {
+                const response = await fetch(`/api/forget_your_password`, {
+                    method: "POST",
+                    body: JSON.stringify(formData)
+                })
+                const data = await response.json()
 
                 if (response.ok) {
 
-                    const data = await response.json()
-                    this.storeUser = data.users
+                    Swal.fire({
+
+                        title: "Do you want to log in now?",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes, log in",
+                        cancelButtonText: "No, cancel",
+
+                    }).then((result) => {
+
+                        if (result.isConfirmed) {
+                            Swal.fire({
+                                title: "Login!",
+                                text: "Welcome to the system.",
+                                icon: "success",
+                            }).then(() => {
+                                localStorage.setItem("token", data.token);
+                                this.router.push({ name: "DashboardView" });
+                            });
+
+                        } else if (result.dismiss === Swal.DismissReason.cancel) {
+
+                            Swal.fire({
+                                title: "Reset Password Successful.",
+                                icon: "success",  
+                            }).then(() => {
+                                this.router.push({ name: "HomeView" });
+                            });
+                        }
+                    });
 
                 } else {
-
-                    console.log("api store users response false ", response)
-
+                    Swal.fire({
+                        title: "Error",
+                        text: data.message || "Something went wrong. Please try again.",
+                        icon: "error",
+                    });
+                    console.log("API response error:", response);
                 }
 
             } catch (error) {
-
-                console.error("api store function error :", error)
-
+                console.error("api store reset password error :: ", error)
             }
         },
 

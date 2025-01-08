@@ -84,11 +84,12 @@ const formData = reactive({
         </button>
       </form>
       <div class="mt-5 text-right">
-        <a
-          href="#"
+        <RouterLink
           class="ms-auto text-sm text-blue-700 hover:underline dark:text-blue-500"
-          >Forgot your password?</a
+          :to="{ name: 'ForgetYourPasswordView' }"
         >
+          Forget your password?
+        </RouterLink>
       </div>
       <div class="mt-5 text-left text-sm font-medium text-gray-500 dark:text-gray-300">
         Not registered?

@@ -7,7 +7,7 @@ import DashboardView from '@/views/DashboardView.vue'
 import PageNotFound from '@/views/PageNotFound.vue'
 import PostProfile_Dashboard from '@/views/Posts/PostProfile_Dashboard.vue'
 import UserProfile_Dashboard from '@/views/Users/UserProfile_Dashboard.vue'
-
+import ForgetYourPasswordView from '@/views/ForgetYourPasswordView.vue'
 
 
 const router = createRouter({
@@ -32,6 +32,12 @@ const router = createRouter({
       path: '/register',
       name: 'RegisterView',
       component: RegisterView,
+      meta: { guest: true }
+    },
+    {
+      path: '/forget_your_password',
+      name: 'ForgetYourPasswordView',
+      component: ForgetYourPasswordView,
       meta: { guest: true }
     },
     {
