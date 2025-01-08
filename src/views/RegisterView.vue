@@ -36,8 +36,8 @@ onMounted(statusUser);
 </script>
 
 <template>
-  <div class="w-full flex items-center justify-center mt-10">
-    <div class="w-full bg-white rounded-lg shadow sm:max-w-md p-6 space-y-6">
+  <div class="w-full flex items-center justify-center mt-12">
+    <div class="w-full bg-white rounded-lg shadow sm:max-w-md p-6 space-y-6 mt-12">
       <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900">
         Create an account
       </h1>
@@ -146,6 +146,15 @@ onMounted(statusUser);
           Create account
         </button>
       </form>
+      <div class="mt-5 text-right text-sm font-medium text-gray-500 dark:text-gray-300">
+        Already have an account?
+        <RouterLink 
+          class="text-blue-700 hover:underline dark:text-blue-500"
+          :to="{ name: 'LoginView' }"
+        >
+          Login
+        </RouterLink>
+      </div>
     </div>
   </div>
 </template>
