@@ -53,17 +53,18 @@ const router = createRouter({
       meta: { auth: true }
     },
     { 
+      path: '/user_profile/show/:id', 
+      name: 'UserProfile_Dashboard', 
+      component: UserProfile_Dashboard, 
+      meta: { auth: true }
+    },
+    { 
       path: '/postprofile_dashboard', 
       name: 'PostProfile_Dashboard', 
       component: PostProfile_Dashboard, 
       meta: { auth: true }
     },
-    { 
-      path: '/userprofile_dashboard', 
-      name: 'UserProfile_Dashboard', 
-      component: UserProfile_Dashboard, 
-      meta: { auth: true }
-    },
+
   ],
 })
 

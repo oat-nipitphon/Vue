@@ -1,9 +1,16 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
+import { storeToRefs } from 'pinia'
+
+const route = useRoute()
+
 const { apiStoreLogout } = useAuthStore();
 const authStore = useAuthStore();
+const { storeUser } = storeToRefs(authStore)
+
+
 
 // สถานะสำหรับ dropdown
 const isDropdownOpen = ref(false);
@@ -19,7 +26,11 @@ const closeDropdown = (event) => {
   }
 };
 // เพิ่ม event listener เมื่อ component ถูก mount และลบออกเมื่อ unmount
-onMounted(() => {
+onMounted(async () => {
+  
+  await authStore.apiAuthStore()
+  console.log(storeUser.value.id)
+  
   window.addEventListener("click", closeDropdown);
 });
 onUnmounted(() => {
@@ -59,24 +70,24 @@ const btnLogout = async () => {
                 </RouterLink>
                 <RouterLink
                   class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
-                  aria-current="page"
                   :to="{ name: 'CardsView' }"
                 >
                   Cards
                 </RouterLink>
                 <RouterLink
                   class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
-                  aria-current="page"
                   :to="{ name: 'PostProfile_Dashboard' }"
                 >
-                  Post Profile Dashboard
+                  Post
                 </RouterLink>
                 <RouterLink
                   class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
-                  aria-current="page"
-                  :to="{ name: 'UserProfile_Dashboard' }"
+                  :to="{ 
+                    name: 'UserProfile_Dashboard',
+                    params: { id: storeUser.id }
+                    }"
                 >
-                  User Profile Dashboard
+                  User {{ storeUser.id }}
                 </RouterLink>
               </div>
             </div>

@@ -1,8 +1,19 @@
 <script setup>
-import { storeToRefs } from "pinia";
-import { useAuthStore } from "@/stores/auth";
+import { storeToRefs } from "pinia"
+import { useAuthStore } from "@/stores/auth"
+import { ref, onMounted } from 'vue'
 
-const authStore = useAuthStore();
+// const authStore = useAuthStore()
+// const { storeUser } = storeToRefs(authStore)
+// const user = ref(null)
+
+// // console.log(authStore)
+
+// onMounted(async () => {
+//   await authStore.apiAuthStore()
+//   // console.log(storeUser.value.id)
+// })
+
 </script>
 <template>
   <div class="w-full mt-10">
