@@ -183,6 +183,7 @@ onUnmounted(() => {
                     >Sign out</a
                   >
                 </div>
+                
               </div>
             </div>
           </div>
@@ -316,6 +317,7 @@ onUnmounted(() => {
           </div>
         </div>
       </div>
+
     </nav>
   </div>
 </template>

@@ -2,6 +2,7 @@
 import { reactive, ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useStoreUserProfile } from "@/stores/user.profile";
+import UploadImageUserProfile from "@/components/UploadImageUserProfile.vue";
 
 const route = useRoute();
 const { apiGetAllUserProfile } = useStoreUserProfile();
@@ -10,7 +11,6 @@ const userProfile = ref(null);
 onMounted(async () => {
   userProfile.value = await apiGetAllUserProfile(route.params.id);
 });
-
 </script>
 <template>
   <div v-if="userProfile">
@@ -113,11 +113,25 @@ onMounted(async () => {
             <div class="space-y-4">
               <div class="flex space-x-4">
                 <img
-                  width="100%" height="100%"
-                  class="rounded-lg"
+                  width="100%"
+                  height="100%"
+                  class="rounded-full w-96 h-96"
                   src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png"
                   alt="Helene avatar"
                 />
+              </div>
+              <div class="w-full">
+                <!-- **************** Modal Upload Image Profile ******************* -->
+                <!-- Button trigger modal -->
+                <button
+                  type="button"
+                  class="btn btn-primary btn-sm"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModal"
+                >
+                  Upload Image Profile
+                </button>
+                <UploadImageUserProfile />
               </div>
             </div>
 
@@ -125,16 +139,16 @@ onMounted(async () => {
             <div class="space-y-4">
               <dl class="font-semibold text-gray-500 dark:text-white">
                 <span
-                    class="mb-2 inline-block rounded bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300"
-                  >
-                    {{ userProfile.status_user.status_name }}
-                  </span>
-                  <h2
-                    class="flex items-center text-xl font-bold leading-none text-gray-900 dark:text-white sm:text-2xl"
-                  >
-                    {{ userProfile.user_profile.title_name }}
-                    {{ userProfile.user_profile.full_name }}
-                  </h2>
+                  class="mb-2 inline-block rounded bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300"
+                >
+                  {{ userProfile.status_user.status_name }}
+                </span>
+                <h2
+                  class="flex items-center text-xl font-bold leading-none text-gray-900 dark:text-white sm:text-2xl"
+                >
+                  {{ userProfile.user_profile.title_name }}
+                  {{ userProfile.user_profile.full_name }}
+                </h2>
               </dl>
               <dl>
                 <dt class="font-semibold text-gray-900 dark:text-white">
@@ -185,8 +199,7 @@ onMounted(async () => {
         <!-- Start Card Followers -->
         <div>
           <div
-            class="grid grid-cols-2 gap-6 border-b border-t border-gray-200 py-4 dark:border-gray-700 
-            md:py-1 lg:grid-cols-4 xl:gap-16"
+            class="grid grid-cols-2 gap-6 border-b border-t border-gray-200 py-4 dark:border-gray-700 md:py-1 lg:grid-cols-4 xl:gap-16"
           >
             <div>
               <svg

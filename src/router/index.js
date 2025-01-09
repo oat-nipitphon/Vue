@@ -68,6 +68,14 @@ const router = createRouter({
       component: PostDashboardView, 
       meta: { auth: true }
     },
+    {
+      path: '/ReportUserProfilesView',
+      name: 'ReportUserProfilesView'
+    },
+    {
+      path: '/ReportPostsView',
+      name: 'ReportPostsView'
+    },
 
   ],
 })

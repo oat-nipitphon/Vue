@@ -21,6 +21,8 @@ onMounted(async () => {
   window.addEventListener("click", closeDropdown);
 });
 
+console.log(storeUser)
+
 onUnmounted(() => {
   window.removeEventListener("click", closeDropdown);
 });
@@ -45,8 +47,6 @@ onUnmounted(() => {
     <nav class="bg-gray-800">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
-
-
           <!-- *********  Main Menu Login and Register Auth true **************** -->
           <div class="flex items-center">
 
@@ -70,25 +70,27 @@ onUnmounted(() => {
                   Home
                 </RouterLink>
                 <RouterLink
+                  v-if="storeUser.status_id === '1'"
                   class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
                   :to="{ name: 'CardsView' }"
                 >
                   Cards
                 </RouterLink>
                 <RouterLink
+                  v-if="storeUser.status_id === '1'"
                   class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
-                  :to="{ name: 'PostDashboardView' }"
+                  :to="{ name: 'ReportPostsView' }"
                 >
-                  Post
+                  Posts
                 </RouterLink>
                 <RouterLink
+                  v-if="storeUser.status_id === '1'"
                   class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
                   :to="{
-                    name: 'UserProfileDashboardView',
-                    params: { id: storeUser.id },
+                    name: 'ReportUserProfilesView'
                   }"
                 >
-                  User {{ storeUser.id }}
+                  Users
                 </RouterLink>
               </div>
             </div>
@@ -136,14 +138,18 @@ onUnmounted(() => {
                 -->
 
               <!-- Active: "bg-gray-100 outline-none", Not Active: "" -->
-              <a
-                href="#"
+              <RouterLink
+                :to="{ 
+                  name: 'UserProfileDashboardView',
+                  params: { id: storeUser.id }
+                  }"
                 class="block px-4 py-2 text-sm text-gray-700"
                 role="menuitem"
                 tabindex="-1"
                 id="user-menu-item-0"
-                >Your Profile</a
               >
+                Your Profile
+              </RouterLink >
               <a
                 href="#"
                 class="block px-4 py-2 text-sm text-gray-700"
