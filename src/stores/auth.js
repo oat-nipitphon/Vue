@@ -39,6 +39,29 @@ export const useAuthStore = defineStore('authStore', {
             }
         },
 
+        async apiSkilLLogin () {
+
+
+
+
+            const response = await fetch(`/api/login`, {
+                method: "POST",
+                body: JSON.stringify(formData)
+            })
+
+            
+            if (response.ok) {
+                
+                const data = await response.json()
+                localStorage.setItem('token', data.token);
+                this.storeUser = data.user;
+                this.router.push({ name: 'DashboardView' }); // Use router instance
+            }
+            
+            console.log("api skill login store error", data.error)
+
+        },
+
         // register
         async apiStoreRegister(apiRouter, formData) {
 

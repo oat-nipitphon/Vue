@@ -5,8 +5,8 @@ import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import PageNotFound from '@/views/PageNotFound.vue'
-import PostProfile_Dashboard from '@/views/Posts/PostProfile_Dashboard.vue'
-import UserProfile_Dashboard from '@/views/Users/UserProfile_Dashboard.vue'
+import PostDashboardView from '@/views/Posts/PostDashboardView.vue'
+import UserProfileDashboardView from '@/views/Users/UserProfileDashboardView.vue'
 import ForgetYourPasswordView from '@/views/ForgetYourPasswordView.vue'
 
 
@@ -16,6 +16,10 @@ const router = createRouter({
     {
       path: '/:pathMatch(.*)*',
       component: PageNotFound
+    },
+    {
+      path: '/testCodeView',
+      component: () => import('../views/TestCode/TestCodeView.vue')
     },
     {
       path: '/cards',
@@ -54,14 +58,14 @@ const router = createRouter({
     },
     { 
       path: '/user_profile/show/:id', 
-      name: 'UserProfile_Dashboard', 
-      component: UserProfile_Dashboard, 
+      name: 'UserProfileDashboardView', 
+      component: UserProfileDashboardView, 
       meta: { auth: true }
     },
     { 
       path: '/postprofile_dashboard', 
-      name: 'PostProfile_Dashboard', 
-      component: PostProfile_Dashboard, 
+      name: 'PostDashboardView', 
+      component: PostDashboardView, 
       meta: { auth: true }
     },
 

@@ -2,67 +2,45 @@
 import { storeToRefs } from "pinia"
 import { useAuthStore } from "@/stores/auth"
 import { ref, onMounted } from 'vue'
+import { usePostStore } from "@/stores/post";
 
-// const authStore = useAuthStore()
-// const { storeUser } = storeToRefs(authStore)
-// const user = ref(null)
+const { apiGetPosts } = usePostStore()
+const posts = ref(null)
 
-// // console.log(authStore)
+onMounted(async () => {
+    posts.value = await apiGetPosts()
+})
 
-// onMounted(async () => {
-//   await authStore.apiAuthStore()
-//   // console.log(storeUser.value.id)
-// })
 
 </script>
 <template>
-  <div class="w-full mt-10">
-    <div class="w-full m-auto mt-10">
-      <a
-        href="#"
-        class="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
-      >
-        <img
-          class="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg"
-          src="https://scontent.fkkc3-1.fna.fbcdn.net/v/t39.30808-6/461897536_3707658799483986_794048670785055411_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=DSSWt2M27C4Q7kNvgFEQ9s0&_nc_oc=AdhObFZIdl30dzCgy382lXYzrpz9QT_AigSY4olSX6HeF57OzIBMoLXAEAZUbv-My1HLH4pfbzppUByTEqQ4W56z&_nc_zt=23&_nc_ht=scontent.fkkc3-1.fna&_nc_gid=A-MCF4FJxAAyevGTWLeS9Vf&oh=00_AYCTUXKIuux-lIHpIBiif3OifLfTaOMkgHNGob1mYOGeiw&oe=6783C271"
-          alt=""
-        />
-        <div class="flex flex-col justify-between p-4 leading-normal">
-          <h5
-            class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-          >
-            Noteworthy technology acquisitions 2021
-          </h5>
-          <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-            Here are the biggest enterprise technology acquisitions of 2021 so
-            far, in reverse chronological order.
-          </p>
-        </div>
-      </a>
-    </div>
+  <div class="w-full mt-10 flex flex-col items-center">
 
-    <div class="w-full m-auto mt-10">
-      <div
+    <!-- Item 2 -->
+    <div 
+      class="w-full mt-10 flex justify-center"
+      v-if="posts"
+    >
+      <div 
+        style="margin: auto"
         class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+        v-for="post in posts" :key="post.id"
       >
         <a href="#">
           <img
             class="rounded-t-lg"
-            src="https://scontent.fkkc3-1.fna.fbcdn.net/v/t39.30808-6/461897536_3707658799483986_794048670785055411_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=DSSWt2M27C4Q7kNvgFEQ9s0&_nc_oc=AdhObFZIdl30dzCgy382lXYzrpz9QT_AigSY4olSX6HeF57OzIBMoLXAEAZUbv-My1HLH4pfbzppUByTEqQ4W56z&_nc_zt=23&_nc_ht=scontent.fkkc3-1.fna&_nc_gid=A-MCF4FJxAAyevGTWLeS9Vf&oh=00_AYCTUXKIuux-lIHpIBiif3OifLfTaOMkgHNGob1mYOGeiw&oe=6783C271"
+            src="../assets/icon/keyboard.jpg"
             alt=""
           />
         </a>
         <div class="p-5">
           <a href="#">
-            <h5
-              class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-            >
-              Noteworthy technology acquisitions 2021
+            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+              {{ post.post_title }}
             </h5>
           </a>
           <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-            Here are the biggest enterprise technology acquisitions of 2021 so
-            far, in reverse chronological order.
+            {{ post.post_content }}
           </p>
           <a
             href="#"
@@ -87,6 +65,13 @@ import { ref, onMounted } from 'vue'
           </a>
         </div>
       </div>
+
     </div>
+
+    <div v-else>
+      <h1>ไม่มีข้อมูล</h1>
+    </div>
+
   </div>
 </template>
+

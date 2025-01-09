@@ -3,20 +3,22 @@ import { reactive, onMounted } from "vue";
 import { useRouter, RouterLink } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 
-const { apiStoreLogin } = useAuthStore();
+const { apiStoreLogin, apiSkilLLogin } = useAuthStore();
 
 const formData = reactive({
   emailUsername: "",
   password: "",
 });
+
+
 </script>
 <template>
   <div class="w-full flex items-center justify-center mt-10">
     <div
       class="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700"
     >
-      <form 
-        class="space-y-6" 
+      <form
+        class="space-y-6"
         @submit.prevent="apiStoreLogin(`login`, formData)"
       >
         <h5 class="text-xl font-medium text-gray-900 dark:text-white">
@@ -52,10 +54,7 @@ const formData = reactive({
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
             required
           />
-          <p
-            v-if="!formData.password"
-            class="text-red-600 text-sm mt-2"
-          >
+          <p v-if="!formData.password" class="text-red-600 text-sm mt-2">
             Pelase input password login.
           </p>
         </div>
@@ -91,9 +90,11 @@ const formData = reactive({
           Forget your password?
         </RouterLink>
       </div>
-      <div class="mt-5 text-left text-sm font-medium text-gray-500 dark:text-gray-300">
-        Not registered?
-        <RouterLink 
+      <div
+        class="mt-5 text-left text-sm font-medium text-gray-500 dark:text-gray-300"
+      >
+       Not registered?
+        <RouterLink
           class="text-blue-700 hover:underline dark:text-blue-500"
           :to="{ name: 'RegisterView' }"
         >
