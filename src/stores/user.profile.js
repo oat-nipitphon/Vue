@@ -6,7 +6,7 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
     }),
     actions: {
 
-        async apiGetAllUserProfile (userProfile) {
+        async apiGetAllUserProfile(userProfile) {
             try {
                 const response = await fetch(`/api/user_profiles/${userProfile}`, {
                     method: "GET",
@@ -26,20 +26,36 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
             }
         },
 
-        async apiUploadImageUserProfile (apiRouter, formData) {
+        async apiGetStatusUser () {
+            try {
+                const response = await fetch(`/api/status_user`, {
+                  method: "GET",
+                });
+                if (!response.ok) {
+                  statusUser.value = null;
+                }
+                const data = await response.json();
+                console.log("status user ", data.status_user);
+                return data.status_user;
+              } catch (error) {
+                console.error("function status user error", error);
+              }
+        },
+
+        async apiUploadImageUserProfile(payload) {
             try {
 
-                const response = await fetch(`/api/user_profiles/${apiRouter}`, {
-                    method: "POST",
+                const response = await fetch(`/api/user_profiles/upload_image_profile`, {
+                    method: "PUT",
                     headers: {
                         authorization: `Bearer ${localStorage.getItem('token')}`
                     },
-                    body: JSON.stringify(formData)
+                    body: payload
                 })
 
+                const data = await response.json()
                 if (response.ok) {
-                    const data = await response.json()
-                    this.userProfile = data.status
+                    this.userProfile = data
                 } else {
                     console.log("api user profile store error", data)
                 }
@@ -49,7 +65,15 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
             }
         },
 
+        async apiUpdateDetailUserProfile (formData) {
+            try {
 
+                
+
+            } catch (error) {
+                console.error("api update detail user profile error: ", error)
+            }
+        },
 
     }
 })

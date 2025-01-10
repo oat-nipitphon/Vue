@@ -1,15 +1,69 @@
 <script setup>
+import axios from "axios";
 import { reactive, ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useStoreUserProfile } from "@/stores/user.profile";
 import UploadImageUserProfile from "@/components/UploadImageUserProfile.vue";
 
+const isEventSpanDetailProfile = ref(true);
+const isEventInputDetailProfile = ref(false);
+const isEventButtonEditDetailProfile = ref(true);
+const isEventButtonUpdateDetailProfile = ref(false);
+
+const toggleEventInputDetailProfile = async () => {
+  isEventInputDetailProfile.value = true;
+  isEventSpanDetailProfile.value = false;
+  isEventButtonUpdateDetailProfile.value = true;
+  isEventButtonEditDetailProfile.value - false;
+};
+
+const toggleEventButtonUpdate = async () => {
+  console.log("update fetch api");
+  await apiUpdateDetailUserProfile();
+};
+
+function functionFormatBirthDayAge() {
+  const userAge = 30;
+  return "Age" + userAge + "years.";
+}
+
+const { apiGetAllUserProfile, apiGetStatusUser, apiUpdateDetailUserProfile } =
+  useStoreUserProfile();
+
 const route = useRoute();
-const { apiGetAllUserProfile } = useStoreUserProfile();
+const statusUser = ref(null);
+
 const userProfile = ref(null);
+const formData = reactive({
+  userID: "",
+  email: "",
+  userName: "",
+  statusID: "",
+  statusName: "",
+  profileID: "",
+  titleName: "",
+  fullName: "",
+  nickName: "",
+  telPhone: "",
+  birthDay: null
+});
 
 onMounted(async () => {
   userProfile.value = await apiGetAllUserProfile(route.params.id);
+  if (userProfile.value) {
+    formData.userID = userProfile.value.id || "";
+    formData.email = userProfile.value.email || "";
+    formData.userName = userProfile.value.username || "";
+    formData.statusID = userProfile.value.status_user.id || "";
+    formData.statusName = userProfile.value.status_user.status_name || "";
+    formData.profileID = userProfile.value.user_profile.id || "";
+    formData.titleName = userProfile.value.user_profile.title_name || "";
+    formData.fullName = userProfile.value.user_profile.full_name || "";
+    formData.nickName = userProfile.value.user_profile.nick_name || "";
+    formData.telPhone = userProfile.value.user_profile.tel_phone || "";
+    formData.birthDay = userProfile.value.user_profile.birth_day || "";
+  }
+  statusUser.value = await apiGetStatusUser();
 });
 </script>
 <template>
@@ -135,39 +189,171 @@ onMounted(async () => {
               </div>
             </div>
 
-            <!-- Card Profile Rigth -->
-            <div class="space-y-4">
-              <dl class="font-semibold text-gray-500 dark:text-white">
-                <span
-                  class="mb-2 inline-block rounded bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300"
-                >
+            <!-- Start Card Show Detail Profile -->
+            <div class="space-y-4" v-if="isEventSpanDetailProfile">
+              <div>
+                <div class="font-semibold text-gray-900 dark:text-white">
+                  Status account
+                </div>
+                <div class="text-gray-500 dark:text-gray-400">
                   {{ userProfile.status_user.status_name }}
-                </span>
-                <h2
-                  class="flex items-center text-xl font-bold leading-none text-gray-900 dark:text-white sm:text-2xl"
-                >
+                </div>
+              </div>
+              <div>
+                <div class="font-semibold text-gray-900 dark:text-white">
+                  Full name
+                </div>
+                <div class="text-gray-500 dark:text-gray-400">
                   {{ userProfile.user_profile.title_name }}
                   {{ userProfile.user_profile.full_name }}
-                </h2>
-              </dl>
-              <dl>
-                <dt class="font-semibold text-gray-900 dark:text-white">
+                </div>
+              </div>
+              <div>
+                <div class="font-semibold text-gray-900 dark:text-white">
                   Email Address
-                </dt>
-                <dd class="text-gray-500 dark:text-gray-400">
+                </div>
+                <div class="text-gray-500 dark:text-gray-400">
                   {{ userProfile.email }}
-                </dd>
-              </dl>
-              <dl>
-                <dt class="font-semibold text-gray-900 dark:text-white">
-                  Phone Number
-                </dt>
-                <dd class="text-gray-500 dark:text-gray-400">
-                  +1234 567 890 / +12 345 678
-                </dd>
-              </dl>
+                </div>
+              </div>
+              <div>
+                <div class="font-semibold text-gray-900 dark:text-white">
+                  Tel phone
+                </div>
+                <div class="text-gray-500 dark:text-gray-400">
+                  {{ userProfile.user_profile.tel_phone }}
+                </div>
+              </div>
+              <div>
+                <div class="font-semibold text-gray-900 dark:text-white">
+                  Birth day
+                </div>
+                <div class="text-gray-500 dark:text-gray-400">
+                  <label>{{ userProfile.user_profile.birth_day }}</label>
+                  <label>{{ functionFormatBirthDayAge() }}</label>
+                </div>
+              </div>
+              <div class="flex justify-end mt-5 mr-5">
+                <button
+                  v-if="isEventButtonEditDetailProfile"
+                  @click="toggleEventInputDetailProfile"
+                  type="button"
+                  class="btn btn-outline-danger btn-sm"
+                >
+                  Edit
+                </button>
+              </div>
             </div>
+            <!-- End Card Show Detail Profile -->
+
+            <!-- Start Card Edit Detail Profile -->
+            <div class="space-y-4" v-if="isEventInputDetailProfile">
+              <div class="font-semibold text-gray-500 dark:text-white">
+                <!-- Status Dropdown -->
+                <div v-if="statusUser">
+                  <label
+                    for="status"
+                    class="block text-sm font-medium text-gray-900"
+                  >
+                    Status account
+                  </label>
+                  <select
+                    v-if="userProfile.status_id === '1'"
+                    id="status"
+                    v-model="formData.statusID"
+                    class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
+                  >
+                    <option value="null" disabled>select status</option>
+                    <option
+                      v-for="status in statusUser"
+                      :key="status.id"
+                      :value="status.id"
+                    >
+                      <!-- Sta -->
+                      {{ status.status_name }}
+                    </option>
+                  </select>
+                  <label v-else class="text-gray-500 dark:text-gray-400">
+                    {{ userProfile.status_user.status_name }}
+                  </label>
+                </div>
+                <div v-else>
+                  <h4>ไม่มีข้อมูล</h4>
+                </div>
+              </div>
+              <div>
+                <label
+                  for="fullName"
+                  class="block text-sm font-medium text-gray-900"
+                >
+                  full name
+                </label>
+                <div class="text-gray-500 dark:text-gray-400">
+                  <input
+                    v-model="formData.fullName"
+                    value="{{ userProfile.user_profile.full_name }}"
+                    type="text"
+                    id="fullName"
+                    class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
+                    placeholder="Your full name"
+                  />
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-900">
+                  Email Address
+                </label>
+                <div class="text-gray-500 dark:text-gray-400">
+                  <input
+                    v-model="formData.email"
+                    type="email"
+                    id="email"
+                    class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
+                    placeholder="name@flowbite.com"
+                  />
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-900">
+                  Phone Number
+                </label>
+                <div class="text-gray-500 dark:text-gray-400">
+                  <input
+                    type="text"
+                    class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
+                    placeholder="name@flowbite.com"
+                    v-model="formData.telPhone"
+                  />
+                </div>
+              </div>
+              <div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-900">
+                    Birth day
+                  </label>
+                </div>
+                <div class="text-gray-500 dark:text-gray-400">
+                  <input
+                    type="date"
+                    class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
+                    v-model="formData.birthDay"
+                  />
+                </div>
+              </div>
+              <div class="flex justify-end mt-5">
+                <button
+                  v-if="isEventButtonUpdateDetailProfile"
+                  @click="toggleEventButtonUpdate"
+                  type="button"
+                  class="btn btn-primary btn-sm"
+                >
+                  <i class="update"></i> update
+                </button>
+              </div>
+            </div>
+            <!-- Start Card Edit Detail Profile -->
           </div>
+
           <button
             type="button"
             data-modal-target="accountInformationModal2"

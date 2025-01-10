@@ -12,15 +12,17 @@ const fileInput = ref(null);
 const userPhotoURL = ref(null);
 
 const formData = reactive({
-  user_id: storeUser.id,
-  filePhoto: null,
+  user_id: "",
+  fileImage: null,
 });
+
+console.log(storeUser)
 
 const handleFileChange = (event) => {
   const file = event.target.files[0];
 
-  formData.filePhoto = event.target.files[0];
-  console.log(formData.filePhoto);
+  formData.fileImage = event.target.files[0];
+//   console.log("file image", formData.fileImage);
   showInputFileEXP(file);
 };
 
@@ -40,13 +42,25 @@ const openFileInput = () => {
   fileInput.value.click();
 };
 
+const btnUpload = async () => {
+
+    const payload = new FormData()
+    payload.append("userID", formData.user_id)
+    payload.append("fileImage", formData.value.fileImage)
+
+    console.log(payload)
+
+    await apiUploadImageUserProfile(payload)
+}
+
+
 onMounted(async () => {
   await authStore.apiAuthStore();
 });
 </script>
 <template>
   <div class="w-full">
-    <form @submit.prevent="uploadUserPhoto(`upload_image_profil`,formData)">
+    <!-- <form @submit.prevent="apiUploadImageUserProfile(`upload_image_profile`, formData)"> -->
       <div class="mt-10 flex justify-center">
         <!-- Modal -->
         <div
@@ -98,7 +112,7 @@ onMounted(async () => {
                   </div>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-primary">
+                <button @click="btnUpload" type="submit" class="btn btn-primary">
                     Upload
                 </button>
                 <button
@@ -113,6 +127,6 @@ onMounted(async () => {
           </div>
         </div>
       </div>
-    </form>
+    <!-- </form> -->
   </div>
 </template>
