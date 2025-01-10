@@ -10,37 +10,34 @@ const { apiStoreLogout } = useAuthStore();
 const authStore = useAuthStore();
 const { storeUser } = storeToRefs(authStore);
 
-
 const btnLogout = async () => {
   await apiStoreLogout();
 };
-
 
 onMounted(async () => {
   await authStore.apiAuthStore(route.params.id);
   window.addEventListener("click", closeDropdown);
 });
 
-console.log(storeUser)
+console.log(storeUser);
 
 onUnmounted(() => {
   window.removeEventListener("click", closeDropdown);
 });
 
 // ********** Start Main Menu **********
-  const isDropdownOpen = ref(false);
-  const toggleDropdown = () => {
-    isDropdownOpen.value = !isDropdownOpen.value;
-  };
-  const closeDropdown = (event) => {
-    const menuButton = document.getElementById("user-menu-button");
+const isDropdownOpen = ref(false);
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value;
+};
+const closeDropdown = (event) => {
+  const menuButton = document.getElementById("user-menu-button");
 
-    if (menuButton && !menuButton.contains(event.target)) {
-      isDropdownOpen.value = false;
-    }
-  };
+  if (menuButton && !menuButton.contains(event.target)) {
+    isDropdownOpen.value = false;
+  }
+};
 // ********** End Main Menu **********
-
 </script>
 <template>
   <div class="header">
@@ -49,7 +46,6 @@ onUnmounted(() => {
         <div class="flex h-16 items-center justify-between">
           <!-- *********  Main Menu Login and Register Auth true **************** -->
           <div class="flex items-center">
-
             <div class="shrink-0">
               <RouterLink class="p-auto" :to="{ name: 'HomeView' }">
                 <img
@@ -87,16 +83,15 @@ onUnmounted(() => {
                   v-if="storeUser.status_id === '1'"
                   class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
                   :to="{
-                    name: 'ReportUserProfilesView'
+                    name: 'ReportUserProfilesView',
                   }"
                 >
                   Users
                 </RouterLink>
               </div>
             </div>
-
           </div>
-          <!-- *********  Main Menu Login and Register Auth true **************** -->  
+          <!-- *********  Main Menu Login and Register Auth true **************** -->
 
           <!-- *************** Profile dropdown Auth true************************** -->
           <div class="relative ml-3" v-if="authStore.storeUser">
@@ -139,17 +134,17 @@ onUnmounted(() => {
 
               <!-- Active: "bg-gray-100 outline-none", Not Active: "" -->
               <RouterLink
-                :to="{ 
+                :to="{
                   name: 'UserProfileDashboardView',
-                  params: { id: storeUser.id }
-                  }"
+                  params: { id: storeUser.id },
+                }"
                 class="block px-4 py-2 text-sm text-gray-700"
                 role="menuitem"
                 tabindex="-1"
                 id="user-menu-item-0"
               >
                 Your Profile
-              </RouterLink >
+              </RouterLink>
               <a
                 href="#"
                 class="block px-4 py-2 text-sm text-gray-700"
@@ -191,7 +186,6 @@ onUnmounted(() => {
             </div>
           </div>
           <!-- *********  Main Menu Login and Register Auth false **************** -->
-
         </div>
       </div>
     </nav>

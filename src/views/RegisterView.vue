@@ -37,7 +37,9 @@ onMounted(statusUser);
 
 <template>
   <div class="w-full flex items-center justify-center mt-12">
-    <div class="w-full bg-white rounded-lg shadow sm:max-w-md p-6 space-y-6 mt-12">
+    <div
+      class="w-full bg-white rounded-lg shadow sm:max-w-md p-6 space-y-6 mt-12"
+    >
       <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900">
         Create an account
       </h1>
@@ -133,7 +135,10 @@ onMounted(statusUser);
             id="confirm-password"
             class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
           />
-          <p v-if="passwordConfirmErrorMessage" class="text-red-600 text-sm mt-2">
+          <p
+            v-if="passwordConfirmErrorMessage"
+            class="text-red-600 text-sm mt-2"
+          >
             {{ passwordConfirmErrorMessage }}
           </p>
         </div>
@@ -146,9 +151,11 @@ onMounted(statusUser);
           Create account
         </button>
       </form>
-      <div class="mt-5 text-right text-sm font-medium text-gray-500 dark:text-gray-300">
+      <div
+        class="mt-5 text-right text-sm font-medium text-gray-500 dark:text-gray-300"
+      >
         Already have an account?
-        <RouterLink 
+        <RouterLink
           class="text-blue-700 hover:underline dark:text-blue-500"
           :to="{ name: 'LoginView' }"
         >

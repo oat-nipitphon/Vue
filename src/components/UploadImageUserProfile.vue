@@ -1,12 +1,12 @@
 <script setup>
-import { reactive, ref, onMounted } from "vue"
-import { storeToRefs } from "pinia"
-import { useAuthStore } from "@/stores/auth"
-import { useStoreUserProfile } from '@/stores/user.profile'
+import { reactive, ref, onMounted } from "vue";
+import { storeToRefs } from "pinia";
+import { useAuthStore } from "@/stores/auth";
+import { useStoreUserProfile } from "@/stores/user.profile";
 
-const authStore = useAuthStore()
-const storeUser = storeToRefs(authStore)
-const { apiUploadImageUserProfile } = useStoreUserProfile()
+const authStore = useAuthStore();
+const storeUser = storeToRefs(authStore);
+const { apiUploadImageUserProfile } = useStoreUserProfile();
 
 const fileInput = ref(null);
 const userPhotoURL = ref(null);
@@ -16,13 +16,13 @@ const formData = reactive({
   fileImage: null,
 });
 
-console.log(storeUser)
+console.log(storeUser);
 
 const handleFileChange = (event) => {
   const file = event.target.files[0];
 
   formData.fileImage = event.target.files[0];
-//   console.log("file image", formData.fileImage);
+  //   console.log("file image", formData.fileImage);
   showInputFileEXP(file);
 };
 
@@ -43,16 +43,14 @@ const openFileInput = () => {
 };
 
 const btnUpload = async () => {
+  const payload = new FormData();
+  payload.append("userID", formData.user_id);
+  payload.append("fileImage", formData.value.fileImage);
 
-    const payload = new FormData()
-    payload.append("userID", formData.user_id)
-    payload.append("fileImage", formData.value.fileImage)
+  console.log(payload);
 
-    console.log(payload)
-
-    await apiUploadImageUserProfile(payload)
-}
-
+  await apiUploadImageUserProfile(payload);
+};
 
 onMounted(async () => {
   await authStore.apiAuthStore();
@@ -61,72 +59,72 @@ onMounted(async () => {
 <template>
   <div class="w-full">
     <!-- <form @submit.prevent="apiUploadImageUserProfile(`upload_image_profile`, formData)"> -->
-      <div class="mt-10 flex justify-center">
-        <!-- Modal -->
-        <div
-          class="modal fade"
-          id="exampleModal"
-          tabindex="-1"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">
-                    Upload image profile
-                </h1>
+    <div class="mt-10 flex justify-center">
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="exampleModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">
+                Upload image profile
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="flex justify-center">
+                <img
+                  :src="
+                    userPhotoURL ||
+                    'https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg'
+                  "
+                  alt="Image Preview"
+                  style="width: 250px; height: auto"
+                />
+              </div>
+              <div class="mt-10">
+                <input
+                  ref="fileInput"
+                  type="file"
+                  @change="handleFileChange"
+                  accept="image/*"
+                  hidden
+                />
                 <button
                   type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="modal-body">
-                <div class="flex justify-center">
-                    <img
-                      :src="
-                        userPhotoURL ||
-                        'https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg'
-                      "
-                      alt="Image Preview"
-                      style="width: 250px; height: auto"
-                    />
-                  </div>
-                  <div class="mt-10">
-                    <input
-                      ref="fileInput"
-                      type="file"
-                      @change="handleFileChange"
-                      accept="image/*"
-                      hidden
-                    />
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-primary"
-                      @click="openFileInput"
-                    >
-                      Choose File
-                    </button>
-                  </div>
-              </div>
-              <div class="modal-footer">
-                <button @click="btnUpload" type="submit" class="btn btn-primary">
-                    Upload
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-bs-dismiss="modal"
+                  class="btn btn-sm btn-primary"
+                  @click="openFileInput"
                 >
-                  Close
+                  Choose File
                 </button>
               </div>
+            </div>
+            <div class="modal-footer">
+              <button @click="btnUpload" type="submit" class="btn btn-primary">
+                Upload
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>
       </div>
+    </div>
     <!-- </form> -->
   </div>
 </template>

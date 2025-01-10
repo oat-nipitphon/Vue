@@ -39,29 +39,6 @@ export const useAuthStore = defineStore('authStore', {
             }
         },
 
-        async apiSkilLLogin () {
-
-
-
-
-            const response = await fetch(`/api/login`, {
-                method: "POST",
-                body: JSON.stringify(formData)
-            })
-
-            
-            if (response.ok) {
-                
-                const data = await response.json()
-                localStorage.setItem('token', data.token);
-                this.storeUser = data.user;
-                this.router.push({ name: 'DashboardView' }); // Use router instance
-            }
-            
-            console.log("api skill login store error", data.error)
-
-        },
-
         // register
         async apiStoreRegister(apiRouter, formData) {
 
@@ -74,40 +51,16 @@ export const useAuthStore = defineStore('authStore', {
                 if (response.ok) {
 
                     const data = await response.json();
-
+                    
                     Swal.fire({
                         title: "New Account.",
                         text: "Register account successfully.",
                         icon: "success",
                     }).then(() => {
-
                         localStorage.setItem('token', data.token);
                         this.storeUser = data.user;
                         this.router.push({ name: 'DashboardView' }); // Use router instance
-
                     });
-
-                    // Swal.fire({
-                    //     title: "Are you sure?",
-                    //     text: "You won't be able to revert this!",
-                    //     icon: "warning",
-                    //     showCancelButton: true,
-                    //     confirmButtonColor: "#3085d6",
-                    //     cancelButtonColor: "#d33",
-                    //     confirmButtonText: "Yes, delete it!",
-                    //     cancelButtonText: "Cancel",
-                    // }).then((result) => {
-                    //     if (result.isConfirmed) {
-                    //         Swal.fire({
-                    //             title: "Deleted!",
-                    //             text: "Your file has been deleted.",
-                    //             icon: "success",
-                    //         }).then(() => {
-                    //             axios.delete(`/api/delete_invoice/${id}`);
-                    //             location.reload();
-                    //         });
-                    //     }
-                    // });
 
                 } else {
                     console.error("Registration failed:", response);
@@ -266,5 +219,8 @@ export const useAuthStore = defineStore('authStore', {
             }
         },
 
-    }
+    },
+    // getters: {
+    //     isAuthentication: () => !!state.token,
+    // },
 })

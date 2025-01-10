@@ -17,15 +17,7 @@ const toggleEventInputDetailProfile = async () => {
   isEventButtonEditDetailProfile.value - false;
 };
 
-const toggleEventButtonUpdate = async () => {
-  console.log("update fetch api");
-  await apiUpdateDetailUserProfile();
-};
 
-function functionFormatBirthDayAge() {
-  const userAge = 30;
-  return "Age" + userAge + "years.";
-}
 
 const { apiGetAllUserProfile, apiGetStatusUser, apiUpdateDetailUserProfile } =
   useStoreUserProfile();
@@ -34,8 +26,10 @@ const route = useRoute();
 const statusUser = ref(null);
 
 const userProfile = ref(null);
+const formatBirthDay = ref(null);
 const formData = reactive({
   userID: "",
+  name: "",
   email: "",
   userName: "",
   statusID: "",
@@ -45,13 +39,14 @@ const formData = reactive({
   fullName: "",
   nickName: "",
   telPhone: "",
-  birthDay: null
+  birthDay: null,
 });
 
 onMounted(async () => {
   userProfile.value = await apiGetAllUserProfile(route.params.id);
   if (userProfile.value) {
     formData.userID = userProfile.value.id || "";
+    formData.name = userProfile.value.name || "";
     formData.email = userProfile.value.email || "";
     formData.userName = userProfile.value.username || "";
     formData.statusID = userProfile.value.status_user.id || "";
@@ -65,6 +60,28 @@ onMounted(async () => {
   }
   statusUser.value = await apiGetStatusUser();
 });
+
+const functionFormatBirthDayAge = async () => {
+  const formatBirthDay = new Date(formData.birthDay);
+  const dateTimeNow = new Date();
+  let age = dateTimeNow.getFullYear() - formatBirthDay.getFullYear();
+  
+  // Process month
+  // const monthDifference = currentDate.getMonth() - birthDate.getMonth();
+  // if (monthDifference < 0 || (monthDifference === 0 && currentDate.getDate() < birthDate.getDate())) {
+  //   age--; 
+  // }
+
+  console.log("format birth day ", age);
+
+  return "Age " + age + " years.";
+
+}
+
+const btnUpdateProfile = async () => {
+  await apiUpdateDetailUserProfile(formData);
+};
+
 </script>
 <template>
   <div v-if="userProfile">
@@ -210,6 +227,14 @@ onMounted(async () => {
               </div>
               <div>
                 <div class="font-semibold text-gray-900 dark:text-white">
+                  Nick Name
+                </div>
+                <div class="text-gray-500 dark:text-gray-400">
+                  {{ userProfile.user_profile.nick_name }}
+                </div>
+              </div>
+              <div>
+                <div class="font-semibold text-gray-900 dark:text-white">
                   Email Address
                 </div>
                 <div class="text-gray-500 dark:text-gray-400">
@@ -229,8 +254,7 @@ onMounted(async () => {
                   Birth day
                 </div>
                 <div class="text-gray-500 dark:text-gray-400">
-                  <label>{{ userProfile.user_profile.birth_day }}</label>
-                  <label>{{ functionFormatBirthDayAge() }}</label>
+                  {{ functionFormatBirthDayAge() }}
                 </div>
               </div>
               <div class="flex justify-end mt-5 mr-5">
@@ -248,6 +272,7 @@ onMounted(async () => {
 
             <!-- Start Card Edit Detail Profile -->
             <div class="space-y-4" v-if="isEventInputDetailProfile">
+              <!-- <form @submit.prevent="apiUpdateDetailUserProfile(formData)" > -->
               <div class="font-semibold text-gray-500 dark:text-white">
                 <!-- Status Dropdown -->
                 <div v-if="statusUser">
@@ -283,6 +308,23 @@ onMounted(async () => {
               </div>
               <div>
                 <label
+                  for="titleName"
+                  class="block text-sm font-medium text-gray-900"
+                >
+                  Title name
+                </label>
+                <div
+                  class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
+                >
+                  <select v-model="formData.titleName">
+                    <option value="mr">Mr.</option>
+                    <option value="miss">Miss.</option>
+                    <option value="mrs">Mrs.</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label
                   for="fullName"
                   class="block text-sm font-medium text-gray-900"
                 >
@@ -291,11 +333,24 @@ onMounted(async () => {
                 <div class="text-gray-500 dark:text-gray-400">
                   <input
                     v-model="formData.fullName"
-                    value="{{ userProfile.user_profile.full_name }}"
                     type="text"
                     id="fullName"
                     class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
-                    placeholder="Your full name"
+                  />
+                </div>
+              </div>
+              <div>
+                <label
+                  for="nickName"
+                  class="block text-sm font-medium text-gray-900"
+                >
+                  Nick Name
+                </label>
+                <div class="text-gray-500 dark:text-gray-400">
+                  <input
+                    class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
+                    type="text"
+                    v-model="formData.nickName"
                   />
                 </div>
               </div>
@@ -309,7 +364,6 @@ onMounted(async () => {
                     type="email"
                     id="email"
                     class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
-                    placeholder="name@flowbite.com"
                   />
                 </div>
               </div>
@@ -321,7 +375,6 @@ onMounted(async () => {
                   <input
                     type="text"
                     class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
-                    placeholder="name@flowbite.com"
                     v-model="formData.telPhone"
                   />
                 </div>
@@ -343,13 +396,14 @@ onMounted(async () => {
               <div class="flex justify-end mt-5">
                 <button
                   v-if="isEventButtonUpdateDetailProfile"
-                  @click="toggleEventButtonUpdate"
+                  @click="btnUpdateProfile"
                   type="button"
                   class="btn btn-primary btn-sm"
                 >
                   <i class="update"></i> update
                 </button>
               </div>
+              <!-- </form> -->
             </div>
             <!-- Start Card Edit Detail Profile -->
           </div>

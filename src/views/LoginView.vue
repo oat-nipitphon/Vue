@@ -9,8 +9,6 @@ const formData = reactive({
   emailUsername: "",
   password: "",
 });
-
-
 </script>
 <template>
   <div class="w-full flex items-center justify-center mt-10">
@@ -93,7 +91,7 @@ const formData = reactive({
       <div
         class="mt-5 text-left text-sm font-medium text-gray-500 dark:text-gray-300"
       >
-       Not registered?
+        Not registered?
         <RouterLink
           class="text-blue-700 hover:underline dark:text-blue-500"
           :to="{ name: 'RegisterView' }"

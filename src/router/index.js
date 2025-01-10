@@ -56,16 +56,16 @@ const router = createRouter({
       component: DashboardView,
       meta: { auth: true }
     },
-    { 
-      path: '/user_profile/show/:id', 
-      name: 'UserProfileDashboardView', 
-      component: UserProfileDashboardView, 
+    {
+      path: '/user_profile/show/:id',
+      name: 'UserProfileDashboardView',
+      component: UserProfileDashboardView,
       meta: { auth: true }
     },
-    { 
-      path: '/postprofile_dashboard', 
-      name: 'PostDashboardView', 
-      component: PostDashboardView, 
+    {
+      path: '/postprofile_dashboard',
+      name: 'PostDashboardView',
+      component: PostDashboardView,
       meta: { auth: true }
     },
     {

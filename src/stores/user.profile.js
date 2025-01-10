@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import Swal from 'sweetalert2'
 export const useStoreUserProfile = defineStore('storeUserProfile', {
     state: () => ({
         userProfile: null,
@@ -26,20 +27,20 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
             }
         },
 
-        async apiGetStatusUser () {
+        async apiGetStatusUser() {
             try {
                 const response = await fetch(`/api/status_user`, {
-                  method: "GET",
+                    method: "GET",
                 });
                 if (!response.ok) {
-                  statusUser.value = null;
+                    statusUser.value = null;
                 }
                 const data = await response.json();
                 console.log("status user ", data.status_user);
                 return data.status_user;
-              } catch (error) {
+            } catch (error) {
                 console.error("function status user error", error);
-              }
+            }
         },
 
         async apiUploadImageUserProfile(payload) {
@@ -48,7 +49,8 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
                 const response = await fetch(`/api/user_profiles/upload_image_profile`, {
                     method: "PUT",
                     headers: {
-                        authorization: `Bearer ${localStorage.getItem('token')}`
+                        authorization: `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json',
                     },
                     body: payload
                 })
@@ -65,13 +67,38 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
             }
         },
 
-        async apiUpdateDetailUserProfile (formData) {
+        async apiUpdateDetailUserProfile(formData) {
             try {
 
-                
+                const response = await fetch(`/api/user_profiles`, {
+                    method: "POST",
+                    headers: {
+                        authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                    body: JSON.stringify(formData)
+                })
+
+                if (response.ok) {
+
+                    const data = await response.json()
+                   
+
+                    Swal.fire({
+                        title: "Update Success.",
+                        content: "update user profile successfully.",
+                        icon: "success"
+                    }).then(() => {
+                        
+                        window.location.reload()
+                        this.userProfile = data.user
+                    })
+
+                } else {
+                    console.log("api store response false :: ", response)
+                }
 
             } catch (error) {
-                console.error("api update detail user profile error: ", error)
+                console.error("api store function error :: ", error)
             }
         },
 
