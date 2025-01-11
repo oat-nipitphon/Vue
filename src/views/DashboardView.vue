@@ -16,6 +16,11 @@ onMounted(async () => {
 <template>
   <div class="w-full mt-10 flex flex-col items-center">
 
+    <div class="flex justify-center mt-10">
+
+    </div>
+
+
     <!-- Item 2 -->
     <div 
       class="w-full mt-10 flex justify-center"

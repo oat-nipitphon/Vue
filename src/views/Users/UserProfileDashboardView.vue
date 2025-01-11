@@ -1,9 +1,7 @@
 <script setup>
-import axios from "axios";
-import { reactive, ref, onMounted } from "vue";
+import { reactive, ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useStoreUserProfile } from "@/stores/user.profile";
-import UploadImageUserProfile from "@/components/UploadImageUserProfile.vue";
 
 const isEventSpanDetailProfile = ref(true);
 const isEventInputDetailProfile = ref(false);
@@ -17,16 +15,17 @@ const toggleEventInputDetailProfile = async () => {
   isEventButtonEditDetailProfile.value - false;
 };
 
-
-
-const { apiGetAllUserProfile, apiGetStatusUser, apiUpdateDetailUserProfile } =
-  useStoreUserProfile();
+const {
+  apiGetAllUserProfile,
+  apiGetStatusUser,
+  apiUpdateDetailUserProfile,
+  apiUploadImageUserProfile,
+} = useStoreUserProfile();
 
 const route = useRoute();
 const statusUser = ref(null);
-
 const userProfile = ref(null);
-const formatBirthDay = ref(null);
+
 const formData = reactive({
   userID: "",
   name: "",
@@ -39,7 +38,23 @@ const formData = reactive({
   fullName: "",
   nickName: "",
   telPhone: "",
-  birthDay: null,
+  birthDay: "",
+});
+
+
+const age = computed(() => {
+  if (!formData.birthDay) return "Age not available";
+  const birthDate = new Date(formData.birthDay);
+  const currentDate = new Date();
+  let calculatedAge = currentDate.getFullYear() - birthDate.getFullYear();
+  const monthDifference = currentDate.getMonth() - birthDate.getMonth();
+  if (
+    monthDifference < 0 ||
+    (monthDifference === 0 && currentDate.getDate() < birthDate.getDate())
+  ) {
+    calculatedAge--; // ลดอายุถ้ายังไม่ถึงวันเกิดในปีนี้
+  }
+  return `Age ${calculatedAge} years`;
 });
 
 onMounted(async () => {
@@ -59,28 +74,16 @@ onMounted(async () => {
     formData.birthDay = userProfile.value.user_profile.birth_day || "";
   }
   statusUser.value = await apiGetStatusUser();
+
 });
 
-const functionFormatBirthDayAge = async () => {
-  const formatBirthDay = new Date(formData.birthDay);
-  const dateTimeNow = new Date();
-  let age = dateTimeNow.getFullYear() - formatBirthDay.getFullYear();
-  
-  // Process month
-  // const monthDifference = currentDate.getMonth() - birthDate.getMonth();
-  // if (monthDifference < 0 || (monthDifference === 0 && currentDate.getDate() < birthDate.getDate())) {
-  //   age--; 
-  // }
 
-  console.log("format birth day ", age);
 
-  return "Age " + age + " years.";
-
-}
 
 const btnUpdateProfile = async () => {
   await apiUpdateDetailUserProfile(formData);
 };
+
 
 </script>
 <template>
@@ -177,7 +180,7 @@ const btnUpdateProfile = async () => {
           <h2
             class="mb-4 text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl md:mb-6"
           >
-            General overview
+            Dashboard Profile overview.
           </h2>
           <div class="mb-4 grid gap-4 sm:grid-cols-2 sm:gap-8 lg:gap-16">
             <!-- Card Profile left -->
@@ -191,24 +194,12 @@ const btnUpdateProfile = async () => {
                   alt="Helene avatar"
                 />
               </div>
-              <div class="w-full">
-                <!-- **************** Modal Upload Image Profile ******************* -->
-                <!-- Button trigger modal -->
-                <button
-                  type="button"
-                  class="btn btn-primary btn-sm"
-                  data-bs-toggle="modal"
-                  data-bs-target="#exampleModal"
-                >
-                  Upload Image Profile
-                </button>
-                <UploadImageUserProfile />
-              </div>
+
             </div>
 
             <!-- Start Card Show Detail Profile -->
             <div class="space-y-4" v-if="isEventSpanDetailProfile">
-              <div>
+              <div class="font-semibold text-gray-500 dark:text-white">
                 <div class="font-semibold text-gray-900 dark:text-white">
                   Status account
                 </div>
@@ -216,7 +207,7 @@ const btnUpdateProfile = async () => {
                   {{ userProfile.status_user.status_name }}
                 </div>
               </div>
-              <div>
+              <div class="font-semibold text-gray-500 dark:text-white">
                 <div class="font-semibold text-gray-900 dark:text-white">
                   Full name
                 </div>
@@ -225,7 +216,7 @@ const btnUpdateProfile = async () => {
                   {{ userProfile.user_profile.full_name }}
                 </div>
               </div>
-              <div>
+              <div class="font-semibold text-gray-500 dark:text-white">
                 <div class="font-semibold text-gray-900 dark:text-white">
                   Nick Name
                 </div>
@@ -233,7 +224,7 @@ const btnUpdateProfile = async () => {
                   {{ userProfile.user_profile.nick_name }}
                 </div>
               </div>
-              <div>
+              <div class="font-semibold text-gray-500 dark:text-white">
                 <div class="font-semibold text-gray-900 dark:text-white">
                   Email Address
                 </div>
@@ -241,7 +232,7 @@ const btnUpdateProfile = async () => {
                   {{ userProfile.email }}
                 </div>
               </div>
-              <div>
+              <div class="font-semibold text-gray-500 dark:text-white">
                 <div class="font-semibold text-gray-900 dark:text-white">
                   Tel phone
                 </div>
@@ -249,12 +240,12 @@ const btnUpdateProfile = async () => {
                   {{ userProfile.user_profile.tel_phone }}
                 </div>
               </div>
-              <div>
+              <div class="font-semibold text-gray-500 dark:text-white">
                 <div class="font-semibold text-gray-900 dark:text-white">
                   Birth day
                 </div>
                 <div class="text-gray-500 dark:text-gray-400">
-                  {{ functionFormatBirthDayAge() }}
+                  {{ age }}
                 </div>
               </div>
               <div class="flex justify-end mt-5 mr-5">
@@ -273,6 +264,7 @@ const btnUpdateProfile = async () => {
             <!-- Start Card Edit Detail Profile -->
             <div class="space-y-4" v-if="isEventInputDetailProfile">
               <!-- <form @submit.prevent="apiUpdateDetailUserProfile(formData)" > -->
+
               <div class="font-semibold text-gray-500 dark:text-white">
                 <!-- Status Dropdown -->
                 <div v-if="statusUser">
@@ -306,7 +298,8 @@ const btnUpdateProfile = async () => {
                   <h4>ไม่มีข้อมูล</h4>
                 </div>
               </div>
-              <div>
+
+              <div class="font-semibold text-gray-500 dark:text-white">
                 <label
                   for="titleName"
                   class="block text-sm font-medium text-gray-900"
@@ -323,7 +316,8 @@ const btnUpdateProfile = async () => {
                   </select>
                 </div>
               </div>
-              <div>
+
+              <div class="font-semibold text-gray-500 dark:text-white">
                 <label
                   for="fullName"
                   class="block text-sm font-medium text-gray-900"
@@ -339,7 +333,8 @@ const btnUpdateProfile = async () => {
                   />
                 </div>
               </div>
-              <div>
+
+              <div class="font-semibold text-gray-500 dark:text-white">
                 <label
                   for="nickName"
                   class="block text-sm font-medium text-gray-900"
@@ -354,7 +349,8 @@ const btnUpdateProfile = async () => {
                   />
                 </div>
               </div>
-              <div>
+
+              <div class="font-semibold text-gray-500 dark:text-white">
                 <label class="block text-sm font-medium text-gray-900">
                   Email Address
                 </label>
@@ -367,7 +363,8 @@ const btnUpdateProfile = async () => {
                   />
                 </div>
               </div>
-              <div>
+
+              <div class="font-semibold text-gray-500 dark:text-white">
                 <label class="block text-sm font-medium text-gray-900">
                   Phone Number
                 </label>
@@ -379,7 +376,8 @@ const btnUpdateProfile = async () => {
                   />
                 </div>
               </div>
-              <div>
+
+              <div class="font-semibold text-gray-500 dark:text-white">
                 <div>
                   <label class="block text-sm font-medium text-gray-900">
                     Birth day
@@ -393,6 +391,7 @@ const btnUpdateProfile = async () => {
                   />
                 </div>
               </div>
+
               <div class="flex justify-end mt-5">
                 <button
                   v-if="isEventButtonUpdateDetailProfile"
@@ -403,6 +402,7 @@ const btnUpdateProfile = async () => {
                   <i class="update"></i> update
                 </button>
               </div>
+
               <!-- </form> -->
             </div>
             <!-- Start Card Edit Detail Profile -->
@@ -436,7 +436,7 @@ const btnUpdateProfile = async () => {
         </div>
         <!-- End Card User Profile -->
 
-        <!-- Start Card Followers -->
+        <!-- *************** Start Card Followers *************** -->
         <div>
           <div
             class="grid grid-cols-2 gap-6 border-b border-t border-gray-200 py-4 dark:border-gray-700 md:py-1 lg:grid-cols-4 xl:gap-16"
@@ -711,7 +711,7 @@ const btnUpdateProfile = async () => {
             </div>
           </div>
         </div>
-        <!-- End Card Followers -->
+        <!-- *************** End Card Followers *************** -->
       </div>
     </section>
   </div>

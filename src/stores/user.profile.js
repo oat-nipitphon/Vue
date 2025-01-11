@@ -17,7 +17,6 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
                 })
                 const data = await response.json()
                 if (response.ok) {
-                    console.log("store user profile response success.", data.userProfile)
                     return data.userProfile
                 } else {
                     console.log("store user profile response false.", response)
@@ -36,34 +35,31 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
                     statusUser.value = null;
                 }
                 const data = await response.json();
-                console.log("status user ", data.status_user);
                 return data.status_user;
             } catch (error) {
                 console.error("function status user error", error);
             }
         },
 
-        async apiUploadImageUserProfile(payload) {
+        async apiUploadImageUserProfile(formDataImage) {
             try {
-
-                const response = await fetch(`/api/user_profiles/upload_image_profile`, {
-                    method: "PUT",
+                const response = await fetch(`/api/user_profile/upload_image_profile`, {
+                    method: "POST",
                     headers: {
                         authorization: `Bearer ${localStorage.getItem('token')}`,
-                        'Content-Type': 'application/json',
+                        "Content-Type": "multipart/form-data",
                     },
-                    body: payload
-                })
+                    body: JSON.stringify(formDataImage)
+                });
 
-                const data = await response.json()
+                const data = await response.json();
                 if (response.ok) {
-                    this.userProfile = data
+                    console.log("store api upload image profile success", data.userProfileImage);
                 } else {
-                    console.log("api user profile store error", data)
+                    console.error("store api upload image profile error", data.message);
                 }
-
             } catch (error) {
-                console.error("api upload image user profile store error", error)
+                console.error("api upload image user profile store error", error);
             }
         },
 
@@ -81,14 +77,14 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
                 if (response.ok) {
 
                     const data = await response.json()
-                   
+
 
                     Swal.fire({
                         title: "Update Success.",
                         content: "update user profile successfully.",
                         icon: "success"
                     }).then(() => {
-                        
+
                         window.location.reload()
                         this.userProfile = data.user
                     })

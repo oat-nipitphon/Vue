@@ -24,11 +24,13 @@ export const useAuthStore = defineStore('authStore', {
                         },
                     });
 
-                    if (response.ok) {
-                        this.storeUser = await response.json()
-                    } else {
-                        console.error("Failed to fetch user data")
-                    }
+                    if (!response.ok) {
+                        console.error("Failed to fetch user data. Status:", response.status);
+                        return;
+                    } 
+
+                    this.storeUser = await response.json()
+                    console.log("api auth store", this.storeUser)
 
                 } else {
                     console.log("No token found.")

@@ -8,6 +8,7 @@ import PageNotFound from '@/views/PageNotFound.vue'
 import PostDashboardView from '@/views/Posts/PostDashboardView.vue'
 import UserProfileDashboardView from '@/views/Users/UserProfileDashboardView.vue'
 import ForgetYourPasswordView from '@/views/ForgetYourPasswordView.vue'
+import FileImageUpload from '@/components/FileImageUpload.vue'
 
 
 const router = createRouter({
@@ -20,6 +21,11 @@ const router = createRouter({
     {
       path: '/testCodeView',
       component: () => import('../views/TestCode/TestCodeView.vue')
+    },
+    {
+      path: '/FileImageUpload',
+      name: 'FileImageUpload',
+      component: FileImageUpload
     },
     {
       path: '/cards',

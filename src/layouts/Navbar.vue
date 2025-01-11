@@ -19,8 +19,6 @@ onMounted(async () => {
   window.addEventListener("click", closeDropdown);
 });
 
-console.log(storeUser);
-
 onUnmounted(() => {
   window.removeEventListener("click", closeDropdown);
 });
@@ -66,21 +64,21 @@ const closeDropdown = (event) => {
                   Home
                 </RouterLink>
                 <RouterLink
-                  v-if="storeUser.status_id === '1'"
+                  v-if="storeUser.user_login.status_id === '1'"
                   class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
                   :to="{ name: 'CardsView' }"
                 >
                   Cards
                 </RouterLink>
                 <RouterLink
-                  v-if="storeUser.status_id === '1'"
+                  v-if="storeUser.user_login.status_id === '1'"
                   class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
                   :to="{ name: 'ReportPostsView' }"
                 >
                   Posts
                 </RouterLink>
                 <RouterLink
-                  v-if="storeUser.status_id === '1'"
+                  v-if="storeUser.user_login.status_id === '1'"
                   class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
                   :to="{
                     name: 'ReportUserProfilesView',
@@ -136,7 +134,7 @@ const closeDropdown = (event) => {
               <RouterLink
                 :to="{
                   name: 'UserProfileDashboardView',
-                  params: { id: storeUser.id },
+                  params: { id: storeUser.user_login.id },
                 }"
                 class="block px-4 py-2 text-sm text-gray-700"
                 role="menuitem"
