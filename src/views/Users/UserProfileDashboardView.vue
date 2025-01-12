@@ -2,18 +2,33 @@
 import { reactive, ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useStoreUserProfile } from "@/stores/user.profile";
+import FileImageModal from "@/components/FileImageModal.vue";
 
+const route = useRoute();
+const statusUser = ref(null);
+const userProfile = ref(null);
+const userProfileImage = ref(null);
 const isEventSpanDetailProfile = ref(true);
 const isEventInputDetailProfile = ref(false);
 const isEventButtonEditDetailProfile = ref(true);
 const isEventButtonUpdateDetailProfile = ref(false);
+const isEventButtonCencelUpdateDetailProfile = ref(false);
 
 const toggleEventInputDetailProfile = async () => {
   isEventInputDetailProfile.value = true;
   isEventSpanDetailProfile.value = false;
   isEventButtonUpdateDetailProfile.value = true;
+  isEventButtonCencelUpdateDetailProfile.value = true;
   isEventButtonEditDetailProfile.value - false;
 };
+
+const toggleEventCencelUpdateProfile = async () => {
+  isEventInputDetailProfile.value = false;
+  isEventSpanDetailProfile.value = true;
+  isEventButtonUpdateDetailProfile.value = false;
+  isEventButtonCencelUpdateDetailProfile.value = false;
+  isEventButtonEditDetailProfile.value - true;
+}
 
 const {
   apiGetAllUserProfile,
@@ -22,9 +37,6 @@ const {
   apiUploadImageUserProfile,
 } = useStoreUserProfile();
 
-const route = useRoute();
-const statusUser = ref(null);
-const userProfile = ref(null);
 
 const formData = reactive({
   userID: "",
@@ -72,17 +84,17 @@ onMounted(async () => {
     formData.nickName = userProfile.value.user_profile.nick_name || "";
     formData.telPhone = userProfile.value.user_profile.tel_phone || "";
     formData.birthDay = userProfile.value.user_profile.birth_day || "";
+    userProfileImage.value = userProfile.value.user_profile.user_profile_image.image_name || "";
+    console.log("image :: ", userProfileImage.value);
   }
   statusUser.value = await apiGetStatusUser();
 
 });
 
-
-
-
 const btnUpdateProfile = async () => {
   await apiUpdateDetailUserProfile(formData);
 };
+
 
 
 </script>
@@ -184,17 +196,18 @@ const btnUpdateProfile = async () => {
           </h2>
           <div class="mb-4 grid gap-4 sm:grid-cols-2 sm:gap-8 lg:gap-16">
             <!-- Card Profile left -->
+            <!-- https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png -->
             <div class="space-y-4">
               <div class="flex space-x-4">
                 <img
                   width="100%"
                   height="100%"
                   class="rounded-full w-96 h-96"
-                  src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png"
+                  src="../../../../LaravelAPI/public/uploads/1736663579.jpg"
                   alt="Helene avatar"
                 />
               </div>
-
+              <FileImageModal />
             </div>
 
             <!-- Start Card Show Detail Profile -->
@@ -394,6 +407,16 @@ const btnUpdateProfile = async () => {
 
               <div class="flex justify-end mt-5">
                 <button
+                  style="margin: 10px;"
+                  v-if="isEventButtonCencelUpdateDetailProfile"
+                  @click="toggleEventCencelUpdateProfile"
+                  class="btn btn-sm btn-outline-danger"
+                  type="button"
+                >
+                  cencel
+                </button>
+                <button
+                  style="margin: 10px;"
                   v-if="isEventButtonUpdateDetailProfile"
                   @click="btnUpdateProfile"
                   type="button"

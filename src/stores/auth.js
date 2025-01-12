@@ -33,9 +33,9 @@ export const useAuthStore = defineStore('authStore', {
                     console.log("api auth store", this.storeUser)
 
                 } else {
+              
                     console.log("No token found.")
                 }
-
             } catch (error) {
                 console.error("Error in apiAuthStore:", error)
             }

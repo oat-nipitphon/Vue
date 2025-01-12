@@ -11,7 +11,7 @@ const userStatusID = ref(null);
 const statusUser = async () => {
   try {
     const response = await axios.get("http://localhost:8000/api/status_user");
-    userStatusID.value = response.data.status;
+    userStatusID.value = response.data.status_user;
   } catch (error) {
     console.error("Error fetching user status:", error);
   }
