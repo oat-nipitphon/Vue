@@ -30,7 +30,7 @@ export const useAuthStore = defineStore('authStore', {
                     } 
 
                     this.storeUser = await response.json()
-                    console.log("api auth store", this.storeUser)
+                    // console.log("api auth store", this.storeUser)
 
                 } else {
               

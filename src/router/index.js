@@ -1,13 +1,33 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import HomeView from '../views/HomeView.vue'
-import LoginView from '@/views/LoginView.vue'
-import RegisterView from '@/views/RegisterView.vue'
-import DashboardView from '@/views/DashboardView.vue'
 import PageNotFound from '@/views/PageNotFound.vue'
-import PostDashboardView from '@/views/Posts/PostDashboardView.vue'
-import UserProfileDashboardView from '@/views/Users/UserProfileDashboardView.vue'
+import HomeView from '../views/HomeView.vue'
+import RegisterView from '@/views/RegisterView.vue'
+import LoginView from '@/views/LoginView.vue'
 import ForgetYourPasswordView from '@/views/ForgetYourPasswordView.vue'
+
+import DashboardView from '@/views/DashboardView.vue'
+
+// --------------------------------- Zone USER -------------------------------------------------
+
+// ******** View users
+import UserProfileDashboardView from '@/views/USER/Users/UserProfileDashboardView.vue'
+
+// ******** View posts
+import PostDashboardView from '@/views/USER/Posts/PostDashboardView.vue'
+import CreatePostNewView from '@/views/USER/Posts/CreatePostNewView.vue'
+
+
+// --------------------------------- Zone ADMIN ------------------------------------------------
+
+// ******* View users
+import Admin_ReportUsersView from '@/views/ADMIN/USER/Admin_ReportUsersView.vue'
+
+// ******* View posts
+import Admin_ReportPostsView from '@/views/ADMIN/Posts/Admin_ReportPostsView.vue'
+
+
+// --------------------------------- Zone Test Code ------------------------------------------------
 import FileImageUpload from '@/components/FileImageUpload.vue'
 
 
@@ -18,20 +38,7 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       component: PageNotFound
     },
-    {
-      path: '/testCodeView',
-      component: () => import('../views/TestCode/TestCodeView.vue')
-    },
-    {
-      path: '/FileImageUpload',
-      name: 'FileImageUpload',
-      component: FileImageUpload
-    },
-    {
-      path: '/cards',
-      name: 'CardsView',
-      component: () => import('../views/CardsView.vue')
-    },
+
     {
       path: '/',
       name: 'HomeView',
@@ -39,48 +46,85 @@ const router = createRouter({
       meta: { guest: true }
     },
     {
-      path: '/register',
+      path: '/RegisterView',
       name: 'RegisterView',
       component: RegisterView,
       meta: { guest: true }
     },
     {
-      path: '/forget_your_password',
-      name: 'ForgetYourPasswordView',
-      component: ForgetYourPasswordView,
-      meta: { guest: true }
-    },
-    {
-      path: '/login',
+      path: '/LoginView',
       name: 'LoginView',
       component: LoginView,
       meta: { guest: true }
     },
     {
-      path: '/dashboard',
+      path: '/ForgetYourPasswordView',
+      name: 'ForgetYourPasswordView',
+      component: ForgetYourPasswordView,
+      meta: { guest: true }
+    },
+
+    {
+      path: '/DashboardView',
       name: 'DashboardView',
       component: DashboardView,
       meta: { auth: true }
     },
+
+    //  ----------------------------- Zone USER Views  ---------------------------------------------
+    
+    // ******* View users
     {
       path: '/user_profile/show/:id',
       name: 'UserProfileDashboardView',
       component: UserProfileDashboardView,
       meta: { auth: true }
     },
+
+    // ******* View posts 
     {
-      path: '/postprofile_dashboard',
-      name: 'PostDashboardView',
-      component: PostDashboardView,
+      path: '/CreatePostNewView',
+      name: 'CreatePostNewView',
+      component: CreatePostNewView,
       meta: { auth: true }
     },
+
+
+    //  ------------------------------ Zone ADMIN Views ---------------------------------------------
+ 
+    // ******* View users
     {
-      path: '/ReportUserProfilesView',
-      name: 'ReportUserProfilesView'
+      path: '/Admin_ReportUsersView',
+      name: 'Admin_ReportUsersView',
+      component: Admin_ReportUsersView,
+      meta: { auth: true }
+    },
+
+    // ******* View posts 
+    {
+      path: '/Admin_ReportPostsView',
+      name: 'Admin_ReportPostsView',
+      component: Admin_ReportPostsView,
+      meta: { auth: true }
+    },
+
+
+
+
+    //  ------------------------------ Zone Test Views ---------------------------------------------
+    {
+      path: '/testCodeView',
+      component: () => import('../views/TestCode/TestCodeView.vue')
     },
     {
-      path: '/ReportPostsView',
-      name: 'ReportPostsView'
+      path: '/cards',
+      name: 'CardsView',
+      component: () => import('../views/CardsView.vue')
+    },
+    {
+      path: '/FileImageUpload',
+      name: 'FileImageUpload',
+      component: FileImageUpload
     },
 
   ],

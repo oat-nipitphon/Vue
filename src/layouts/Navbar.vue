@@ -73,7 +73,7 @@ const closeDropdown = (event) => {
                 <RouterLink
                   v-if="storeUser.user_login.status_id === '1'"
                   class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
-                  :to="{ name: 'ReportPostsView' }"
+                  :to="{ name: 'Admin_ReportPostsView' }"
                 >
                   Posts
                 </RouterLink>
@@ -81,7 +81,7 @@ const closeDropdown = (event) => {
                   v-if="storeUser.user_login.status_id === '1'"
                   class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
                   :to="{
-                    name: 'ReportUserProfilesView',
+                    name: 'Admin_ReportUsersView',
                   }"
                 >
                   Users
@@ -149,7 +149,7 @@ const closeDropdown = (event) => {
                 role="menuitem"
                 tabindex="-1"
                 id="user-menu-item-1"
-                >Settings</a
+                >Your Posts</a
               >
               <a
                 type="button"

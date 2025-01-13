@@ -203,7 +203,7 @@ const btnUpdateProfile = async () => {
                   width="100%"
                   height="100%"
                   class="rounded-full w-96 h-96"
-                  src="../../../../LaravelAPI/public/uploads/1736663579.jpg"
+                  src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png"
                   alt="Helene avatar"
                 />
               </div>
