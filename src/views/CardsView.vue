@@ -30,13 +30,15 @@ const authStore = useAuthStore();
       </a>
     </div>
     <div
-      class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+      class="w-full bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
     >
       <a href="#">
         <img
           class="rounded-t-lg"
-          src="https://scontent.fkkc3-1.fna.fbcdn.net/v/t39.30808-6/461897536_3707658799483986_794048670785055411_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=DSSWt2M27C4Q7kNvgFEQ9s0&_nc_oc=AdhObFZIdl30dzCgy382lXYzrpz9QT_AigSY4olSX6HeF57OzIBMoLXAEAZUbv-My1HLH4pfbzppUByTEqQ4W56z&_nc_zt=23&_nc_ht=scontent.fkkc3-1.fna&_nc_gid=Af1RAUH2xXAVPD6zULjH35v&oh=00_AYDl_8ISZdOSS9PHXGWpPFn9CafqDLPtecSth9LDc8z5LA&oe=6783C271"
+          src="../assets/icon/keyboard.jpg"
           alt=""
+          width="250"
+          height="250"
         />
       </a>
       <div class="p-5">

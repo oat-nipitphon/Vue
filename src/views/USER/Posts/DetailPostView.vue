@@ -1,10 +1,11 @@
 <script setup>
-import { reactive } from 'vue'
+import { ref } from 'vue'
+import { RouterLink } from 'vue-router'
 </script>
 <template>
     <div>
         <h1>
-            Post Profile Dashboard
+            Detail Post View
         </h1>
     </div>
 </template>

@@ -8,18 +8,11 @@ import ForgetYourPasswordView from '@/views/ForgetYourPasswordView.vue'
 
 import DashboardView from '@/views/DashboardView.vue'
 
-// --------------------------------- Zone USER -------------------------------------------------
-
-// ******** View users
-import UserProfileDashboardView from '@/views/USER/Users/UserProfileDashboardView.vue'
-
-// ******** View posts
-import PostDashboardView from '@/views/USER/Posts/PostDashboardView.vue'
-import CreatePostNewView from '@/views/USER/Posts/CreatePostNewView.vue'
+// --------------------------------- Zone Test Code ------------------------------------------------
+import FileImageUpload from '@/components/FileImageUpload.vue'
 
 
 // --------------------------------- Zone ADMIN ------------------------------------------------
-
 // ******* View users
 import Admin_ReportUsersView from '@/views/ADMIN/USER/Admin_ReportUsersView.vue'
 
@@ -27,8 +20,15 @@ import Admin_ReportUsersView from '@/views/ADMIN/USER/Admin_ReportUsersView.vue'
 import Admin_ReportPostsView from '@/views/ADMIN/Posts/Admin_ReportPostsView.vue'
 
 
-// --------------------------------- Zone Test Code ------------------------------------------------
-import FileImageUpload from '@/components/FileImageUpload.vue'
+// --------------------------------- Zone USER -------------------------------------------------
+// ******** View users
+import UserProfileDashboardView from '@/views/USER/Users/UserProfileDashboardView.vue'
+
+// ******** View posts
+import DetailPostView from '@/views/USER/Posts/DetailPostView.vue'
+import CreatePostNewView from '@/views/USER/Posts/CreatePostNewView.vue'
+import EditPostView from '@/views/USER/Posts/EditPostView.vue'
+
 
 
 const router = createRouter({
@@ -83,9 +83,21 @@ const router = createRouter({
 
     // ******* View posts 
     {
+      path: '/DetailPostView',
+      name: 'DetailPostView',
+      component: DetailPostView,
+      meta: { auth: true }
+    },
+    {
       path: '/CreatePostNewView',
       name: 'CreatePostNewView',
       component: CreatePostNewView,
+      meta: { auth: true }
+    },
+    {
+      path: '/posts/:id',
+      name: 'EditPostView',
+      component: EditPostView,
       meta: { auth: true }
     },
 
@@ -117,7 +129,7 @@ const router = createRouter({
       component: () => import('../views/TestCode/TestCodeView.vue')
     },
     {
-      path: '/cards',
+      path: '/CardsView',
       name: 'CardsView',
       component: () => import('../views/CardsView.vue')
     },

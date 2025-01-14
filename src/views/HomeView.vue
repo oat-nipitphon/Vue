@@ -3,13 +3,15 @@ import { ref, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import Swal from 'sweetalert2'
 
-
 </script>
 
 <template>
   <div class="w-full flex justify-center mt-10">
     <img class="icon-laravel" src="../assets/icon/laravel.png" alt="icon-laravel">
     <img class="icon-vue" src="../assets/icon/vue.png" alt="icon-vue">
+  </div>
+  <div class="flex justify-center mt-10">
+    
   </div>
 </template>
 <style>

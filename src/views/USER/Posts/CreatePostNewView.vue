@@ -12,7 +12,7 @@ const formData = reactive({
   title: "",
   content: "",
   refer: "",
-  type: ""
+  typeID: ""
 });
 
 const btnCreatePostNew = async () => {
@@ -37,7 +37,7 @@ onMounted(async () => {
       <div class="mt-2 text-md">
         <label for="Post-Type"> Post Type </label>
         <select class="form-control"
-          v-model="formData.type"
+          v-model="formData.typeID"
         >
           <option v-for="type in postTypes" :key="type.id" :value="type.id">
             {{ type.post_type_name }}

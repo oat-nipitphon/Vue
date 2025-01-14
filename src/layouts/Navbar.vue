@@ -1,13 +1,14 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 import { RouterLink, useRoute } from "vue-router";
-import { useAuthStore } from "@/stores/auth";
 import { storeToRefs } from "pinia";
-
+import { useAuthStore } from "@/stores/auth";
+import { usePostStore } from "@/stores/post";
 const route = useRoute();
 
 const { apiStoreLogout } = useAuthStore();
 const authStore = useAuthStore();
+
 const { storeUser } = storeToRefs(authStore);
 
 const btnLogout = async () => {
@@ -143,14 +144,17 @@ const closeDropdown = (event) => {
               >
                 Your Profile
               </RouterLink>
-              <a
-                href="#"
+              <RouterLink 
+                :to="{
+                  name: 'DetailPostView'
+                }"
                 class="block px-4 py-2 text-sm text-gray-700"
                 role="menuitem"
                 tabindex="-1"
                 id="user-menu-item-1"
-                >Your Posts</a
               >
+                Your Posts
+              </RouterLink>
               <a
                 type="button"
                 @click="btnLogout"

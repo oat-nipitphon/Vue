@@ -54,13 +54,59 @@ export const usePostStore = defineStore('postStore', {
                 const data = await res.json();
                 if (res.ok) {
 
-                    console.log("store function success.", res.data);
-                    this.storePosts = data.post;
+                    console.log("store function success.", data.createPostNew);
+                    this.storePosts = data.createPostNew;
                     this.router.push({ name: 'DashboardView' });
                 }
                 console.log("store function api create post new success");
             } catch (error) {
                 console.error("store function api create post new error", error)
+            }
+        },
+
+        async apiGetPost(post) {
+            try {
+
+                const res = await fetch(`/api/posts/${post}`, {
+                    method: "GET",
+                    headers: {
+                        authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    console.log("store get post response false :", res);
+                }
+                
+                return data.post;
+
+            } catch (error) {
+                console.error("store get post error :", error);
+            }
+        },
+
+        async apiEditPost (formData) {
+            try {
+                const res = await fetch(`/api/posts`, {
+                    method: "PUT",
+                    headers: {
+                        authorization: `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify(formData)
+                })
+                
+                const data = await res.json();
+
+                if (res.ok) {
+                    console.log("store api edit post success.", res.data);
+                } else {
+                    console.log("store api res false.", res.data);
+                }
+
+            } catch (error) {
+                console.error("store api edit post error :", error);
             }
         },
 
