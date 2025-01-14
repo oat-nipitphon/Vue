@@ -89,8 +89,8 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
                     }).then(() => {
 
                         console.log("detail update :: ", data.user)
-                        window.location.reload()
                         this.userProfile = data.user
+                        window.location.reload()
                     })
 
                 } else {

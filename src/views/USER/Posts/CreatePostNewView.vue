@@ -6,7 +6,7 @@ const authAuth = useAuthStore();
 const postTypes = ref(null);
 const { apiGetPostTypes, apiCreatePostNew } = usePostStore();
 const authUserID = ref(null);
-console.log("user id ",  authAuth.storeUser.user_login.id);
+
 const formData = reactive({
   userID: authAuth.storeUser.user_login.id,
   title: "",
@@ -23,7 +23,7 @@ const btnCreatePostNew = async () => {
 onMounted(async () => {
   try {
     postTypes.value = await apiGetPostTypes();
-    console.log("Post types:", postTypes.value);
+    // console.log("Post types:", postTypes.value);
   } catch (error) {
     console.error("Error fetching post types:", error);
   }
