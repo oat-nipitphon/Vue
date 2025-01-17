@@ -10,7 +10,7 @@ import DashboardView from '@/views/DashboardView.vue'
 
 // --------------------------------- Zone Test Code ------------------------------------------------
 import FileImageUpload from '@/components/FileImageUpload.vue'
-
+import CardsView from '@/views/CardsView.vue'
 
 // --------------------------------- Zone ADMIN ------------------------------------------------
 // ******* View users
@@ -131,7 +131,8 @@ const router = createRouter({
     {
       path: '/CardsView',
       name: 'CardsView',
-      component: () => import('../views/CardsView.vue')
+      component: CardsView,
+      meta: { guest: true }
     },
     {
       path: '/FileImageUpload',

@@ -2,36 +2,27 @@ import { defineStore } from 'pinia'
 
 export const useTestCode = defineStore('testCode', {
     state: () => ({
-        storeData: null,
+        dataStore: null,
         errors: {},
     }),
     actions: {
 
-        async apiStoreUploadImage (formData) {
+        async uploadImageStore (data) {
 
             try {
-
-                const payload = new FormData();
-                payload.append("profile_id", formData.profileID);
-                payload.append("file_image", formData.fileImage);
-
-                const response = await fetch(`/api/upload_image`, {
+                const res = await fetch(`/api/test_code/upload_image`, data, {
                     method: "POST",
                     headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                    body: JSON.stringify(formData)
+                        enctype: "multipart/form-data"
+                    }
                 });
 
-                const data = await response.json()
+                const data = await res.json();
 
-                console.log(response);
-
-                if (response.ok) {
-                    console.log("response store false")
-                    // this.storeData = data.message
+                if (res.ok) {
+                    console.log("res ok :: ");
                 } else {
-                    console.log("response store false")
+                    console.log("res false :: ");
                 }
 
             } catch (error) {
