@@ -57,7 +57,7 @@ import axiosAPI from "@/services/axiosAPI.js";
 import Swal from "sweetalert2";
 import { ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
-
+import { useStoreUserProfile } from "@/stores/user.profile";
 export default {
   setup() {
     const file = ref(null);
@@ -73,31 +73,32 @@ export default {
 
     const uploadFile = async () => {
       const formData = new FormData();
-      formData.append("profileID", authStore.storeUser.user_login.user_profile.id );
-      formData.append("file", file.value);
+      formData.append(
+        "profileID",
+        authStore.storeUser.user_login.user_profile.id
+      );
+      formData.append("imageFile", file.value);
 
       try {
         const response = await axiosAPI.post("/api/user_profile/upload_image", formData, {
           headers: {
-            authorization: `Bearer ${localStorage.getItem('token')}`,
             "Content-Type": "multipart/form-data",
           },
         });
 
-        if (!response.ok) {
-          console.log("response false", response.data);
-        }
    
+
+        if (response.error) {
+          console.log("response false");
+        }
+
         Swal.fire({
           title: "Upload Image.",
           content: "upload image profile success.",
           icon: "success",
         }).then(() => {
-          console.log(response.data);
-          Swal.close();
           window.location.reload();
         });
-
       } catch (error) {
         console.error(error);
       }

@@ -44,21 +44,31 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
         async apiUploadImageUserProfile(formData) {
             try {
 
-                const res = await fetch(`/api/upload_image_new`, {
+                const response = await fetch(`/api/user_profile/upload_image`, {
                     method: "POST",
                     headers: {
-                        authorization: `Bearer ${localStorage.getItem('token')}`
+                        authorization: `Bearer ${localStorage.getItem('token')}`,
+                        "Content-Type": "multipart/form-data"
                     },
                     body: formData
                 });
 
-                const data = await res.json();
+                // const data = await response.json();
 
-                if (!res.ok) {
-                    console.error("store data false", data);
+                if (response.ok) {
+
+                    Swal.fire({
+                        title: "Upload Image success.",
+                        icon: "success"
+                    }).then(() => {
+                        Swal.close();
+                        window.location.reload();
+                        return response.userProfileImage;
+                    });
+
+                } else {
+                    console.log("res error", response.error);
                 }
-
-                console.log("store data true", data);
                 
 
             } catch (error) {
