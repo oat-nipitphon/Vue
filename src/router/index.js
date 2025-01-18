@@ -13,10 +13,10 @@ import FileImageUpload from '@/components/FileImageUpload.vue'
 import CardsView from '@/views/CardsView.vue'
 
 // --------------------------------- Zone ADMIN ------------------------------------------------
-// ******* View users
+// ******* View User Profiles
 import Admin_ReportUsersView from '@/views/ADMIN/USER/Admin_ReportUsersView.vue'
 
-// ******* View posts
+// ******* View Posts
 import Admin_ReportPostsView from '@/views/ADMIN/Posts/Admin_ReportPostsView.vue'
 
 
@@ -28,6 +28,7 @@ import UserProfileDashboardView from '@/views/USER/Users/UserProfileDashboardVie
 import DetailPostView from '@/views/USER/Posts/DetailPostView.vue'
 import CreatePostNewView from '@/views/USER/Posts/CreatePostNewView.vue'
 import EditPostView from '@/views/USER/Posts/EditPostView.vue'
+import ReportRecoverPostsView from '@/views/USER/Posts/ReportRecoverPostsView.vue';
 
 
 
@@ -98,6 +99,12 @@ const router = createRouter({
       path: '/posts/:id',
       name: 'EditPostView',
       component: EditPostView,
+      meta: { auth: true }
+    },
+    {
+      path: '/posts/report_recover/:userID',
+      name: 'ReportRecoverPostsView',
+      component: ReportRecoverPostsView,
       meta: { auth: true }
     },
 

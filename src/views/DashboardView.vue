@@ -6,9 +6,11 @@ import { useAuthStore } from "@/stores/auth";
 import { usePostStore } from "@/stores/post";
 
 const authStore = useAuthStore();
-console.log("DashboardView :: ", authStore.storeUser.user_login.id);
 const { apiGetPosts, apiDeletePost } = usePostStore();
 const posts = ref(null);
+const userID = ref(null);
+userID.value = authStore.storeUser.user_login.id;
+console.log("userID value", userID.value);
 
 const btnDeletePost = async (id) => {
   await apiDeletePost(id);
@@ -18,16 +20,31 @@ onMounted(async () => {
   posts.value = await apiGetPosts();
   console.log("posts", posts.value);
 });
+
 </script>
 <template>
   <div class="container">
     <div class="w-full mt-10 flex justify-end">
+
       <RouterLink
         class="btn btn-sm btn-primary mt-10 mr-20"
         :to="{ name: 'CreatePostNewView' }"
       >
         Create post new.
       </RouterLink>
+
+      <RouterLink
+        class="btn btn-sm btn-secondary mt-10 mr-20"
+        :to="{ 
+          name: 'ReportRecoverPostsView', 
+          params: {
+            userID: authStore.storeUser.user_login.id
+          }
+        }"
+      >
+        Recover post
+      </RouterLink>
+
     </div>
     <div class="w-full mt-10" v-if="posts">
       <div v-for="post in posts" :key="post.id">
