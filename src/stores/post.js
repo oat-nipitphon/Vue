@@ -51,6 +51,8 @@ export const usePostStore = defineStore('postStore', {
             }
         },
 
+        
+
         async apiGetPostTypes() {
             try {
                 const res = await fetch(`/api/post_types`, {
@@ -247,6 +249,47 @@ export const usePostStore = defineStore('postStore', {
 
             } catch (error) {
                 console.error("store recover get post error", error);
+            }
+        },
+
+        async apiGetPostPopularity () {
+            try {
+
+                const response = await fetch(`/api/`);
+
+            } catch (error) {
+                console.error("store api get post popularity error ", error);
+            }
+        },
+
+        async apiPostPopLike (userID, postID, popStatusLike) {
+            try {
+
+                const response = await fetch(`/api/posts/populairty/${userID}/${postID}/${popStatusLike}`, {
+                    method: "POST",
+                    headers: {
+                        authorization: `Bearer ${localStorage.getItem('token')}`
+                    },
+                });
+
+                const data = await response.json();
+
+                if (data.ok) {
+                    console.log("store data error :: ", data.postPopLikeArray);
+                } else {
+                    console.log("store data error :: ", data.error);
+                }
+
+            } catch (error) {
+                console.error("store api post pop like error ", error);
+            }
+        },
+
+        async apiPostPopDisLike () {
+            try {
+
+            } catch (error) {
+                console.error("store api post pop dis like error ", error);
             }
         },
 

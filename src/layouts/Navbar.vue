@@ -62,15 +62,10 @@ const closeDropdown = (event) => {
                   aria-current="page"
                   :to="{ name: 'HomeView' }"
                 >
-                  Home
+                   Home page
                 </RouterLink>
-                <RouterLink
-                  v-if="storeUser.user_login.status_id === '1'"
-                  class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
-                  :to="{ name: 'CardsView' }"
-                >
-                  Cards
-                </RouterLink>
+
+                <!-- Navbar Developer OR Admin -->
                 <RouterLink
                   v-if="storeUser.user_login.status_id === '1'"
                   class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
@@ -87,6 +82,8 @@ const closeDropdown = (event) => {
                 >
                   Users
                 </RouterLink>
+                <!-- Navbar Developer OR Admin -->
+
               </div>
             </div>
           </div>
