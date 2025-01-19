@@ -252,44 +252,36 @@ export const usePostStore = defineStore('postStore', {
             }
         },
 
-        async apiPostPopLike(userID, postID, popStatusLike) {
+        async apiPostPopLike (userID, postID, popStatusLike) {
             try {
-                const response = await fetch(`/api/posts/popularity/${userID}/${postID}/${popStatusLike}`, {
+
+                const response = await fetch(`/api/posts/populairty/${userID}/${postID}/${popStatusLike}`, {
                     method: "POST",
                     headers: {
                         authorization: `Bearer ${localStorage.getItem('token')}`
                     },
                 });
+
                 const data = await response.json();
-                if (response.ok) {
-                    console.log("Like updated successfully:", data.postPopLikeArray);
+
+                if (data.ok) {
+                    console.log("store data error :: ", data.postPopLikeArray);
                 } else {
-                    console.error("Error updating like:", data.error);
+                    console.log("store data error :: ", data.error);
                 }
+
             } catch (error) {
-                console.error("API Like Error:", error);
+                console.error("store api post pop like error ", error);
             }
         },
-        
-        async apiPostPopDisLike(userID, postID, popStatusDisLike) {
+
+        async apiPostPopDisLike () {
             try {
-                const response = await fetch(`/api/posts/popularity/${userID}/${postID}/${popStatusDisLike}`, {
-                    method: "POST",
-                    headers: {
-                        authorization: `Bearer ${localStorage.getItem('token')}`
-                    },
-                });
-                const data = await response.json();
-                if (response.ok) {
-                    console.log("Dislike updated successfully:", data.postPopDisLikeArray);
-                } else {
-                    console.error("Error updating dislike:", data.error);
-                }
+
             } catch (error) {
-                console.error("API Dislike Error:", error);
+                console.error("store api post pop dis like error ", error);
             }
         },
-        
 
     }
 })
