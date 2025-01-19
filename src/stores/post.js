@@ -252,16 +252,6 @@ export const usePostStore = defineStore('postStore', {
             }
         },
 
-        async apiGetPostPopularity () {
-            try {
-
-                const response = await fetch(`/api/`);
-
-            } catch (error) {
-                console.error("store api get post popularity error ", error);
-            }
-        },
-
         async apiPostPopLike (userID, postID, popStatusLike) {
             try {
 

@@ -6,31 +6,27 @@ import { useAuthStore } from "@/stores/auth";
 import { usePostStore } from "@/stores/post";
 
 const authStore = useAuthStore();
+const userID = ref(null);
+userID.value = authStore.storeUser.user_login.id;
+
 const { apiGetPosts, apiDeletePost, apiPostPopLike, apiPostPopDisLike } = usePostStore();
 const posts = ref(null);
-const userID = ref(null);
 const postID = ref(null);
 const popStatusLike = ref(null);
 popStatusLike.value = "Like";
 const popStatusDisLike = ref(null);
 popStatusDisLike.value = "DisLike";
-userID.value = authStore.storeUser.user_login.id;
-console.log("userID value", userID.value);
+const postPopStatus = ref(null);
 
 const btnDeletePost = async (id) => {
   await apiDeletePost(id);
 };
 
-const postPopLike = async (userID, postID, popStatusLike) => {
-  console.log("postPopLike ", userID, postID, popStatusLike);
-
-  await apiPostPopLike(userID, postID, popStatusLike);
-
-};
-
 onMounted(async () => {
+
   posts.value = await apiGetPosts();
   console.log("posts", posts.value);
+
 });
 
 </script>
@@ -113,7 +109,7 @@ onMounted(async () => {
 
                  
                   <svg
-                    @click="postPopLike(userID, post.id, popStatusLike)"
+                    @click="apiPostPopLike(userID, post.id, popStatusLike)"
                     class="mb-2 h-8 w-8"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
@@ -149,6 +145,7 @@ onMounted(async () => {
                 <div class="w-50 grid grid-cols-2">
                   <div class="flex justify-center">
                     <svg
+                    @click="apiPostPopDisLike(userID, postID, popStatusDisLike)"
                     class="mb-2 h-8 w-8"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
