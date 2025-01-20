@@ -13,12 +13,8 @@ import FileImageUpload from '@/components/FileImageUpload.vue'
 import CardsView from '@/views/CardsView.vue'
 
 // --------------------------------- Zone ADMIN ------------------------------------------------
-// ******* View User Profiles
-import Admin_ReportUsersView from '@/views/ADMIN/USER/Admin_ReportUsersView.vue'
-
-// ******* View Posts
-import Admin_ReportPostsView from '@/views/ADMIN/Posts/Admin_ReportPostsView.vue'
-
+import AdminManagerPostView from '@/views/ADMIN/Posts/AdminManagerPostView.vue'
+import AdminManagerUserProfileView from '@/views/ADMIN/USER/AdminManagerUserProfileView.vue'
 
 // --------------------------------- Zone USER -------------------------------------------------
 // ******** View users
@@ -111,24 +107,18 @@ const router = createRouter({
 
     //  ------------------------------ Zone ADMIN Views ---------------------------------------------
  
-    // ******* View users
     {
-      path: '/Admin_ReportUsersView',
-      name: 'Admin_ReportUsersView',
-      component: Admin_ReportUsersView,
+      path: '/AdminManagerPostView',
+      name: 'AdminManagerPostView',
+      component: AdminManagerPostView,
       meta: { auth: true }
     },
-
-    // ******* View posts 
     {
-      path: '/Admin_ReportPostsView',
-      name: 'Admin_ReportPostsView',
-      component: Admin_ReportPostsView,
+      path: '/AdminManagerUserProfileView',
+      name: 'AdminManagerUserProfileView',
+      component: AdminManagerUserProfileView,
       meta: { auth: true }
     },
-
-
-
 
     //  ------------------------------ Zone Test Views ---------------------------------------------
     {

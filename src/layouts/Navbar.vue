@@ -66,22 +66,26 @@ const closeDropdown = (event) => {
                 </RouterLink>
 
                 <!-- Navbar Developer OR Admin -->
-                <RouterLink
-                  v-if="storeUser.user_login.status_id === '1'"
-                  class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
-                  :to="{ name: 'Admin_ReportPostsView' }"
+                <div
+                  v-if="storeUser.user_login.status_id === '1' || storeUser.user_login.status_id === '2'"
                 >
-                  Posts
-                </RouterLink>
                 <RouterLink
-                  v-if="storeUser.user_login.status_id === '1'"
-                  class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
-                  :to="{
-                    name: 'Admin_ReportUsersView',
-                  }"
-                >
-                  Users
-                </RouterLink>
+                         class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
+                         :to="{
+                          name: 'AdminManagerPostView'
+                         }"
+                      >
+                        Manager Post
+                      </RouterLink>
+                      <RouterLink
+                         class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
+                         :to="{
+                          name: 'AdminManagerUserProfileView'
+                         }"
+                      >
+                        Manager UserProfile
+                      </RouterLink>
+                </div>
                 <!-- Navbar Developer OR Admin -->
 
               </div>
