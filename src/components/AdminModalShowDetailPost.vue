@@ -7,16 +7,6 @@ const route = useRoute();
 </script>
 <template>
   <div class="container">
-    <!-- Button trigger modal -->
-    <button
-      type="button"
-      class="btn btn-sm btn-size btn-outline-primary"
-      data-bs-toggle="modal"
-      data-bs-target="#exampleModalDetailPost"
-    >
-      Detail
-    </button>
-
     <!-- Modal -->
     <div
       class="modal fade"
