@@ -24,7 +24,7 @@ export const useAdminPostStore = defineStore("adminPostStore", {
                     console.log("admin api get post data false", data.error);
                 } else {
                     console.log("admin api get post data success", data.posts);
-                    this.posts = data.posts;
+                    return data.posts;
                 }
 
             } catch (error) {
