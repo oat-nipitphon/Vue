@@ -3,25 +3,22 @@ import { onMounted, ref, reactive, computed } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { useAdminPostStore } from "@/stores/admin.posts";
-import AdminModalShowDetailPost from "./AdminModalShowDetailPost.vue";
-import AdminModalShowDetailUserProfile from "./AdminModalShowDetailUserProfile.vue";
 
 const authStore = useAuthStore();
 
-const { adminAPIGETposts } = useAdminPostStore();
 // const items = ref(Array.from({ length: 100 }, (_, i) => `Item ${i + 1}`)); // ตัวอย่างข้อมูล 100 รายการ
+const { adminAPIGETposts } = useAdminPostStore();
 
 const posts = ref([]);
+const modalPostID = ref([]);
+const modalPostContent = ref([]);
+
+const modalUserProfileID = ref([]);
+const modalUserProfileFullName = ref([]);
+const modalUserProfileFollowers = ref([]);
+
 const currentPage = ref(1); // กำหนดหน้าเริ่มต้น
 const itemsPerPage = ref(5); // จำนวนข้อมูลต่อหน้า
-
-const onDeletePost = async (postID) => {
-  console.log("on delete post ", postID);
-};
-
-const onBlockPost = async (postID) => {
-  console.log("on block post ".postID);
-};
 
 // คำนวณจำนวนหน้า
 const totalPages = computed(() =>
@@ -47,6 +44,26 @@ const prevPage = () => {
   }
 };
 
+const onDeletePost = async (postID) => {
+  console.log("on delete post ", postID);
+};
+
+const onBlockPost = async (postID) => {
+  console.log("on block post ".postID);
+};
+
+const modalValuePostContent = (post) => {
+  modalPostID.value = post.id;
+  modalPostContent.value = post.post_content;
+};
+
+const modalValueUserProfile = (userProfile) => {
+  console.log("user profile", userProfile);
+  modalUserProfileID.value = userProfile.id;
+  modalUserProfileFullName.value = userProfile.full_name;
+  // modalUserProfileFollowers.value = user_profile.id;
+};
+
 onMounted(async () => {
   posts.value = await adminAPIGETposts();
 });
@@ -55,7 +72,7 @@ onMounted(async () => {
   <div class="w-full">
     <div class="grid grid-cols-2">
       <div class="flex justify-start">
-        <h2 for="AdminManagerPost" class=" text-gray-900 mt-4 mb-4 p-2">
+        <h2 for="AdminManagerPost" class="text-gray-900 mt-4 mb-4 p-2">
           Admin Manager posts.
         </h2>
       </div>
@@ -100,27 +117,49 @@ onMounted(async () => {
             :key="index"
             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
           >
-            <!-- <th
-              scope="row"
-              class="w-4 p-3 text-center m-1 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-            >
-              {{ index + 1 }}
-            </th> -->
             <td class="w-2 py-2 text-center">
               {{ post.id }}
             </td>
             <td class="w-5 p-3 text-start m-1">
-              <!-- trigger modal -->
-              <label
+              <!-- Button Open modal show post content -->
+              <button
+                @click="modalValuePostContent(post)"
+                type="button"
                 class="m-1 text-md"
                 for="TitlePost"
                 data-bs-toggle="modal"
                 data-bs-target="#exampleModalDetailPost"
               >
                 {{ post.post_title }}
-              </label>
-              <!-- Modal post show detail -->
-              <AdminModalShowDetailPost />
+              </button>
+              <!-- Modal post content -->
+              <div
+                class="modal fade"
+                id="exampleModalDetailPost"
+                tabindex="-1"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog modal-dialog modal-xl">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalDetailPost">
+                        Detail Post ID {{ modalPostID }}
+                      </h5>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      {{ modalPostContent }}
+                    </div>
+                    <div class="modal-footer"></div>
+                  </div>
+                </div>
+              </div>
             </td>
             <td class="w-4 p-3 text-center m-1">
               <p
@@ -137,17 +176,55 @@ onMounted(async () => {
               </p>
             </td>
             <td class="w-4 p-3 text-center m-1">
-              <!-- trigger modal -->
-              <label
+              <!-- Button show modal user profile -->
+              <button
+                @click="modalValueUserProfile(post.user.user_profile)"
+                type="button"
                 for="UserProfileName"
                 data-bs-toggle="modal"
                 data-bs-target="#exampleModalUserProfile"
               >
                 {{ post.user.user_profile.full_name }}
-              </label>
-
-              <!-- Modal show user profile create post -->
-              <AdminModalShowDetailUserProfile />
+              </button>
+              <!-- Modal show user profile-->
+              <div
+                class="modal fade"
+                id="exampleModalUserProfile"
+                tabindex="-1"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog modal-dialog modal-xl">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">
+                        User Profile ID {{ modalUserProfileID }}
+                      </h5>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      {{ modalUserProfileFullName }}
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                      >
+                        Close
+                      </button>
+                      <!-- <button type="button" class="btn btn-primary">
+                        Save changes
+                      </button> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
             </td>
             <td class="w-4 p-3 flex justify-items-center">
               <button
@@ -166,6 +243,7 @@ onMounted(async () => {
             </td>
           </tr>
         </tbody>
+
         <tbody v-else>
           <tr>
             <td class="flex justify-center text-lg m-5 text-red-600">
