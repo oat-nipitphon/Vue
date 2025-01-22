@@ -59,7 +59,9 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
 
                     Swal.fire({
                         title: "Upload Image success.",
-                        icon: "success"
+                        icon: "success",
+                        timer: 1200,
+                        timerProgressBar: true,
                     }).then(() => {
                         Swal.close();
                         window.location.reload();
@@ -95,7 +97,9 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
                     Swal.fire({
                         title: "Update Success.",
                         content: "update user profile successfully.",
-                        icon: "success"
+                        icon: "success",
+                        timer: 1200,
+                        timerProgressBar: true,
                     }).then(() => {
 
                         console.log("detail update :: ", data.user)

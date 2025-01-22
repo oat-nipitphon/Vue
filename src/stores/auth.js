@@ -58,6 +58,8 @@ export const useAuthStore = defineStore('authStore', {
                         title: "New Account.",
                         text: "Register account successfully.",
                         icon: "success",
+                        timer: 1200,
+                        timerProgressBar: true,
                     }).then(() => {
                         localStorage.setItem('token', data.token);
                         this.storeUser = data.user;
@@ -86,17 +88,19 @@ export const useAuthStore = defineStore('authStore', {
                     Swal.fire({
                         title: "Login Error !!",
                         text: "You login false check input request align!",
-                        icon: "error"
-                    }).then(() => {
-                        Swal.close
-                    })
+                        icon: "error",
+                        timer: 1200,
+                        timerProgressBar: true,
+                    });
                 } else {
                     const data = await response.json()
                     localStorage.setItem('token', data.token)
                     Swal.fire({
                         title: "Login success.",
                         text: "You login successfully welcome to my world!",
-                        icon: "success"
+                        icon: "success",
+                        timer: 1200,
+                        timerProgressBar: true,
                     }).then(() => {
                         Swal.close
                         this.router.push({ name: 'DashboardView' })
@@ -130,7 +134,9 @@ export const useAuthStore = defineStore('authStore', {
                     Swal.fire({
                         title: "Logout success.",
                         text: "You logout successfully bye bye bye!",
-                        icon: "success"
+                        icon: "success",
+                        timer: 1200,
+                        timerProgressBar: true,
                     }).then(() => {
                         this.router.push({ name: 'HomeView' })
                     })
@@ -191,6 +197,8 @@ export const useAuthStore = defineStore('authStore', {
                                 title: "Login!",
                                 text: "Welcome to the system.",
                                 icon: "success",
+                                timer: 1200,
+                                timerProgressBar: true,
                             }).then(() => {
                                 localStorage.setItem("token", data.token);
                                 this.router.push({ name: "DashboardView" });

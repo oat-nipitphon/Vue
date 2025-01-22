@@ -111,7 +111,9 @@ export const usePostStore = defineStore('postStore', {
                     confirmButtonColor: "#3085d6",
                     cancelButtonColor: "#d33",
                     confirmButtonText: "Confirm delete",
-                    cancelButtonText: "Cancel"
+                    cancelButtonText: "Cancel",
+                    timer: 1500,
+                    timerProgressBar: true,
                 });
 
                 if (res.ok && result.isConfirmed) {
@@ -150,7 +152,9 @@ export const usePostStore = defineStore('postStore', {
                     confirmButtonColor: "#3085d6",
                     cancelButtonColor: "#d33",
                     confirmButtonText: "Confirm delete",
-                    cancelButtonText: "Cancel"
+                    cancelButtonText: "Cancel",
+                    timer: 1500,
+                    timerProgressBar: true,
                 });
 
                 if (res.ok && result.isConfirmed) {
@@ -209,7 +213,9 @@ export const usePostStore = defineStore('postStore', {
                         confirmButtonColor: "#3085d6",
                         cancelButtonColor: "#d33",
                         confirmButtonText: "Confirm Recover.",
-                        cancelButtonText: "Cancel Recover."
+                        cancelButtonText: "Cancel Recover.",
+                        timer: 1500,
+                        timerProgressBar: true,
                     });
 
                     if (result.dismiss === Swal.DismissReason.cancel) {
@@ -233,7 +239,9 @@ export const usePostStore = defineStore('postStore', {
                         Swal.fire({
                             title: "Recover success.",
                             text: "Post recover successfully.",
-                            icon: "success"
+                            icon: "success",
+                            timer: 1200,
+                            timerProgressBar: true,
                         }).then(() => {
                             const router = useRouter();
                             Swal.close();
