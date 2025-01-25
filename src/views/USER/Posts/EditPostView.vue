@@ -1,10 +1,11 @@
 <script setup>
 import { ref, onMounted, reactive } from "vue";
-import { useRoute, RouterLink } from "vue-router";
+import { useRoute, RouterLink, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 import { usePostStore } from "@/stores/post";
 
+const router = useRouter();
 const route = useRoute();
 const authStore = useAuthStore();
 const { apiGetPost, apiGetPostTypes, apiEditPost } = usePostStore();
@@ -51,7 +52,7 @@ const btnEditUpdate = async () => {
 };
 
 const btnCancel = () => {
-  route.push({ name: "DashboardView" });
+  router.push({ name: "DashboardView" });
 };
 </script>
 <template>
@@ -94,12 +95,12 @@ const btnCancel = () => {
           <label for="Post-Refer"> Refer </label>
           <input v-model="formData.refer" type="text" class="form-control" />
         </div>
-        <div class="mt-2 flex justify-end">
+        <div class="mt-10 flex justify-end">
           <button
             @click="btnEditUpdate"
             type="button"
             
-            class="text-back inline-flex justify-end bg-yellow-300 hover:bg-yellow-300 focus:ring-4 
+            class="m-5 text-back inline-flex justify-end bg-yellow-300 hover:bg-yellow-300 focus:ring-4 
                 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-yellow-300 dark:hover:bg-yellow-300 dark:focus:ring-yellow-300"
           >
           <svg
@@ -123,7 +124,7 @@ const btnCancel = () => {
           <button
             @click="btnCancel"
             type="button"
-            class="inline-flex justify-end text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
+            class="m-5 inline-flex justify-end text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
           >
           <svg
                   aria-hidden="true"
@@ -145,3 +146,9 @@ const btnCancel = () => {
     </div>
   </div>
 </template>
+<style>
+.btn-size {
+  width: 50px;
+  height: 40px;
+}
+</style>

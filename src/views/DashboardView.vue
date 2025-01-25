@@ -11,6 +11,7 @@ const { apiGetPosts, apiDeletePost, apiPostPopLike, apiPostPopDisLike } =
   usePostStore();
 const posts = ref([]);
 const selectedPostContent = ref([]);
+const selectedUserProfile = ref([]);
 
 // Compute enriched data for posts
 const enrichedPosts = computed(() =>
@@ -73,6 +74,11 @@ const formatDate = (dateString) => {
   });
 };
 
+const onModalShowUserProfile = (userProfile) => {
+  selectedUserProfile.value = userProfile;
+  console.log(selectedUserProfile.value);
+};
+
 onMounted(async () => {
   posts.value = await apiGetPosts();
   console.log("posts :: ", posts.value);
@@ -82,18 +88,16 @@ onMounted(async () => {
 <template>
   <div class="">
     <div>
-      <div
-        class="mt-5 flex justify-end"
-      >
-      <RouterLink
-        class="btn btn-sm btn-primary mr-10"
-        :to="{
-          name: 'CreatePostNewView'
-        }"
-      >
-        Create post
-      </RouterLink>
-      <!-- <RouterLink
+      <div class="mt-5 flex justify-end">
+        <RouterLink
+          class="btn btn-sm btn-primary mr-10"
+          :to="{
+            name: 'CreatePostNewView',
+          }"
+        >
+          Create post
+        </RouterLink>
+        <!-- <RouterLink
         class="btn btn-sm btn-warning m-3"
         :to="{
           name: 'ReportRecoverPostsView',
@@ -113,60 +117,133 @@ onMounted(async () => {
             <div class="py-8 px-4 mx-auto max-w-4xl lg:py-16">
               <div class="grid grid-cols-2">
                 <div class="grid grid-rows2 m-2 mt-4">
-                  <div class="flex">
-                    <div>
-                      <img
-                      class="rounded-full w-10 h-10"
-                      alt="ImageUserProfile"
-                      src="../assets/icon/keyboard.jpg"
-                    />
+                  <div class="row">
+                    <div class="col-md-2">
+                      <div>
+                        <img
+                          @click="
+                            onModalShowUserProfile(post.user.user_profile)
+                          "
+                          data-bs-toggle="modal"
+                          data-bs-target="#modalShowUserProfileCreatePost"
+                          class="rounded-full w-10 h-10"
+                          alt="ImageUserProfile"
+                          src="../assets/icon/keyboard.jpg"
+                        />
+                        <!-- Modal -->
+                        <div
+                          class="modal fade"
+                          id="modalShowUserProfileCreatePost"
+                          tabindex="-1"
+                          aria-labelledby="exampleModalLabel"
+                          aria-hidden="true"
+                        >
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">
+                                  Profile :: {{ selectedUserProfile.full_name }}
+                                </h5>
+                                <button
+                                  type="button"
+                                  class="btn-close"
+                                  data-bs-dismiss="modal"
+                                  aria-label="Close"
+                                ></button>
+                              </div>
+                              <div class="modal-body">
+                                <div class="flex justify-center text-sm m-auto">
+                                  {{ selectedUserProfile }}
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button>popularity</button>
+                                <button>followers</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div class="text-center">
-                      <label class="ml-3 mt-3 text-md text-gray-900">
+                    <div class="col-md-2">
+                      <div class="row">
                         {{ post.user.username }}
-                      </label>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <label class="m-2 text-sm"> pop </label>
+                        </div>
+                        <div class="col-md-6">
+                          <label class="m-2 text-sm"> followers </label>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div class="w-15 mt-3">
-                   
-                    <label class="text-sm text-gray-900">สร้างโพสต์ วันที่</label>
-                    <label class="text-sm text-gray-900 ml-2">
-                      {{ formatDate(post.created_at) }}
-                    </label>
                   </div>
                 </div>
-                <div class="mt-4 m-2">
-                  <div
-                    v-if="post.user_id === authStore.storeUser.user_login.id"
-                    class="mt-4 text-right"
-                  >
-                    <RouterLink
-                      :to="{ name: 'EditPostView', params: { id: post.id } }"
-                      class="btn btn-sm btn-warning m-2"
+                <div
+                  v-if="post.user_id === authStore.storeUser.user_login.id"
+                  class="flex justify-end mt-4"
+                >
+                  <li class="dropdown">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="35"
+                      height="35"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                      class="bi bi-filter dropdown-toggle"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
                     >
-                      Edit
-                    </RouterLink>
-                    <button
-                      @click="btnDeletePost(post.id)"
-                      class="btn btn-sm btn-outline-danger m-2"
-                    >
-                      Delete
-                    </button>
-                  </div>
+                      <path
+                        d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"
+                      />
+                    </svg>
+                    <ul class="dropdown-menu">
+                      <li>
+                        <RouterLink
+                          :to="{
+                            name: 'EditPostView',
+                            params: { id: post.id },
+                          }"
+                          class="dropdown-item btn btn-sm btn-warning m-2"
+                        >
+                          Edit
+                        </RouterLink>
+                      </li>
+                      <li>
+                        <button
+                          @click="btnDeletePost(post.id)"
+                          class="dropdown-item btn btn-sm btn-outline-danger m-2"
+                        >
+                          Delete
+                        </button>
+                      </li>
+                    </ul>
+                  </li>
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-2">
-                  <h1
+                <div class="col-md-6">
+                  <label
                     class="text-lg font-extrabold text-gray-900 md:text-2xl dark:text-white"
                   >
                     {{ post.post_title }}
-                  </h1>
+                  </label>
+                  <label
+                    class="text-md ml-3 font-extrabold text-gray-900 md:text-1xl dark:text-white"
+                  >
+                    ( {{ post.post_type.post_type_name }} )
+                  </label>
                 </div>
+                <div class="col-md-2"></div>
               </div>
-              <div class="ibox-post-type">
+              <div class="flex justify-start m-auto">
                 <p class="font-semibold text-gray-900 dark:text-white">
-                 (  {{ post.post_type.post_type_name }} )
+                  <label class="text-sm text-gray-900">สร้างโพสต์ วันที่</label>
+                  <label class="text-sm text-gray-900 ml-2">
+                    {{ formatDate(post.created_at) }}
+                  </label>
                 </p>
               </div>
               <div class="ibox-post-content">

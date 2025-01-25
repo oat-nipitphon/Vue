@@ -26,6 +26,27 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
             }
         },
 
+        async apiGETUserProfile (userProfile) {
+            try {
+                const res = await fetch(`/api/user_profiles/${userProfile}`, {
+                    method: "GET",
+                    headers: {
+                        authorization: `Bearer ${localStorage.getItem('token')}`
+                    },
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    return data.userProfile;
+                } else {
+                    console.log("store get user profile repsonse error");
+                }
+
+            } catch (error) {
+                console.error("store api get user profile error ", error);
+            }
+        },
+
         async apiGetStatusUser() {
             try {
                 const response = await fetch(`/api/status_user`, {
@@ -41,6 +62,7 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
             }
         },
 
+        // Upload image user profile
         async apiUploadImageUserProfile(formData) {
             try {
 
