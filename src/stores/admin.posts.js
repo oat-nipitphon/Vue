@@ -13,7 +13,7 @@ export const useAdminPostStore = defineStore("adminPostStore", {
 
             try {
 
-                const res = await fetch(`/api/admin/posts/api_resource`, {
+                const res = await fetch(`/api/admin/posts/manager`, {
                     method: "GET",
                     headers: {
                         authorization: `Bearer ${localStorage.getItem('token')}`

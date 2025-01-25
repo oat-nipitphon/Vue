@@ -11,7 +11,7 @@ export const useAdminUserProfileStore = defineStore("adminUserProfileStore", {
 
         async adminAPIGETuserProfile () {
             try {
-                const res = await fetch(`/api/admin/userProfiles/api_resource`, {
+                const res = await fetch(`/api/admin/userProfiles/manager`, {
                     method: "GET",
                     headers: {
                         authorization: `Bearer ${localStorage.getItem('token')}`

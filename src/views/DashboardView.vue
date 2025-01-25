@@ -99,15 +99,15 @@ onMounted(async () => {
                     />
                     </div>
                     <div class="text-center">
-                      <label class="ml-3 mt-3">
+                      <label class="ml-3 mt-3 text-md text-gray-900">
                         {{ post.user.username }}
                       </label>
                     </div>
                   </div>
                   <div class="w-15 mt-3">
                    
-                    <label for="">สร้างโพสต์ วันที่</label>
-                    <label for="">
+                    <label class="text-sm text-gray-900">สร้างโพสต์ วันที่</label>
+                    <label class="text-sm text-gray-900 ml-2">
                       {{ formatDate(post.created_at) }}
                     </label>
                   </div>
@@ -132,16 +132,18 @@ onMounted(async () => {
                   </div>
                 </div>
               </div>
-              <div class="ibox-post-title">
-                <h1
-                  class="mb-4 text-lg font-extrabold text-gray-900 md:text-2xl dark:text-white"
-                >
-                  {{ post.post_title }}
-                </h1>
+              <div class="row">
+                <div class="col-md-2">
+                  <h1
+                    class="text-lg font-extrabold text-gray-900 md:text-2xl dark:text-white"
+                  >
+                    {{ post.post_title }}
+                  </h1>
+                </div>
               </div>
               <div class="ibox-post-type">
-                <p class="mb-2 font-semibold text-gray-900 dark:text-white">
-                  {{ post.post_type.post_type_name }}
+                <p class="font-semibold text-gray-900 dark:text-white">
+                 (  {{ post.post_type.post_type_name }} )
                 </p>
               </div>
               <div class="ibox-post-content">

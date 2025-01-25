@@ -147,14 +147,17 @@ const closeDropdown = (event) => {
               </RouterLink>
               <RouterLink 
                 :to="{
-                  name: 'DetailPostView'
+                  name: 'ReportRecoverPostsView',
+                  params: {
+                    userID: storeUser.user_login.id
+                  }
                 }"
                 class="block px-4 py-2 text-sm text-gray-700"
                 role="menuitem"
                 tabindex="-1"
                 id="user-menu-item-1"
               >
-                Your Posts
+                Recover posts
               </RouterLink>
               <a
                 type="button"
