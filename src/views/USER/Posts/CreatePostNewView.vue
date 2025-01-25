@@ -1,8 +1,10 @@
 <script setup>
 import { ref, onMounted, reactive } from "vue";
+import { useRouter } from "vue-router";
 import { useAuthStore } from '@/stores/auth'
 import { usePostStore } from "@/stores/post";
 const authAuth = useAuthStore();
+const router = useRouter();
 const postTypes = ref(null);
 const { apiGetPostTypes, apiCreatePostNew } = usePostStore();
 const authUserID = ref(null);
@@ -19,6 +21,9 @@ const btnCreatePostNew = async () => {
   await apiCreatePostNew(formData)
 }
 
+const btnCancel = () => {
+  router.push( { name: 'DashboardView' } );
+};
 
 onMounted(async () => {
   try {
@@ -62,7 +67,7 @@ onMounted(async () => {
       </div>
       <div class="mt-2 flex justify-end">
         <button @click="btnCreatePostNew" type="submit" class="btn btn-sm btn-primary m-2">New Post</button>
-        <button type="submit" class="btn btn-sm btn-outline-danger m-2">Cancel</button>
+        <button @click="btnCancel" type="submit" class="btn btn-sm btn-outline-danger m-2">Cancel</button>
       </div>
     </div>
   </div>

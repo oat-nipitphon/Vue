@@ -82,6 +82,29 @@ onMounted(async () => {
 <template>
   <div class="">
     <div>
+      <div
+        class="mt-10 flex justify-center"
+      >
+      <RouterLink
+        class="btn btn-sm btn-primary m-3"
+        :to="{
+          name: 'CreatePostNewView'
+        }"
+      >
+        Create post
+      </RouterLink>
+      <RouterLink
+        class="btn btn-sm btn-warning m-3"
+        :to="{
+          name: 'ReportRecoverPostsView',
+          params: {
+            userID: authStore.storeUser.user_login.id
+          },
+        }"
+      >
+        Recover
+      </RouterLink>
+      </div>
       <!-- ... -->
       <div class="mt-10" v-if="enrichedPosts.length">
         <div v-for="post in enrichedPosts" :key="post.id" class="post">
@@ -283,3 +306,9 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+<style>
+.btn-edit__size {
+  width: 50px;
+  height: 45px;
+}
+</style>

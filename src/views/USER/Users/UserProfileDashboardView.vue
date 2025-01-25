@@ -123,7 +123,7 @@ const btnUpdateProfile = async () => {
 
               <!-- Start Card Show Detail Profile -->
               <div class="space-y-4" v-if="isEventSpanDetailProfile">
-                <div class="font-semibold text-gray-500 dark:text-white">
+                <div class="font-semibold text-gray-500 dark:text-white text-sm">
                   <div class="font-semibold text-gray-900 dark:text-white">
                     Status account
                   </div>
@@ -131,7 +131,7 @@ const btnUpdateProfile = async () => {
                     {{ userProfile.status_user.status_name }}
                   </div>
                 </div>
-                <div class="font-semibold text-gray-500 dark:text-white">
+                <div class="font-semibold text-gray-500 dark:text-white text-sm">
                   <div class="font-semibold text-gray-900 dark:text-white">
                     Full name
                   </div>
@@ -140,7 +140,7 @@ const btnUpdateProfile = async () => {
                     {{ userProfile.user_profile.full_name }}
                   </div>
                 </div>
-                <div class="font-semibold text-gray-500 dark:text-white">
+                <div class="font-semibold text-gray-500 dark:text-white text-sm">
                   <div class="font-semibold text-gray-900 dark:text-white">
                     Nick Name
                   </div>
@@ -148,7 +148,7 @@ const btnUpdateProfile = async () => {
                     {{ userProfile.user_profile.nick_name }}
                   </div>
                 </div>
-                <div class="font-semibold text-gray-500 dark:text-white">
+                <div class="font-semibold text-gray-500 dark:text-white text-sm">
                   <div class="font-semibold text-gray-900 dark:text-white">
                     Email Address
                   </div>
@@ -156,7 +156,7 @@ const btnUpdateProfile = async () => {
                     {{ userProfile.email }}
                   </div>
                 </div>
-                <div class="font-semibold text-gray-500 dark:text-white">
+                <div class="font-semibold text-gray-500 dark:text-white text-sm">
                   <div class="font-semibold text-gray-900 dark:text-white">
                     Tel phone
                   </div>
@@ -164,7 +164,7 @@ const btnUpdateProfile = async () => {
                     {{ userProfile.user_profile.tel_phone }}
                   </div>
                 </div>
-                <div class="font-semibold text-gray-500 dark:text-white">
+                <div class="font-semibold text-gray-500 dark:text-white text-sm">
                   <div class="font-semibold text-gray-900 dark:text-white">
                     Birth day
                   </div>
@@ -189,7 +189,7 @@ const btnUpdateProfile = async () => {
               <div class="space-y-4" v-if="isEventInputDetailProfile">
                 <!-- <form @submit.prevent="apiUpdateDetailUserProfile(formData)" > -->
 
-                <div class="font-semibold text-gray-500 dark:text-white">
+                <div class="font-semibold text-gray-500 dark:text-white text-sm">
                   <!-- Status Dropdown -->
                   <div v-if="statusUser">
                     <label
@@ -199,10 +199,10 @@ const btnUpdateProfile = async () => {
                       Status account
                     </label>
                     <select
-                      v-if="userProfile.status_id === '1'"
+                      v-if="userProfile.status_id === '1' || userProfile.status_id === '2'"
                       id="status"
                       v-model="formData.statusID"
-                      class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
+                      class="font-semibold text-gray-500 dark:text-white text-sm mt-2 form-control"
                     >
                       <option value="null" disabled>select status</option>
                       <option
@@ -223,7 +223,7 @@ const btnUpdateProfile = async () => {
                   </div>
                 </div>
 
-                <div class="font-semibold text-gray-500 dark:text-white">
+                <div class="font-semibold text-gray-500 dark:text-white text-sm">
                   <label
                     for="titleName"
                     class="block text-sm font-medium text-gray-900"
@@ -231,9 +231,9 @@ const btnUpdateProfile = async () => {
                     Title name
                   </label>
                   <div
-                    class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
+                    class="font-semibold text-gray-500 dark:text-white text-sm mt-2"
                   >
-                    <select v-model="formData.titleName">
+                    <select v-model="formData.titleName" class="form-control">
                       <option value="mr">Mr.</option>
                       <option value="miss">Miss.</option>
                       <option value="mrs">Mrs.</option>
@@ -241,7 +241,7 @@ const btnUpdateProfile = async () => {
                   </div>
                 </div>
 
-                <div class="font-semibold text-gray-500 dark:text-white">
+                <div class="font-semibold text-gray-500 dark:text-white text-sm">
                   <label
                     for="fullName"
                     class="block text-sm font-medium text-gray-900"
@@ -253,12 +253,12 @@ const btnUpdateProfile = async () => {
                       v-model="formData.fullName"
                       type="text"
                       id="fullName"
-                      class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
+                      class="font-semibold text-gray-500 dark:text-white text-sm mt-2 form-control"
                     />
                   </div>
                 </div>
 
-                <div class="font-semibold text-gray-500 dark:text-white">
+                <div class="font-semibold text-gray-500 dark:text-white text-sm">
                   <label
                     for="nickName"
                     class="block text-sm font-medium text-gray-900"
@@ -267,14 +267,14 @@ const btnUpdateProfile = async () => {
                   </label>
                   <div class="text-gray-500 dark:text-gray-400">
                     <input
-                      class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
+                      class="font-semibold text-gray-500 dark:text-white text-sm mt-2 form-control"
                       type="text"
                       v-model="formData.nickName"
                     />
                   </div>
                 </div>
 
-                <div class="font-semibold text-gray-500 dark:text-white">
+                <div class="font-semibold text-gray-500 dark:text-white text-sm">
                   <label class="block text-sm font-medium text-gray-900">
                     Email Address
                   </label>
@@ -283,25 +283,25 @@ const btnUpdateProfile = async () => {
                       v-model="formData.email"
                       type="email"
                       id="email"
-                      class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
+                      class="font-semibold text-gray-500 dark:text-white text-sm mt-2 form-control"
                     />
                   </div>
                 </div>
 
-                <div class="font-semibold text-gray-500 dark:text-white">
+                <div class="font-semibold text-gray-500 dark:text-white text-sm">
                   <label class="block text-sm font-medium text-gray-900">
                     Phone Number
                   </label>
                   <div class="text-gray-500 dark:text-gray-400">
                     <input
                       type="text"
-                      class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
+                      class="font-semibold text-gray-500 dark:text-white text-sm mt-2 form-control"
                       v-model="formData.telPhone"
                     />
                   </div>
                 </div>
 
-                <div class="font-semibold text-gray-500 dark:text-white">
+                <div class="font-semibold text-gray-500 dark:text-white text-sm">
                   <div>
                     <label class="block text-sm font-medium text-gray-900">
                       Birth day
@@ -310,7 +310,7 @@ const btnUpdateProfile = async () => {
                   <div class="text-gray-500 dark:text-gray-400">
                     <input
                       type="date"
-                      class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
+                      class="font-semibold text-gray-500 dark:text-white text-sm mt-2 form-control"
                       v-model="formData.birthDay"
                     />
                   </div>
@@ -318,69 +318,27 @@ const btnUpdateProfile = async () => {
 
                 <div class="flex justify-end mt-5">
                   <button
-                    style="margin: 10px"
-                    v-if="isEventButtonCencelUpdateDetailProfile"
-                    @click="toggleEventCencelUpdateProfile"
-                    class="btn btn-sm btn-outline-danger"
-                    type="button"
-                  >
-                    cencel
-                  </button>
-                  <button
-                    style="margin: 10px"
                     v-if="isEventButtonUpdateDetailProfile"
                     @click="btnUpdateProfile"
                     type="button"
-                    class="btn btn-primary btn-sm"
+                    class="btn btn-sm btn-primary btn-size__form"
                   >
-                    <i class="update"></i> update
+                     Update
+                  </button>
+                  <button
+                    v-if="isEventButtonCencelUpdateDetailProfile"
+                    @click="toggleEventCencelUpdateProfile"
+                    class="btn btn-sm btn-danger btn-size__form"
+                    type="button"
+                  >
+                    Cencel
                   </button>
                 </div>
-
-                <!-- </form> -->
               </div>
-              <!-- Start Card Edit Detail Profile -->
             </div>
 
-            <button
-              type="button"
-              data-modal-target="accountInformationModal2"
-              data-modal-toggle="accountInformationModal2"
-              class="inline-flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 sm:w-auto"
-            >
-              <svg
-                class="-ms-0.5 me-1.5 h-4 w-4"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"
-                ></path>
-              </svg>
-              Edit your data
-            </button>
           </div>
         </div>
-        <!-- ******************** End Card User Profile ******************** -->
-
-        <!-- Card Followers -->
-        <div class="w-full">
-          <CardFollowers />
-        </div>
-
-        <div class="grid grid-cols-2">
-          <div class="">1</div>
-          <div class="">2</div>
-        </div>
-
       </div>
     </section>
   </div>
@@ -388,5 +346,10 @@ const btnUpdateProfile = async () => {
     <h1>Account false.</h1>
   </div>
 </template>
-
-
+<style>
+.btn-size__form {
+  width: 70px;
+  height: 30px;
+  margin: 2px;
+}
+</style>
