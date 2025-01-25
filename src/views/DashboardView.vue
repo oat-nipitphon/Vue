@@ -83,17 +83,17 @@ onMounted(async () => {
   <div class="">
     <div>
       <div
-        class="mt-10 flex justify-center"
+        class="mt-5 flex justify-end"
       >
       <RouterLink
-        class="btn btn-sm btn-primary m-3"
+        class="btn btn-sm btn-primary mr-10"
         :to="{
           name: 'CreatePostNewView'
         }"
       >
         Create post
       </RouterLink>
-      <RouterLink
+      <!-- <RouterLink
         class="btn btn-sm btn-warning m-3"
         :to="{
           name: 'ReportRecoverPostsView',
@@ -103,14 +103,14 @@ onMounted(async () => {
         }"
       >
         Recover
-      </RouterLink>
+      </RouterLink> -->
       </div>
       <!-- ... -->
-      <div class="mt-10" v-if="enrichedPosts.length">
+      <div class="w-full" v-if="enrichedPosts.length">
         <div v-for="post in enrichedPosts" :key="post.id" class="post">
           <section class="bg-white dark:bg-gray-900">
             <!-- Post Report Details -->
-            <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
+            <div class="py-8 px-4 mx-auto max-w-4xl lg:py-16">
               <div class="grid grid-cols-2">
                 <div class="grid grid-rows2 m-2 mt-4">
                   <div class="flex">
