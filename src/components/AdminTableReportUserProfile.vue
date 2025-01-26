@@ -93,7 +93,7 @@ onMounted(async () => {
             <td class="w-2 py-2 text-center">
               <!-- userProfile.user_profile_image -->
               <img
-                src="" 
+                src="../assets/icon/keyboard.jpg" 
                 class="rounded-full w-5 h-5 m-2 p-2" 
                 alt="UserProfileImage"
               >

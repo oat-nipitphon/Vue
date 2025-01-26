@@ -35,7 +35,7 @@ export default {
       formData.append("file", file.value);
 
       try {
-        const response = await axiosAPI.post("/api/upload_image", formData, {
+        const response = await axiosAPI.post("/api/imageFileUploads", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

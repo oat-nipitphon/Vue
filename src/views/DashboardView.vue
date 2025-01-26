@@ -88,6 +88,9 @@ onMounted(async () => {
 <template>
   <div class="">
     <div>
+      <!-- <FileImageUpload /> -->
+    </div>
+    <div>
       <div class="mt-5 flex justify-end">
         <RouterLink
           class="btn btn-sm btn-primary mr-10"
@@ -111,7 +114,7 @@ onMounted(async () => {
       </div>
       <!-- ... -->
       <div class="w-full" v-if="enrichedPosts.length">
-        <div v-for="post in enrichedPosts" :key="post.id" class="post">
+        <div v-for="(post, index) in enrichedPosts" :key="index" class="post">
           <section class="bg-white dark:bg-gray-900">
             <!-- Post Report Details -->
             <div class="py-8 px-4 mx-auto max-w-4xl lg:py-16">
@@ -223,33 +226,43 @@ onMounted(async () => {
                   </li>
                 </div>
               </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <label
-                    class="text-lg font-extrabold text-gray-900 md:text-2xl dark:text-white"
-                  >
-                    {{ post.post_title }}
-                  </label>
-                  <label
-                    class="text-md ml-3 font-extrabold text-gray-900 md:text-1xl dark:text-white"
-                  >
-                    ( {{ post.post_type.post_type_name }} )
-                  </label>
+              <div class="post-item">
+                <div class="row">
+                  <div class="col-md-6">
+                    <label class="text-lg font-extrabold text-gray-900 dark:text-white">
+                      {{ post.post_title }}
+                    </label>
+                    <label class="text-md ml-3 font-extrabold text-gray-900 dark:text-white">
+                      ( {{ post.post_type.post_type_name }} )
+                    </label>
+                  </div>
+                  <div class="col-md-6 flex justify-center" style="background-color:aqua;">
+                    <img
+                      :src="
+                        '/LaravelAPI/storage/app/public/images/'+
+                        post.post_image.length > 0 ? post.post_image[0].image_name : ''
+                        ||
+                        'https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg'
+                      "
+                      class="w-150 h-20 m-auto"
+                      alt="Post Image"
+                      
+                    >
+                  </div>
                 </div>
-                <div class="col-md-2"></div>
-              </div>
-              <div class="flex justify-start m-auto">
-                <p class="font-semibold text-gray-900 dark:text-white">
-                  <label class="text-sm text-gray-900">สร้างโพสต์ วันที่</label>
-                  <label class="text-sm text-gray-900 ml-2">
-                    {{ formatDate(post.created_at) }}
-                  </label>
-                </p>
-              </div>
-              <div class="ibox-post-content">
-                <p class="mb-4 text-gray-500 dark:text-gray-400 line-clamp-5">
-                  {{ post.post_content }}
-                </p>
+                <div class="flex justify-start m-auto">
+                  <p class="font-semibold text-gray-900 dark:text-white">
+                    <label class="text-sm text-gray-900">สร้างโพสต์ วันที่</label>
+                    <label class="text-sm text-gray-900 ml-2">
+                      {{ formatDate(post.created_at) }}
+                    </label>
+                  </p>
+                </div>
+                <div class="ibox-post-content">
+                  <p class="mb-4 text-gray-500 dark:text-gray-400 line-clamp-5">
+                    {{ post.post_content }}
+                  </p>
+                </div>
               </div>
               <div class="ibox-button-more">
                 <!-- Button trigger modal show post contents -->

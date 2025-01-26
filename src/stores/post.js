@@ -17,8 +17,8 @@ export const usePostStore = defineStore('postStore', {
                         authorization: `Bearer ${localStorage.getItem('token')}`
                     }
                 })
-                const data = await res.json()
-                if (data.ok) {
+                if (res.ok) {
+                    const data = await res.json()
                     return data.posts;
                 } else {
                     console.log("store api get posts false", data.error);
@@ -58,8 +58,8 @@ export const usePostStore = defineStore('postStore', {
                 })
 
                 const data = await res.json()
-
-                if (data.ok) {
+                
+                if (res.ok) {
                     return data.post_types;
                 } else {
                     console.log("data post type false", data.error)
