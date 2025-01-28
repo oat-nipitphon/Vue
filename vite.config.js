@@ -24,7 +24,7 @@ export default defineConfig({
           Accept: "application/json",
           "Content-Type": "application/json",
         }
-      }
+      },
     }
   }
 })

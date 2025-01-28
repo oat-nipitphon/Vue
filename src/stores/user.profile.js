@@ -9,17 +9,17 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
 
         async apiGetAllUserProfile(userProfile) {
             try {
-                const response = await fetch(`/api/user_profiles/${userProfile}`, {
+                const res = await fetch(`/api/user_profiles/${userProfile}`, {
                     method: "GET",
                     headers: {
                         authorization: `Bearer ${localStorage.getItem('token')}`
                     }
                 })
-                const data = await response.json()
-                if (response.ok) {
+                const data = await res.json()
+                if (res.ok) {
                     return data.userProfile
                 } else {
-                    console.log("store user profile response false.", response)
+                    console.log("store user profile res false.", res)
                 }
             } catch (error) {
                 console.error("store user profile error api get all :: ", error)
@@ -49,13 +49,13 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
 
         async apiGetStatusUser() {
             try {
-                const response = await fetch(`/api/status_user`, {
+                const res = await fetch(`/api/status_user`, {
                     method: "GET",
                 });
-                if (!response.ok) {
+                if (!res.ok) {
                     statusUser.value = null;
                 }
-                const data = await response.json();
+                const data = await res.json();
                 return data.status_user;
             } catch (error) {
                 console.error("function status user error", error);
@@ -66,7 +66,7 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
         async apiUploadImageUserProfile(formData) {
             try {
 
-                const response = await fetch(`/api/user_profile/upload_image`, {
+                const res = await fetch(`/api/user_profile/upload_image`, {
                     method: "POST",
                     headers: {
                         authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -75,9 +75,9 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
                     body: formData
                 });
 
-                // const data = await response.json();
+                // const data = await res.json();
 
-                if (response.ok) {
+                if (res.ok) {
 
                     Swal.fire({
                         title: "Upload Image success.",
@@ -87,11 +87,11 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
                     }).then(() => {
                         Swal.close();
                         window.location.reload();
-                        return response.userProfileImage;
+                        return res.userProfileImage;
                     });
 
                 } else {
-                    console.log("res error", response.error);
+                    console.log("res error", res.error);
                 }
                 
 
@@ -103,7 +103,7 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
         async apiUpdateDetailUserProfile(formData) {
             try {
 
-                const response = await fetch(`/api/user_profiles`, {
+                const res = await fetch(`/api/user_profiles`, {
                     method: "POST",
                     headers: {
                         authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -111,9 +111,9 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
                     body: JSON.stringify(formData)
                 })
 
-                if (response.ok) {
+                if (res.ok) {
 
-                    const data = await response.json()
+                    const data = await res.json()
 
 
                     Swal.fire({
@@ -130,7 +130,7 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
                     })
 
                 } else {
-                    console.log("api store response false :: ", response)
+                    console.log("api store res false :: ", res)
                 }
 
             } catch (error) {

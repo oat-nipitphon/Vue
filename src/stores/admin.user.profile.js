@@ -20,7 +20,7 @@ export const useAdminUserProfileStore = defineStore("adminUserProfileStore", {
 
                 const data = await res.json();
 
-                if (!data.error) {
+                if (res.ok) {
                     return data.userProfiles;
                 } else {
                     console.log("store get user profile false :: ", data.error);

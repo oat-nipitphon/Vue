@@ -58,7 +58,7 @@ const modalValuePostContent = (content) => {
 
 const btnDeletePost = async (id) => {
   await apiDeletePost(id);
-  posts.value = posts.value.filter((post) => post.id !== id); // Remove from UI
+  // posts.value = posts.value.filter((post) => post.id !== id); // Remove from UI
 };
 
 const formatDate = (dateString) => {
@@ -238,12 +238,7 @@ onMounted(async () => {
                   </div>
                   <div class="col-md-6 flex justify-center" style="background-color:aqua;">
                     <img
-                      :src="
-                        '/LaravelAPI/storage/app/public/images/'+
-                        post.post_image.length > 0 ? post.post_image[0].image_name : ''
-                        ||
-                        'https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg'
-                      "
+                    src="../../../LaravelAPI/public/storage/images/key.jpg"
                       class="w-150 h-20 m-auto"
                       alt="Post Image"
                       

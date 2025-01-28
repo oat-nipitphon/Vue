@@ -17,24 +17,22 @@ export const useAuthStore = defineStore('authStore', {
 
                 if (token) {
 
-                    const response = await fetch(`/api/user`, {
+                    const res = await fetch(`/api/user`, {
                         method: "GET",
                         headers: {
                             authorization: `Bearer ${token}`,
                         },
                     });
 
-                    if (!response.ok) {
-                        console.error("Failed to fetch user data. Status:", response.status);
+                    if (res.ok) {
+                        this.storeUser = await res.json()
+                    } else {
+                        console.error("Failed to fetch user data. Status:", res.status);
                         return;
-                    } 
-
-                    this.storeUser = await response.json()
-                    // console.log("api auth store", this.storeUser)
+                    }
 
                 } else {
-              
-                    console.log("No token found.")
+                    // console.log("No token found.")
                 }
             } catch (error) {
                 console.error("Error in apiAuthStore:", error)
@@ -45,14 +43,15 @@ export const useAuthStore = defineStore('authStore', {
         async apiStoreRegister(apiRouter, formData) {
 
             try {
-                const response = await fetch(`/api/${apiRouter}`, {
+                const res = await fetch(`/api/${apiRouter}`, {
                     method: "POST",
                     body: JSON.stringify(formData),
                 });
 
-                if (response.ok) {
+                const data = await res.json();
+                
+                if (res.ok) {
 
-                    const data = await response.json();
                     
                     Swal.fire({
                         title: "New Account.",
@@ -67,7 +66,7 @@ export const useAuthStore = defineStore('authStore', {
                     });
 
                 } else {
-                    console.error("Registration failed:", response);
+                    console.error("Registration failed:", data.error);
                 }
 
             } catch (error) {
@@ -79,12 +78,12 @@ export const useAuthStore = defineStore('authStore', {
         async apiStoreLogin(apiRouter, formData) {
             try {
 
-                const response = await fetch(`/api/${apiRouter}`, {
+                const res = await fetch(`/api/${apiRouter}`, {
                     method: "POST",
                     body: JSON.stringify(formData)
                 })
 
-                if (!response.ok) {
+                if (!res.ok) {
                     Swal.fire({
                         title: "Login Error !!",
                         text: "You login false check input request align!",
@@ -93,7 +92,7 @@ export const useAuthStore = defineStore('authStore', {
                         timerProgressBar: true,
                     });
                 } else {
-                    const data = await response.json()
+                    const data = await res.json()
                     localStorage.setItem('token', data.token)
                     Swal.fire({
                         title: "Login success.",
@@ -121,13 +120,13 @@ export const useAuthStore = defineStore('authStore', {
                     console.error('token false.')
                     return
                 }
-                const response = await fetch(`/api/logout`, {
+                const res = await fetch(`/api/logout`, {
                     method: "POST",
                     headers: {
                         authorization: `Bearer ${localStorage.getItem('token')}`
                     }
                 })
-                if (response.ok) {
+                if (res.ok) {
                     this.storeUser = null
                     this.errors = {}
                     localStorage.removeItem('token')
@@ -141,7 +140,7 @@ export const useAuthStore = defineStore('authStore', {
                         this.router.push({ name: 'HomeView' })
                     })
                 } else {
-                    console.log("api store logout response false :: ", response)
+                    console.log("api store logout res false :: ", res)
                 }
 
             } catch (error) {
@@ -152,17 +151,17 @@ export const useAuthStore = defineStore('authStore', {
         // get all user data
         async apiStoreUsers() {
             try {
-                const response = await fetch(`/api/users_test_api`, {
+                const res = await fetch(`/api/users_test_api`, {
                     method: "GET",
                     headers: {
                         authorization: `Bearer ${localStorage.getItem('token')}`
                     }
                 })
-                if (response.ok) {
-                    const data = await response.json()
+                if (res.ok) {
+                    const data = await res.json()
                     this.storeUser = data.users
                 } else {
-                    console.log("api store users response false ", response)
+                    console.log("api store users res false ", res)
                 }
             } catch (error) {
                 console.error("api store function error :", error)
@@ -172,13 +171,13 @@ export const useAuthStore = defineStore('authStore', {
         // forget your password
         async apiStoreResetPassword (formData) {
             try {
-                const response = await fetch(`/api/forget_your_password`, {
+                const res = await fetch(`/api/forget_your_password`, {
                     method: "POST",
                     body: JSON.stringify(formData)
                 })
-                const data = await response.json()
+                const data = await res.json()
 
-                if (response.ok) {
+                if (res.ok) {
 
                     Swal.fire({
 
@@ -221,7 +220,7 @@ export const useAuthStore = defineStore('authStore', {
                         text: data.message || "Something went wrong. Please try again.",
                         icon: "error",
                     });
-                    console.log("API response error:", response);
+                    console.log("API res error:", res);
                 }
 
             } catch (error) {

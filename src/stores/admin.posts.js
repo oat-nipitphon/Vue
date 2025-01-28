@@ -20,11 +20,10 @@ export const useAdminPostStore = defineStore("adminPostStore", {
                     },
                 });
                 const data = await res.json();
-                if (data.error) {
-                    console.log("admin api get post data false", data.error);
-                } else {
-                    console.log("admin api get post data success", data.posts);
+                if (res.ok) {
                     return data.posts;
+                } else {
+                    console.log("admin api get post data false", data.error);
                 }
 
             } catch (error) {

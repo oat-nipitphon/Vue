@@ -40,10 +40,10 @@ export const usePostStore = defineStore('postStore', {
 
                 const data = await res.json();
 
-                if (data.ok) {
+                if (res.ok) {
                     return data.post;
                 } else {
-                    console.log("store get post response false :", res.data);
+                    console.log("store get post response false :", data.error);
                 }
 
             } catch (error) {
@@ -80,7 +80,7 @@ export const usePostStore = defineStore('postStore', {
                     body: JSON.stringify(formData)
                 });
                 const data = await res.json();
-                if (data.ok) {
+                if (res.ok) {
                     this.storePost = data.createPostNew;
                     this.router.push({ name: 'DashboardView' });
                 } else {
@@ -117,7 +117,7 @@ export const usePostStore = defineStore('postStore', {
 
                     const data = await res.json();
 
-                    if (data.ok) {
+                    if (res.ok) {
                         Swal.fire({
                             title: "Success.",
                             text: "Edit post successfully.",
@@ -171,13 +171,12 @@ export const usePostStore = defineStore('postStore', {
 
                     const data = await res.json();
 
-                    if (data.ok) {
+                    if (res.ok) {
                         Swal.fire({
-                            title: "Confirm",
-                            text: "delete post successfully.",
+                            title: "Success",
+                            text: "Delete post successfully.",
                             icon: "success"
                         }).then(() => {
-                            this.storePost = data.post;
                             window.location.reload();
                         });
                     } else {
@@ -197,16 +196,16 @@ export const usePostStore = defineStore('postStore', {
 
         async apiRecoverGetPost(userID) {
             try {
-                const response = await fetch(`/api/posts/report_recover/${userID}`, {
+                const res = await fetch(`/api/posts/report_recover/${userID}`, {
                     method: "POST",
                     headers: {
                         authorization: `Bearer ${localStorage.getItem('token')}`
                     },
                 });
                 
-                const data = await response.json();
+                const data = await res.json();
 
-                if (data.ok) {
+                if (res.ok) {
                     return data.recoverPosts;
                 } else {
                     console.log("store recover post data error", data.error);
@@ -266,14 +265,14 @@ export const usePostStore = defineStore('postStore', {
 
         async apiPostPopLike(userID, postID, popStatusLike) {
             try {
-                const response = await fetch(`/api/posts/popularity/${userID}/${postID}/${popStatusLike}`, {
+                const res = await fetch(`/api/posts/popularity/${userID}/${postID}/${popStatusLike}`, {
                     method: "POST",
                     headers: {
                         authorization: `Bearer ${localStorage.getItem('token')}`
                     },
                 });
-                const data = await response.json();
-                if (response.ok) {
+                const data = await res.json();
+                if (res.ok) {
                     console.log("Like updated successfully");
                 } else {
                     console.error("Error updating like", data.error);
@@ -285,14 +284,14 @@ export const usePostStore = defineStore('postStore', {
 
         async apiPostPopDisLike(userID, postID, popStatusDisLike) {
             try {
-                const response = await fetch(`/api/posts/popularity/${userID}/${postID}/${popStatusDisLike}`, {
+                const res = await fetch(`/api/posts/popularity/${userID}/${postID}/${popStatusDisLike}`, {
                     method: "POST",
                     headers: {
                         authorization: `Bearer ${localStorage.getItem('token')}`
                     },
                 });
-                const data = await response.json();
-                if (response.ok) {
+                const data = await res.json();
+                if (res.ok) {
                     console.log("Dislike updated successfully.");
                 } else {
                     console.error("Error updating dislike", data.error);
