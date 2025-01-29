@@ -32,5 +32,31 @@ export const useAdminPostStore = defineStore("adminPostStore", {
 
         },
 
+        async adminAPIPostDelete () {
+            try {
+                const res = await fetch(``);
+            } catch (error) {
+                console.error("store admin post function error", error);
+            }
+        },
+
+        async adminAPIPostBlockOrUnBlock (postID, blockStatus) {
+            try {
+                const res = await fetch(`/api/posts/blockOrUnBlock/${postID}/${blockStatus}`, {
+                    method: "",
+                    headers: {
+                        authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+
+                const result = await Swal.fire({
+                    
+                });
+
+            } catch (error) {
+                console.error("store admin post function error", error);
+            }
+        },
+
     },
 });

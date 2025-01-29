@@ -1,5 +1,4 @@
 <script setup>
-import UploadImageFileView from './UploadImageFileView.vue';
 
 </script>
 
@@ -12,9 +11,6 @@ import UploadImageFileView from './UploadImageFileView.vue';
         alt="icon-laravel"
       />
       <img class="icon-vue" src="../assets/icon/vue.png" alt="icon-vue" />
-    </div>
-    <div class="w-full flex justify-items-center mt-5">
-      <UploadImageFileView />
     </div>
     <div class="w-full flex justify-center mt-5">
       
