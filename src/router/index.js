@@ -8,10 +8,6 @@ import ForgetYourPasswordView from '@/views/ForgetYourPasswordView.vue'
 
 import DashboardView from '@/views/DashboardView.vue'
 
-// --------------------------------- Zone Test Code ------------------------------------------------
-import FileImageUpload from '@/components/FileImageUpload.vue'
-import CardsView from '@/views/CardsView.vue'
-
 // --------------------------------- Zone ADMIN ------------------------------------------------
 import AdminManagerPostView from '@/views/ADMIN/Posts/AdminManagerPostView.vue'
 import AdminManagerUserProfileView from '@/views/ADMIN/USER/AdminManagerUserProfileView.vue'
@@ -25,7 +21,7 @@ import DetailPostView from '@/views/USER/Posts/DetailPostView.vue'
 import CreatePostNewView from '@/views/USER/Posts/CreatePostNewView.vue'
 import EditPostView from '@/views/USER/Posts/EditPostView.vue'
 import ReportRecoverPostsView from '@/views/USER/Posts/ReportRecoverPostsView.vue';
-
+import EditorTipTap from '@/views/EditorTipTap.vue'
 
 
 const router = createRouter({
@@ -35,7 +31,6 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       component: PageNotFound
     },
-
     {
       path: '/',
       name: 'HomeView',
@@ -92,6 +87,12 @@ const router = createRouter({
       meta: { auth: true }
     },
     {
+      path: '/EditorTiptap',
+      name: 'EditorTiptap',
+      components: EditorTipTap,
+      meta: { guest: true }
+    },
+    {
       path: '/posts/:id',
       name: 'EditPostView',
       component: EditPostView,
@@ -118,23 +119,6 @@ const router = createRouter({
       name: 'AdminManagerUserProfileView',
       component: AdminManagerUserProfileView,
       meta: { auth: true }
-    },
-
-    //  ------------------------------ Zone Test Views ---------------------------------------------
-    {
-      path: '/testCodeView',
-      component: () => import('../views/TestCode/TestCodeView.vue')
-    },
-    {
-      path: '/CardsView',
-      name: 'CardsView',
-      component: CardsView,
-      meta: { guest: true }
-    },
-    {
-      path: '/FileImageUpload',
-      name: 'FileImageUpload',
-      component: FileImageUpload
     },
 
   ],
