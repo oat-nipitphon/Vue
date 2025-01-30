@@ -9,7 +9,7 @@ export const useAdminPostStore = defineStore("adminPostStore", {
     }),
     actions: {
 
-        async adminAPIGETposts () {
+        async adminAPIGETposts() {
 
             try {
 
@@ -32,29 +32,111 @@ export const useAdminPostStore = defineStore("adminPostStore", {
 
         },
 
-        async adminAPIPostDelete () {
+        async adminAPIPostDelete(postID) {
             try {
-                const res = await fetch(``);
+
+                const result = await Swal.fire({
+                    title: "Delete Post ?",
+                    text: "Are you sure you want to delete this post?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Confirm.",
+                    cancelButtonText: "Cancel.",
+                });
+
+                if (result.isConfirmed) {
+
+                    const res = await fetch(`/api/admin/posts/manager/${postID}`, {
+                        method: "DELETE",
+                        headers: {
+                            authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+
+                    if (res.ok) {
+                        Swal.fire({
+                            title: "Success",
+                            text: "Post deleted successfully.",
+                            icon: "success"
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error",
+                            text: "Failed to delete post. Please try again.",
+                            icon: "error"
+                        });
+                    }
+
+                }
+
+                // else if (result.dismiss === Swal.DismissReason.cancel) {
+                //     Swal.close();
+                // } else {
+                //     Swal.close();
+                // }
+
             } catch (error) {
-                console.error("store admin post function error", error);
+                console.error("Admin delete post function error:", error);
+                Swal.fire({
+                    title: "Error",
+                    text: "Something went wrong. Please try again later.",
+                    icon: "error"
+                });
             }
         },
 
-        async adminAPIPostBlockOrUnBlock (postID, blockStatus) {
+        async adminAPIPostBlockOrUnBlock(postID, blockStatus) {
             try {
-                const res = await fetch(`/api/posts/blockOrUnBlock/${postID}/${blockStatus}`, {
-                    method: "",
-                    headers: {
-                        authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                });
+
+                const actionText = blockStatus ? "Block" : "Unblock";
 
                 const result = await Swal.fire({
-                    
+                    title: `${actionText} Post?`,
+                    text: `Are you sure you want to ${actionText.toLowerCase()} this post?`,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Confirm",
+                    cancelButtonText: "Cancel",
                 });
 
+                if (result.isConfirmed) {
+                    const res = await fetch(`/api/posts/blockOrUnBlock/${postID}/${blockStatus}`, {
+                        method: "POST",
+                        headers: {
+                            authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+
+                    if (res.ok) {
+                        Swal.fire({
+                            title: "Success",
+                            text: `Post ${actionText.toLowerCase()}ed successfully.`,
+                            icon: "success"
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error",
+                            text: `Failed to ${actionText.toLowerCase()} post. Please try again.`,
+                            icon: "error"
+                        });
+                    }
+                }
+
             } catch (error) {
-                console.error("store admin post function error", error);
+                console.error("Admin block/unblock post function error:", error);
+                Swal.fire({
+                    title: "Error",
+                    text: "Something went wrong. Please try again later.",
+                    icon: "error"
+                });
             }
         },
 

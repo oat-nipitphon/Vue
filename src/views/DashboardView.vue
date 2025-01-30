@@ -187,7 +187,7 @@ onMounted(async () => {
                   v-if="post.user_id === authStore.storeUser.user_login.id"
                   class="flex justify-end mt-4"
                 >
-                  <li class="dropdown">
+                  <div class="dropdown">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="35"
@@ -223,7 +223,7 @@ onMounted(async () => {
                         </button>
                       </li>
                     </ul>
-                  </li>
+                  </div>
                 </div>
               </div>
               <div class="post-item">

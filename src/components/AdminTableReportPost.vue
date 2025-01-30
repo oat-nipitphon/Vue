@@ -18,7 +18,7 @@ const modalUserProfileFullName = ref([]);
 const modalUserProfileFollowers = ref([]);
 
 const currentPage = ref(1); // กำหนดหน้าเริ่มต้น
-const itemsPerPage = ref(5); // จำนวนข้อมูลต่อหน้า
+const itemsPerPage = ref(20); // จำนวนข้อมูลต่อหน้า
 
 // คำนวณจำนวนหน้า
 const totalPages = computed(() =>
@@ -267,7 +267,7 @@ onMounted(async () => {
                   <li>
                     <label
                       type="button"
-                      @click="onDeletePost(post.id)"
+                      @click="adminAPIPostDelete(post.id)"
                       class="btn btn-delete dropdown-item m-2"
                     >
                       Delete
