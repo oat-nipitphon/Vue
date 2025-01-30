@@ -91,9 +91,23 @@ export const useAdminPostStore = defineStore("adminPostStore", {
 
         async adminAPIPostBlockOrUnBlock(postID, blockStatus) {
             try {
+                let actionText = null;
 
-                const actionText = blockStatus ? "Block" : "Unblock";
+                // Set actionText based on blockStatus
+                if (blockStatus === "Block") {
+                    actionText = "Block";
+                }
+                if (blockStatus === "Unblock") {
+                    actionText = "Unblock";
+                }
 
+                // Ensure actionText is set correctly
+                if (!actionText) {
+                    console.error("Invalid block status provided");
+                    return; // Prevent further action if blockStatus is invalid
+                }
+
+                // Confirm with SweetAlert before making the change
                 const result = await Swal.fire({
                     title: `${actionText} Post?`,
                     text: `Are you sure you want to ${actionText.toLowerCase()} this post?`,
@@ -106,10 +120,12 @@ export const useAdminPostStore = defineStore("adminPostStore", {
                 });
 
                 if (result.isConfirmed) {
-                    const res = await fetch(`/api/posts/blockOrUnBlock/${postID}/${blockStatus}`, {
+                    // Make API request to block/unblock the post
+                    const res = await fetch(`/api/admin/posts/blockOrUnBlock/${postID}/${blockStatus}`, {
                         method: "POST",
                         headers: {
-                            authorization: `Bearer ${localStorage.getItem('token')}`
+                            authorization: `Bearer ${localStorage.getItem('token')}`,
+                            'Content-Type': 'application/json',
                         }
                     });
 
@@ -119,7 +135,7 @@ export const useAdminPostStore = defineStore("adminPostStore", {
                             text: `Post ${actionText.toLowerCase()}ed successfully.`,
                             icon: "success"
                         }).then(() => {
-                            window.location.reload();
+                            window.location.reload(); // Reload page to reflect changes
                         });
                     } else {
                         Swal.fire({
@@ -129,7 +145,6 @@ export const useAdminPostStore = defineStore("adminPostStore", {
                         });
                     }
                 }
-
             } catch (error) {
                 console.error("Admin block/unblock post function error:", error);
                 Swal.fire({

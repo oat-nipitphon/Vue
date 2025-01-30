@@ -7,7 +7,8 @@ import { useAdminPostStore } from "@/stores/admin.posts";
 const authStore = useAuthStore();
 
 // const items = ref(Array.from({ length: 100 }, (_, i) => `Item ${i + 1}`)); // ตัวอย่างข้อมูล 100 รายการ
-const { adminAPIGETposts, adminAPIPostBlockOrUnBlock, adminAPIPostDelete } = useAdminPostStore();
+const { adminAPIGETposts, adminAPIPostBlockOrUnBlock, adminAPIPostDelete } =
+  useAdminPostStore();
 
 const posts = ref([]);
 const modalPostID = ref([]);
@@ -44,12 +45,9 @@ const prevPage = () => {
   }
 };
 
-const onDeletePost = async (postID) => {
-  console.log("on delete post ", postID);
-};
-
-const onBlockOrUnBlockPost = async (postID, blockStatus) => {
-  console.log("on block post ", postID, blockStatus);
+const blockOrUnBlock = async (postID, blockStatus) => {
+  console.log("postID :: ", postID);
+  console.log("blockStatus :: ", blockStatus);
 };
 
 const modalValuePostContent = (post) => {
@@ -250,7 +248,7 @@ onMounted(async () => {
                     <label
                       v-if="post.block_status === 'false'"
                       type="button"
-                      @click="adminAPIPostBlockOrUnBlock(post.id, true)"
+                      @click="adminAPIPostBlockOrUnBlock(post.id, 'Block')"
                       class="btn btn-block dropdown-item m-2"
                     >
                       Block
@@ -258,7 +256,7 @@ onMounted(async () => {
                     <label
                       v-if="post.block_status === 'true'"
                       type="button"
-                      @click="adminAPIPostBlockOrUnBlock(post.id, true)"
+                      @click="adminAPIPostBlockOrUnBlock(post.id, 'Unblock')"
                       class="btn btn-unblock dropdown-item m-2"
                     >
                       Unblock
@@ -314,7 +312,6 @@ onMounted(async () => {
   color: white;
   border-radius: 5px;
 }
-
 
 .dropdown-menu {
   background-color: #f8f9fa; /* สีพื้นหลังเทาอ่อน */
