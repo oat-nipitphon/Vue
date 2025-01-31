@@ -1,27 +1,32 @@
 <script setup>
-import { ref, onMounted, reactive } from "vue";
+import { ref, onMounted } from "vue";
 import { RouterLink, useRoute } from "vue-router";
 import { usePostStore } from "@/stores/post";
+import { format } from "date-fns"; // เพิ่มการ import format จาก date-fns
 
 const route = useRoute();
 const { apiRecoverGetPost, apiRecoverPost } = usePostStore();
 
-const postID = ref(null);
 const recoverPosts = ref(null);
 
 onMounted(async () => {
-  // ใช้ map เพื่อแปลงข้อมูลบางอย่างใน recoverPosts (ถ้าจำเป็น)
-  //  const mappedPosts = recoverPosts.value.map(post => ({
-  //         ...post,
-  //         createdAt: new Date(post.createdAt), // สมมติว่า post มีฟิลด์ createdAt
-  //     }));
-  //     // ใช้ sort เพื่อเรียงลำดับข้อมูลตาม createdAt
-  //     recoverPosts.value = mappedPosts.sort((a, b) => b.createdAt - a.createdAt);
-
+  // ดึงข้อมูลโพสต์ที่ต้องการจาก API
   recoverPosts.value = await apiRecoverGetPost(route.params.userID);
   console.log("recover posts value :: ", recoverPosts.value);
+
+  // ถ้าต้องการเรียงโพสต์ตามวันที่ (ตาม created_at)
+  recoverPosts.value = recoverPosts.value.sort(
+    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+  );
 });
+
+// ฟังก์ชัน formatDate เพื่อจัดรูปแบบวันที่
+function formatDate(date) {
+  if (!date) return "";
+  return format(new Date(date), "yyyy-MM-dd HH:mm:ss"); // กำหนดรูปแบบวันที่ที่ต้องการ
+}
 </script>
+
 <template>
   <div class="container">
     <div class="mt-10">
@@ -36,27 +41,6 @@ onMounted(async () => {
         Back DashboardView
       </RouterLink>
     </div>
-    <div class="mt-10">
-      <div>
-        <div class="flex justify-center"></div>
-        <div class="row text-center">
-          <div class="col-md-6">
-            Status Deletetion :: {{ post.deletetion_status }}
-          </div>
-          <div class="col-md-6">User Profile ID :: {{ post.user_id }}</div>
-        </div>
-        <div class="row">
-          {{ post.post_title }}
-        </div>
-        <div class="row">
-          {{ post.post_content }}
-        </div>
-        <div class="row">
-          <hr style="margin: 10px" />
-        </div>
-      </div>
-    </div>
-
     <div class="relative overflow-x-auto">
       <table
         class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
@@ -68,9 +52,6 @@ onMounted(async () => {
             <td scope="col" class="w-2 p-2 text-center font-semibold">count</td>
             <td scope="col" class="w-2 p-2 text-center font-semibold">Title</td>
             <td scope="col" class="w-2 p-2 text-center font-semibold">
-              Content
-            </td>
-            <td scope="col" class="w-2 p-2 text-center font-semibold">
               pop post total
             </td>
             <td scope="col" class="w-2 p-2 text-center font-semibold">
@@ -79,39 +60,35 @@ onMounted(async () => {
             <td scope="col" class="w-2 p-2 text-center font-semibold">Event</td>
           </tr>
         </thead>
-        <body v-if="recoverPosts.length > 0">
+        <tbody v-if="recoverPosts">
           <tr
             v-for="(post, index) in recoverPosts"
             :key="index"
             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
           >
             <td class="w-2 py-2 text-center">
-              {{ post.id }}
-            </td>
-            <td class="w-2 py-2 text-center">
               {{ index + 1 }}
+              <!-- เริ่มต้นการนับจาก 1 -->
             </td>
             <td class="w-2 py-2 text-center">
               {{ post.post_title }}
             </td>
-            <td class="w-2 py-2 text-center">
-              {{ post.post_content }}
-            </td>
             <td class="w-2 py-2 text-center">sub pop post</td>
             <td class="w-2 py-2 text-center">
-              {{ post.created_at }}
-              {{ post.updated_at }}
+              {{ formatDate(post.created_at) }}
+              <!-- ใช้ฟังก์ชัน formatDate เพื่อแสดงวันที่ -->
+              <br />
+              {{ formatDate(post.updated_at) }}
             </td>
             <td class="w-2 py-2 text-center">
               <form @submit.prevent="apiRecoverPost(post.id)">
-                <button type="submit" class="btn btn-sm btn-outline-success">
-                  {{ post.id }}
+                <button type="submit" class="btn btn-sm btn-success">
                   <span class="text-sm"> Recover </span>
                 </button>
               </form>
             </td>
           </tr>
-        </body>
+        </tbody>
         <tbody v-else>
           <tr>
             <td class="flex justify-center text-lg m-5 text-red-600">
@@ -123,3 +100,6 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+<style scoped>
+/* Add your styles here */
+</style>

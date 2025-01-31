@@ -227,8 +227,8 @@ export const usePostStore = defineStore('postStore', {
                         showCancelButton: true,
                         confirmButtonColor: "#3085d6",
                         cancelButtonColor: "#d33",
-                        confirmButtonText: "Confirm.",
-                        cancelButtonText: "Cancel.",
+                        confirmButtonText: "Confirm",
+                        cancelButtonText: "Cancel",
                     });
 
                     if (result.dismiss === Swal.DismissReason.cancel) {
@@ -249,7 +249,6 @@ export const usePostStore = defineStore('postStore', {
                                 icon: "success"
                             }).then(() => {
                                 Swal.close();
-                                window.location.reload();
                             });
                         } else {
                             throw new Error(`HTTP error! status: ${res.status}`);
