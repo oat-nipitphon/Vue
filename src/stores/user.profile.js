@@ -16,8 +16,9 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
                     }
                 })
                 const data = await res.json()
+                console.log("store user profile ", data.userProfiles);
                 if (res.ok) {
-                    return data.userProfile
+                    return data.userProfiles
                 } else {
                     console.log("store user profile res false.", res)
                 }

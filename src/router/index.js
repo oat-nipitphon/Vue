@@ -73,7 +73,7 @@ const router = createRouter({
     
     // ******* View users
     {
-      path: '/user_profile/show/:id',
+      path: '/user_profiles/show/:id',
       name: 'UserProfileDashboardView',
       component: UserProfileDashboardView,
       meta: { auth: true }

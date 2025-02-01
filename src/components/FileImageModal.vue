@@ -61,11 +61,10 @@ import { useStoreUserProfile } from "@/stores/user.profile";
 export default {
   setup() {
     const file = ref(null);
-
     const authStore = useAuthStore();
-
     console.log(authStore.storeUser.user_login.user_profile.id);
 
+    console.log("modal show token test ", localStorage.getItem('token'));
     const onFileChange = (e) => {
       file.value = e.target.files[0];
       console.log("file change", file.value);
@@ -78,11 +77,12 @@ export default {
         authStore.storeUser.user_login.user_profile.id
       );
       formData.append("imageFile", file.value);
-
+      
       try {
         const response = await axiosAPI.post("/api/user_profile/upload_image", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
+            authorization: `Bearer ${localStorage.getItem('token')}`
           },
         });
 
