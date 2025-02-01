@@ -15,15 +15,14 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
                         authorization: `Bearer ${localStorage.getItem('token')}`
                     }
                 })
-                const data = await res.json()
-                console.log("store user profile ", data.userProfiles);
+                const data = await res.json();
                 if (res.ok) {
-                    return data.userProfiles
+                    return data.userProfiles;
                 } else {
-                    console.log("store user profile res false.", res)
+                    console.log("store user profile res false.", res);
                 }
             } catch (error) {
-                console.error("store user profile error api get all :: ", error)
+                console.error("store user profile error api get all :: ", error);
             }
         },
 

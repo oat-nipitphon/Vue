@@ -110,13 +110,14 @@ const btnUpdateProfile = async () => {
               <!-- Card Profile left -->
               <!-- https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png -->
               <div class="space-y-4">
-                <div class="flex space-x-4">
-                  <img
-
-                    class="w-96 h-96"
-                    :src="`${userProfile.userProfileImage[0].imageData}`"
-                    alt="Helene avatar"
-                  />
+                <div class="flex space-x-4"
+                  v-for="(rowImage, index) in userProfile.userProfileImage" :key="index"
+                >
+                <img 
+                  class="h-180 w-90 m-auto"
+                  :src="`data:image/png;base64,` + rowImage.imageData"
+                  alt="profileImage"
+                >
                 </div>
                 <FileImageModal />
               </div>
