@@ -62,9 +62,6 @@ export default {
   setup() {
     const file = ref(null);
     const authStore = useAuthStore();
-    console.log(authStore.storeUser.user_login.user_profile.id);
-
-    console.log("modal show token test ", localStorage.getItem('token'));
     const onFileChange = (e) => {
       file.value = e.target.files[0];
       console.log("file change", file.value);

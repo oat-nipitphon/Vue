@@ -38,6 +38,7 @@ const {
   apiUploadImageUserProfile,
 } = useStoreUserProfile();
 
+const profileImage = ref(null);
 const formData = reactive({
   userID: "",
   name: "",
@@ -84,8 +85,7 @@ onMounted(async () => {
     formData.nickName = userProfile.value.userProfile.nick_name || "";
     formData.telPhone = userProfile.value.userProfile.tel_phone || "";
     formData.birthDay = userProfile.value.userProfile.birth_day || "";
-    // userProfileImage.value = userProfile.value.userProfile.userProfile_image.image_name || "";
-    // console.log("image :: ", userProfileImage.value);
+    profileImage.value = userProfile.value.userProfileImage || "";
   }
   statusUser.value = await apiGetStatusUser();
 });
@@ -112,10 +112,9 @@ const btnUpdateProfile = async () => {
               <div class="space-y-4">
                 <div class="flex space-x-4">
                   <img
-                    width="100%"
-                    height="100%"
-                    class="rounded-full w-96 h-96"
-                    src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png"
+
+                    class="w-96 h-96"
+                    :src="`${userProfile.userProfileImage[0].imageData}`"
                     alt="Helene avatar"
                   />
                 </div>
