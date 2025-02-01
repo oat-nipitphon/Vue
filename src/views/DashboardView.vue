@@ -113,7 +113,7 @@ onMounted(async () => {
       </RouterLink> -->
       </div>
       <!-- ... -->
-      <div class="w-full" v-if="enrichedPosts.length">
+      <div class="w-full" v-if="enrichedPosts.length > 0">
         <div v-for="(post, index) in enrichedPosts" :key="index" class="post">
           <section class="bg-white dark:bg-gray-900">
             <!-- Post Report Details -->
@@ -236,12 +236,15 @@ onMounted(async () => {
                       ( {{ post.post_type.post_type_name }} )
                     </label>
                   </div>
-                  <div class="col-md-6 flex justify-center" style="background-color:aqua;">
+                  <div
+                    v-if="post.post_image && post.post_image.length > 0" 
+                    class="col-md-6 flex justify-center"
+                  >
+                  
                     <img
-                    src="../../../LaravelAPI/public/storage/images/key.jpg"
+                    src="../../../LaravelAPI/public/storage/images/O6BUxFQNMQ2MmXxxHOIOE9DCbRvlJVVI6IbBDjSO.png"
                       class="w-150 h-20 m-auto"
                       alt="Post Image"
-                      
                     >
                   </div>
                 </div>

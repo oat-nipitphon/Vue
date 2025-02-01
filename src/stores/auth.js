@@ -83,28 +83,27 @@ export const useAuthStore = defineStore('authStore', {
                     body: JSON.stringify(formData)
                 })
 
-                if (!res.ok) {
-                    Swal.fire({
-                        title: "Login Error !!",
-                        text: "You login false check input request align!",
-                        icon: "error",
-                        timer: 1200,
-                        timerProgressBar: true,
-                    });
-                } else {
-                    const data = await res.json()
-                    localStorage.setItem('token', data.token)
+                const data = await res.json();
+                
+                if (res.ok) {
+                    localStorage.setItem('token', data.token);
+                
                     Swal.fire({
                         title: "Login success.",
-                        text: "You login successfully welcome to my world!",
+                        text: "You login successfully, welcome to my world!",
                         icon: "success",
-                        timer: 1200,
-                        timerProgressBar: true,
                     }).then(() => {
-                        Swal.close
-                        this.router.push({ name: 'DashboardView' })
-                    })
+                        Swal.close();
+                        
+                        if (data.user.status_id === '1') {
+                            this.router.push({ name: 'AdminDashboardView' });
+                        } else {
+                            this.router.push({ name: 'DashboardView' });
+                        }
+                    });
+                
                 }
+                
 
             } catch (error) {
                 console.log("api store login function error :: ", error)
@@ -229,7 +228,4 @@ export const useAuthStore = defineStore('authStore', {
         },
 
     },
-    // getters: {
-    //     isAuthentication: () => !!state.token,
-    // },
 })

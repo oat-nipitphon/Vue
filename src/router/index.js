@@ -13,6 +13,7 @@ import FileImageUpload from '@/components/FileImageUpload.vue'
 import CardsView from '@/views/CardsView.vue'
 
 // --------------------------------- Zone ADMIN ------------------------------------------------
+import AdminDashboardView from '@/views/ADMIN/AdminDashboardView.vue'
 import AdminManagerPostView from '@/views/ADMIN/Posts/AdminManagerPostView.vue'
 import AdminManagerUserProfileView from '@/views/ADMIN/USER/AdminManagerUserProfileView.vue'
 
@@ -107,6 +108,12 @@ const router = createRouter({
 
     //  ------------------------------ Zone ADMIN Views ---------------------------------------------
  
+    {
+      path: '/AdminDashboardView',
+      name: 'AdminDashboardView',
+      component: AdminDashboardView,
+      meta: { auth: true } 
+    },
     {
       path: '/AdminManagerPostView',
       name: 'AdminManagerPostView',
