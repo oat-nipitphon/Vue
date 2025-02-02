@@ -16,17 +16,17 @@ const selectedUserProfile = ref([]);
 // Compute enriched data for posts
 const enrichedPosts = computed(() =>
   posts.value.map((post) => {
-    const likeCount = post.post_popularity.filter(
-      (pop) => pop.pop_status === "Like"
+    const likeCount = post.postPopularity.filter(
+      (pop) => pop.status === "Like"
     ).length;
-    const disLikeCount = post.post_popularity.filter(
-      (pop) => pop.pop_status === "DisLike"
+    const disLikeCount = post.postPopularity.filter(
+      (pop) => pop.status === "DisLike"
     ).length;
-    const userLiked = post.post_popularity.some(
-      (pop) => pop.user_id === userID.value && pop.pop_status === "Like"
+    const userLiked = post.postPopularity.some(
+      (pop) => pop.userID === userID.value && pop.status === "Like"
     );
-    const userDisliked = post.post_popularity.some(
-      (pop) => pop.user_id === userID.value && pop.pop_status === "DisLike"
+    const userDisliked = post.postPopularity.some(
+      (pop) => pop.userID === userID.value && pop.status === "DisLike"
     );
     return {
       ...post,
@@ -116,7 +116,7 @@ onMounted(async () => {
                       <div>
                         <img
                           @click="
-                            onModalShowUserProfile(post.user.user_profile)
+                            onModalShowUserProfile(post.userProfile)
                           "
                           data-bs-toggle="modal"
                           data-bs-target="#modalShowUserProfileCreatePost"
@@ -135,7 +135,7 @@ onMounted(async () => {
                             <div class="modal-content">
                               <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">
-                                  Profile :: {{ selectedUserProfile.full_name }}
+                                  Profile :: {{ selectedUserProfile.userProfile }}
                                 </h5>
                                 <button
                                   type="button"
@@ -182,7 +182,7 @@ onMounted(async () => {
 
                 <!-- Start Event Post Edit Delete -->
                 <div
-                  v-if="post.user_id === authStore.storeUser.user_login.id"
+                  v-if="post.userID === authStore.storeUser.user_login.id"
                   class="flex justify-end mt-4"
                 >
                   <div class="dropdown">
@@ -232,35 +232,36 @@ onMounted(async () => {
                 <div class="row">
                   <div class="col-md-6">
                     <label class="text-lg font-extrabold text-gray-900 dark:text-white">
-                      {{ post.post_title }}
+                      {{ post.title }}
                     </label>
                     <label class="text-md ml-3 font-extrabold text-gray-900 dark:text-white">
-                      ( {{ post.post_type.post_type_name }} )
+                      ( {{ post.postType.name }} )
                     </label>
                   </div>
                   <div
-                    v-if="post.post_image && post.post_image.length > 0" 
                     class="col-md-6 flex justify-center"
+                    v-for="(rowImage, index) in post.postImage" :key="index" 
                   >
-                  
+                    <!-- Image Post -->
                     <img
-                    src="../../../LaravelAPI/public/storage/images/O6BUxFQNMQ2MmXxxHOIOE9DCbRvlJVVI6IbBDjSO.png"
+                    :src="`${rowImage.imageData}`"
                       class="w-150 h-20 m-auto"
                       alt="Post Image"
                     >
+                    {{ post.postImage.imageData }}
                   </div>
                 </div>
                 <div class="flex justify-start m-auto">
                   <p class="font-semibold text-gray-900 dark:text-white">
                     <label class="text-sm text-gray-900">สร้างโพสต์ วันที่</label>
                     <label class="text-sm text-gray-900 ml-2">
-                      {{ formatDate(post.created_at) }}
+                      {{ formatDate(post.createdAt) }}
                     </label>
                   </p>
                 </div>
                 <div class="ibox-post-content">
                   <p class="mb-4 text-gray-500 dark:text-gray-400 line-clamp-5">
-                    {{ post.post_content }}
+                    {{ post.content }}
                   </p>
                 </div>
               </div>
@@ -269,12 +270,12 @@ onMounted(async () => {
               <!-- Start Event Show Modal Post Content Detail -->
               <div class="ibox-button-more">        
                 <button
-                  v-if="post.post_content.length > 200"
+                  v-if="post.content.length > 200"
                   type="button"
                   class="btn btn-sm btn-link text-primary"
                   data-bs-toggle="modal"
                   data-bs-target="#modalShowMovePostContents"
-                  @click="modalValuePostContent(post.post_content)"
+                  @click="modalValuePostContent(post.content)"
                 >
                   More ...
                 </button>
