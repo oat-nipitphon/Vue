@@ -108,24 +108,26 @@ onMounted(async () => {
         <section class="bg-white dark:bg-gray-900">
           <div class="py-8 px-4 mx-auto max-w-4xl lg:py-16">
             <div class="grid grid-cols-2">
-              <!-- Start Card User Profile -->
+              <!-- Card User Profile -->
               <div class="grid grid-rows2 m-2 mt-4">
                 <div class="row">
                   <!-- Start Modal User Profile-->
                   <div class="col-md-2">
                     <div
-                      v-for="(profileImage, index) in post.profileImage"
+                      v-for="(profileImage, index) in post.userProfileImage"
                       :key="index"
                     >
+                      <!-- Image user profile event show modal -->
                       <img
-                        @click="onModalShowUserProfile(post.userProfile)"
+                        @click="onModalShowUserProfile(profileImage)"
                         data-bs-toggle="modal"
                         data-bs-target="#modalShowUserProfileCreatePost"
-                        class="rounded-full w-10 h-10"
+                        class="size-8"
                         alt="ImageUserProfile"
                         :src="'data:image/png;base64,' + profileImage.imageData"
                       />
                     </div>
+                    <!-- Modal show user profile detail -->
                     <div
                       class="modal fade"
                       id="modalShowUserProfileCreatePost"
@@ -178,9 +180,8 @@ onMounted(async () => {
                   <!-- End Card User Profile Image Followers Popualiry -->
                 </div>
               </div>
-              <!-- End Card User Profile -->
 
-              <!-- Start Event Post Edit Delete -->
+              <!-- Dropdown Event Post Edit Delete -->
               <div
                 v-if="post.userID === authStore.storeUser.user_login.id"
                 class="flex justify-end mt-4"
@@ -223,36 +224,21 @@ onMounted(async () => {
                   </ul>
                 </div>
               </div>
-              <!-- End Event Post Edit Delete -->
             </div>
 
             <!-- Start Card Post Main -->
             <div class="post-item">
-              <div class="row">
-                <div class="col-md-6">
-                  <label
-                    class="text-lg font-extrabold text-gray-900 dark:text-white"
-                  >
-                    {{ post.title }}
-                  </label>
-                  <label
-                    class="text-md ml-3 font-extrabold text-gray-900 dark:text-white"
-                  >
-                    ( {{ post.postType.name }} )
-                  </label>
-                </div>
-                <div
-                  class="col-md-6 flex justify-center"
-                  v-for="(postImage, index) in post.postImage"
-                  :key="index"
+              <div class="w-full flex justify-between">
+                <label
+                  class="text-lg font-extrabold text-gray-900 dark:text-white"
                 >
-                  <!-- {{ rowImage.imageData }} -->
-                  <img
-                    class="h-50 w-100 m-auto"
-                    :src="'data:image/png;base64,' + postImage.imageData"
-                    alt="postImage"
-                  />
-                </div>
+                  {{ post.title }}
+                </label>
+                <label
+                  class="text-md ml-3 font-extrabold text-gray-900 dark:text-white"
+                >
+                  {{ post.postType.name }}
+                </label>
               </div>
               <div class="flex justify-start m-auto">
                 <p class="font-semibold text-gray-900 dark:text-white">
@@ -261,6 +247,18 @@ onMounted(async () => {
                     {{ formatDate(post.createdAt) }}
                   </label>
                 </p>
+              </div>
+              <!-- Image Post -->
+              <div
+                class="row"
+                v-for="(postImage, index) in post.postImage"
+                :key="index"
+              >
+                <img
+                  class="ibox-image"
+                  :src="'data:image/png;base64,' + postImage.imageData"
+                  alt="postImage"
+                />
               </div>
               <div class="ibox-post-content">
                 <p class="mb-4 text-gray-500 dark:text-gray-400 line-clamp-5">
@@ -410,5 +408,13 @@ onMounted(async () => {
 .btn-edit__size {
   width: 50px;
   height: 45px;
+}
+.ibox-image {
+  width: 100%;
+  height: 150px;
+}
+.ibox-userprofile-image {
+  width: 150px;
+  height: 150px;
 }
 </style>

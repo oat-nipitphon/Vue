@@ -14,11 +14,13 @@ export const usePostStore = defineStore('postStore', {
                 const res = await fetch(`/api/posts`, {
                     method: "GET",
                     headers: {
+                        "Content-Type": "multipart/form-data",
                         authorization: `Bearer ${localStorage.getItem('token')}`
                     }
-                })
+                });
+                const data = await res.json();
+                console.log("post store response ", res.posts);
                 if (res.ok) {
-                    const data = await res.json()
                     return data.posts;
                 } else {
                     console.log("store api get posts false", data.error);

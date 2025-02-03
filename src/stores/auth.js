@@ -20,12 +20,15 @@ export const useAuthStore = defineStore('authStore', {
                     const res = await fetch(`/api/user`, {
                         method: "GET",
                         headers: {
-                            authorization: `Bearer ${token}`,
+                            "Content-Type": "multipart/form-data",
+                            authorization: `Bearer ${localStorage.getItem('token')}`
                         },
                     });
 
                     if (res.ok) {
-                        this.storeUser = await res.json()
+                        const data = await res.json()
+                        console.log("auth store data user_login", data.user_login);
+                        this.storeUser = data;
                     } else {
                         console.error("Failed to fetch user data. Status:", res.status);
                         return;
@@ -49,10 +52,10 @@ export const useAuthStore = defineStore('authStore', {
                 });
 
                 const data = await res.json();
-                
+
                 if (res.ok) {
 
-                    
+
                     Swal.fire({
                         title: "New Account.",
                         text: "Register account successfully.",
@@ -84,26 +87,26 @@ export const useAuthStore = defineStore('authStore', {
                 })
 
                 const data = await res.json();
-                
+
                 if (res.ok) {
                     localStorage.setItem('token', data.token);
-                
+
                     Swal.fire({
                         title: "Login success.",
                         text: "You login successfully, welcome to my world!",
                         icon: "success",
                     }).then(() => {
                         Swal.close();
-                        
+
                         if (data.user.status_id === '1') {
                             this.router.push({ name: 'AdminDashboardView' });
                         } else {
                             this.router.push({ name: 'DashboardView' });
                         }
                     });
-                
+
                 }
-                
+
 
             } catch (error) {
                 console.log("api store login function error :: ", error)
@@ -122,6 +125,7 @@ export const useAuthStore = defineStore('authStore', {
                 const res = await fetch(`/api/logout`, {
                     method: "POST",
                     headers: {
+                        "Content-Type": "multipart/form-data",
                         authorization: `Bearer ${localStorage.getItem('token')}`
                     }
                 })
@@ -153,6 +157,7 @@ export const useAuthStore = defineStore('authStore', {
                 const res = await fetch(`/api/users_test_api`, {
                     method: "GET",
                     headers: {
+                        "Content-Type": "multipart/form-data",
                         authorization: `Bearer ${localStorage.getItem('token')}`
                     }
                 })
@@ -168,7 +173,7 @@ export const useAuthStore = defineStore('authStore', {
         },
 
         // forget your password
-        async apiStoreResetPassword (formData) {
+        async apiStoreResetPassword(formData) {
             try {
                 const res = await fetch(`/api/forget_your_password`, {
                     method: "POST",
@@ -206,7 +211,7 @@ export const useAuthStore = defineStore('authStore', {
 
                             Swal.fire({
                                 title: "Reset Password Successful.",
-                                icon: "success",  
+                                icon: "success",
                             }).then(() => {
                                 this.router.push({ name: "HomeView" });
                             });

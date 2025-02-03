@@ -96,7 +96,9 @@ const closeDropdown = (event) => {
           <!-- *************** Profile dropdown Auth true************************** -->
           <div class="relative ml-3" v-if="authStore.storeUser">
             <!-- Button image profile dropdown -->
-            <div>
+            <div
+              v-for="(profileImage, index) in authStore.storeUser.user_login.user_profile.user_profile_image" :key="index"
+            >
               <button
                 type="button"
                 @click="toggleDropdown"
@@ -108,12 +110,14 @@ const closeDropdown = (event) => {
                 <span class="absolute -inset-1.5"></span>
                 <span class="sr-only">Open user menu</span>
                 <img
-                  class="size-8 rounded-full"
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt=""
+                  class="size-12 rounded-full"
+                  :src="'data:image/png;base64,' + profileImage.image_data"
+                  alt="userProfileImage"
                 />
+                
               </button>
             </div>
+            <label class="m-2 text-sm text-gray-100">{{ authStore.storeUser.name }}</label>
             <!-- Menu image profile dropdown -->
             <div
               v-if="isDropdownOpen"
