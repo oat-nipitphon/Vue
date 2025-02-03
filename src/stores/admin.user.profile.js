@@ -19,7 +19,6 @@ export const useAdminUserProfileStore = defineStore("adminUserProfileStore", {
                 });
 
                 const data = await res.json();
-
                 if (res.ok) {
                     return data.userProfiles;
                 } else {

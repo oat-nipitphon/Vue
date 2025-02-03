@@ -38,6 +38,7 @@ const {
   apiUploadImageUserProfile,
 } = useStoreUserProfile();
 
+const profileImage = ref(null);
 const formData = reactive({
   userID: "",
   name: "",
@@ -70,21 +71,21 @@ const age = computed(() => {
 
 onMounted(async () => {
   userProfile.value = await apiGetAllUserProfile(route.params.id);
+  console.log("View", userProfile.value);
   if (userProfile.value) {
     formData.userID = userProfile.value.id || "";
     formData.name = userProfile.value.name || "";
     formData.email = userProfile.value.email || "";
     formData.userName = userProfile.value.username || "";
-    formData.statusID = userProfile.value.status_user.id || "";
-    formData.statusName = userProfile.value.status_user.status_name || "";
-    formData.profileID = userProfile.value.user_profile.id || "";
-    formData.titleName = userProfile.value.user_profile.title_name || "";
-    formData.fullName = userProfile.value.user_profile.full_name || "";
-    formData.nickName = userProfile.value.user_profile.nick_name || "";
-    formData.telPhone = userProfile.value.user_profile.tel_phone || "";
-    formData.birthDay = userProfile.value.user_profile.birth_day || "";
-    // userProfileImage.value = userProfile.value.user_profile.user_profile_image.image_name || "";
-    // console.log("image :: ", userProfileImage.value);
+    formData.statusID = userProfile.value.statusUser.id || "";
+    formData.statusName = userProfile.value.statusUser.status_name || "";
+    formData.profileID = userProfile.value.userProfile.id || "";
+    formData.titleName = userProfile.value.userProfile.title_name || "";
+    formData.fullName = userProfile.value.userProfile.full_name || "";
+    formData.nickName = userProfile.value.userProfile.nick_name || "";
+    formData.telPhone = userProfile.value.userProfile.tel_phone || "";
+    formData.birthDay = userProfile.value.userProfile.birth_day || "";
+    profileImage.value = userProfile.value.userProfileImage || "";
   }
   statusUser.value = await apiGetStatusUser();
 });
@@ -109,14 +110,14 @@ const btnUpdateProfile = async () => {
               <!-- Card Profile left -->
               <!-- https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png -->
               <div class="space-y-4">
-                <div class="flex space-x-4">
-                  <img
-                    width="100%"
-                    height="100%"
-                    class="rounded-full w-96 h-96"
-                    src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png"
-                    alt="Helene avatar"
-                  />
+                <div class="flex space-x-4"
+                  v-for="(rowImage, index) in userProfile.userProfileImage" :key="index"
+                >
+                <img 
+                  class="h-180 w-90 m-auto"
+                  :src="`data:image/png;base64,` + rowImage.imageData"
+                  alt="profileImage"
+                >
                 </div>
                 <FileImageModal />
               </div>
@@ -128,7 +129,7 @@ const btnUpdateProfile = async () => {
                     Status account
                   </div>
                   <div class="text-gray-500 dark:text-gray-400">
-                    {{ userProfile.status_user.status_name }}
+                    {{ userProfile.statusUser.status_name }}
                   </div>
                 </div>
                 <div class="font-semibold text-gray-500 dark:text-white text-sm">
@@ -136,8 +137,8 @@ const btnUpdateProfile = async () => {
                     Full name
                   </div>
                   <div class="text-gray-500 dark:text-gray-400">
-                    {{ userProfile.user_profile.title_name }}
-                    {{ userProfile.user_profile.full_name }}
+                    {{ userProfile.userProfile.title_name }}
+                    {{ userProfile.userProfile.full_name }}
                   </div>
                 </div>
                 <div class="font-semibold text-gray-500 dark:text-white text-sm">
@@ -145,7 +146,7 @@ const btnUpdateProfile = async () => {
                     Nick Name
                   </div>
                   <div class="text-gray-500 dark:text-gray-400">
-                    {{ userProfile.user_profile.nick_name }}
+                    {{ userProfile.userProfile.nick_name }}
                   </div>
                 </div>
                 <div class="font-semibold text-gray-500 dark:text-white text-sm">
@@ -161,7 +162,7 @@ const btnUpdateProfile = async () => {
                     Tel phone
                   </div>
                   <div class="text-gray-500 dark:text-gray-400">
-                    {{ userProfile.user_profile.tel_phone }}
+                    {{ userProfile.userProfile.tel_phone }}
                   </div>
                 </div>
                 <div class="font-semibold text-gray-500 dark:text-white text-sm">
@@ -189,8 +190,8 @@ const btnUpdateProfile = async () => {
               <div class="space-y-4" v-if="isEventInputDetailProfile">
                 <!-- <form @submit.prevent="apiUpdateDetailUserProfile(formData)" > -->
 
+                <!-- Status Dropdown -->
                 <div class="font-semibold text-gray-500 dark:text-white text-sm">
-                  <!-- Status Dropdown -->
                   <div v-if="statusUser">
                     <label
                       for="status"
@@ -210,12 +211,11 @@ const btnUpdateProfile = async () => {
                         :key="status.id"
                         :value="status.id"
                       >
-                        <!-- Sta -->
                         {{ status.status_name }}
                       </option>
                     </select>
                     <label v-else class="text-gray-500 dark:text-gray-400">
-                      {{ userProfile.status_user.status_name }}
+                      {{ userProfile.statusUser.status_name }}
                     </label>
                   </div>
                   <div v-else>

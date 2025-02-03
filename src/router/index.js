@@ -9,6 +9,7 @@ import ForgetYourPasswordView from '@/views/ForgetYourPasswordView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 
 // --------------------------------- Zone ADMIN ------------------------------------------------
+import AdminDashboardView from '@/views/ADMIN/AdminDashboardView.vue'
 import AdminManagerPostView from '@/views/ADMIN/Posts/AdminManagerPostView.vue'
 import AdminManagerUserProfileView from '@/views/ADMIN/USER/AdminManagerUserProfileView.vue'
 
@@ -67,7 +68,7 @@ const router = createRouter({
     
     // ******* View users
     {
-      path: '/user_profile/show/:id',
+      path: '/user_profiles/show/:id',
       name: 'UserProfileDashboardView',
       component: UserProfileDashboardView,
       meta: { auth: true }
@@ -108,6 +109,12 @@ const router = createRouter({
 
     //  ------------------------------ Zone ADMIN Views ---------------------------------------------
  
+    {
+      path: '/AdminDashboardView',
+      name: 'AdminDashboardView',
+      component: AdminDashboardView,
+      meta: { auth: true } 
+    },
     {
       path: '/AdminManagerPostView',
       name: 'AdminManagerPostView',

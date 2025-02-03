@@ -7,7 +7,8 @@ import { useAdminPostStore } from "@/stores/admin.posts";
 const authStore = useAuthStore();
 
 // const items = ref(Array.from({ length: 100 }, (_, i) => `Item ${i + 1}`)); // ตัวอย่างข้อมูล 100 รายการ
-const { adminAPIGETposts } = useAdminPostStore();
+const { adminAPIGETposts, adminAPIPostBlockOrUnBlock, adminAPIPostDelete } =
+  useAdminPostStore();
 
 const posts = ref([]);
 const modalPostID = ref([]);
@@ -18,7 +19,7 @@ const modalUserProfileFullName = ref([]);
 const modalUserProfileFollowers = ref([]);
 
 const currentPage = ref(1); // กำหนดหน้าเริ่มต้น
-const itemsPerPage = ref(5); // จำนวนข้อมูลต่อหน้า
+const itemsPerPage = ref(20); // จำนวนข้อมูลต่อหน้า
 
 // คำนวณจำนวนหน้า
 const totalPages = computed(() =>
@@ -44,12 +45,9 @@ const prevPage = () => {
   }
 };
 
-const onDeletePost = async (postID) => {
-  console.log("on delete post ", postID);
-};
-
-const onBlockPost = async (postID) => {
-  console.log("on block post ".postID);
+const blockOrUnBlock = async (postID, blockStatus) => {
+  console.log("postID :: ", postID);
+  console.log("blockStatus :: ", blockStatus);
 };
 
 const modalValuePostContent = (post) => {
@@ -163,16 +161,25 @@ onMounted(async () => {
             </td>
             <td class="w-4 p-3 text-center m-1">
               <p
-                v-if="post.deletetion_status === 0"
-                class="text-green-600 text-sm text-center"
+                v-if="
+                  post.deletetion_status === 'false' &&
+                  post.block_status === 'false'
+                "
+                class="text-green-500 text-sm text-center"
               >
                 Normal
               </p>
               <p
-                v-if="post.deletetion_status === 1"
+                v-if="post.deletetion_status === 'true'"
                 class="text-red-600 text-sm text-center"
               >
                 Deletetion
+              </p>
+              <p
+                v-if="post.block_status === 'true'"
+                class="text-red-600 text-sm text-center"
+              >
+                ** Block Post **
               </p>
             </td>
             <td class="w-4 p-3 text-center m-1">
@@ -226,20 +233,46 @@ onMounted(async () => {
                 </div>
               </div>
             </td>
-            <td class="w-4 p-3 flex justify-items-center">
-              <button
-                @click="onDeletePost(post.id)"
-                class="m-1 btn btn-size btn-sm btn-danger text-sm"
-              >
-                Delete.
-              </button>
-
-              <button
-                @click="onBlockPost(post.id)"
-                class="m-1 btn btn-size btn-sm btn-secondary text-sm"
-              >
-                Block.
-              </button>
+            <td class="flex text-center">
+              <div class="dropdown m-auto">
+                <button
+                  class="dropdown-toggle btn btn-sm btn-event mt-2"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Event
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <label
+                      v-if="post.block_status === 'false'"
+                      type="button"
+                      @click="adminAPIPostBlockOrUnBlock(post.id, 'Block')"
+                      class="btn btn-block dropdown-item m-2"
+                    >
+                      Block
+                    </label>
+                    <label
+                      v-if="post.block_status === 'true'"
+                      type="button"
+                      @click="adminAPIPostBlockOrUnBlock(post.id, 'Unblock')"
+                      class="btn btn-unblock dropdown-item m-2"
+                    >
+                      Unblock
+                    </label>
+                  </li>
+                  <li>
+                    <label
+                      type="button"
+                      @click="adminAPIPostDelete(post.id)"
+                      class="btn btn-delete dropdown-item m-2"
+                    >
+                      Delete
+                    </label>
+                  </li>
+                </ul>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -274,8 +307,35 @@ onMounted(async () => {
   </div>
 </template>
 <style>
-.btn-size {
-  width: auto;
-  height: 30px;
+.btn-event {
+  background-color: #3498db; /* สีฟ้า */
+  color: white;
+  border-radius: 5px;
+}
+
+.dropdown-menu {
+  background-color: #f8f9fa; /* สีพื้นหลังเทาอ่อน */
+  border-radius: 8px;
+  padding: 8px 0;
+}
+
+.dropdown-item {
+  padding: 5px 5px;
+  border-radius: 5px;
+}
+
+.btn-block {
+  background-color: #f31212; /* สีส้ม */
+  color: white;
+}
+
+.btn-unblock {
+  background-color: #27ae60; /* สีเขียว */
+  color: white;
+}
+
+.btn-delete {
+  background-color: #ffffff; /* สีแดง */
+  color: black;
 }
 </style>
