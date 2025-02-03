@@ -22,7 +22,6 @@ import DetailPostView from '@/views/USER/Posts/DetailPostView.vue'
 import CreatePostNewView from '@/views/USER/Posts/CreatePostNewView.vue'
 import EditPostView from '@/views/USER/Posts/EditPostView.vue'
 import ReportRecoverPostsView from '@/views/USER/Posts/ReportRecoverPostsView.vue';
-import EditorTipTap from '@/views/EditorTipTap.vue'
 
 
 const router = createRouter({
@@ -86,12 +85,6 @@ const router = createRouter({
       name: 'CreatePostNewView',
       component: CreatePostNewView,
       meta: { auth: true }
-    },
-    {
-      path: '/EditorTiptap',
-      name: 'EditorTiptap',
-      components: EditorTipTap,
-      meta: { guest: true }
     },
     {
       path: '/posts/:id',

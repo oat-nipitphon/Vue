@@ -171,17 +171,16 @@ export const usePostStore = defineStore('postStore', {
 
                     const data = await res.json();
 
-                    if (data.ok) {
+                    if (res.ok) {
                         Swal.fire({
                             title: "Confirm",
                             text: "delete post successfully.",
                             icon: "success"
                         }).then(() => {
-                            this.storePost = data.post;
                             window.location.reload();
                         });
                     } else {
-                        console.log("store delete post res error ", data.error);
+                        console.error("store delete post res error ", data.error);
                     }
 
                 } else if (result.dismiss === Swal.DismissReason.cancel) {

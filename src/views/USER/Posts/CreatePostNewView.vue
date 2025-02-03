@@ -21,17 +21,12 @@ const form = ref({
 const imageFile = ref(null);
 const imageUrl = ref(null);
 
-const handleImageSelected = (event) => {
-  if (event.target.files.length === 0) {
-    return;
-  }
-  imageFile.value = event.target.files[0];
-  const file = imageFile.value;
-  imageUrl.value = URL.createObjectURL(file);
+const handleImageSelected = (e) => {
+  imageUrl.value = URL.createObjectURL(e.target.files[0]);
+  imageFile.value = e.target.files[0];
 };
 
 const onCreatePost = async () => {
-
   console.log(authAuth.storeUser.user_login.id);
   const formData = new FormData();
   formData.append("userID", authAuth.storeUser.user_login.id);
@@ -39,31 +34,31 @@ const onCreatePost = async () => {
   formData.append("content", form.value.content);
   formData.append("refer", form.value.refer);
   formData.append("typeID", form.value.typeID);
-  if (imageFile.value) {
-    formData.append("image", imageFile.value);
-  }
+  formData.append("imageFile", imageFile.value);
 
   // Pinia Store function action fetch api
   // await apiCreatePostNew(form);
 
-  // Axios function api
-  const response = await axiosAPI
-    .post(`/api/posts`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
-    .then((response) => {
-      console.log("Post created:", response.data);
-      router.push({ name: 'DashboardView' });
-    })
-    .catch((error) => {
-      console.error(
-        "Error creating post:",
-        error.response.data || error.message
-      );
-    });
+  try {
+    const response = await axiosAPI.post("/api/posts", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+
+  if (response.ok) {
+    console.log("create post successfully.");
+    router.push({ name: 'DashboardView' });
+  } else {
+    console.log("create response false ", response.error);
+  }
+
+  } catch (error) {
+    console.error("function on create post error ", error);
+  }
+
+
 
 };
 
@@ -72,7 +67,7 @@ const btnCancel = () => {
 };
 
 onMounted(async () => {
-    postTypes.value = await apiGetPostTypes();
+  postTypes.value = await apiGetPostTypes();
 });
 </script>
 

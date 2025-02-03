@@ -1,39 +1,5 @@
 <script setup>
-<<<<<<< HEAD
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { useEditor, EditorContent } from "@tiptap/vue-3";
-import StarterKit from "@tiptap/starter-kit";
-import Bold from "@tiptap/extension-bold";
-import Italic from "@tiptap/extension-italic";
-import TextStyle from "@tiptap/extension-text-style";
-import { Extension } from '@tiptap/core'
-=======
->>>>>>> master
 
-
-const router = useRouter();
-const form = ref({
-  title: "",
-  content: "",
-  userID: "",
-});
-
-// ใช้ useEditor อย่างถูกต้อง
-const editor = useEditor({
-  extensions: [
-    StarterKit, 
-    TextStyle, 
-  ],
-  content: "<p>เริ่มพิมพ์ที่นี่...</p>",
-});
-
-
-// ฟังก์ชันดึงข้อมูลจาก editor
-const getEditorContent = () => {
-  console.log(editor.value?.getHTML()); // ได้ HTML
-  console.log(editor.value?.getText()); // ได้ข้อความดิบ
-};
 </script>
 
 <template>
@@ -41,17 +7,6 @@ const getEditorContent = () => {
     <div class="w-full flex justify-center mt-10">
       <img class="icon-laravel" src="../assets/icon/laravel.png" alt="icon-laravel" />
       <img class="icon-vue" src="../assets/icon/vue.png" alt="icon-vue" />
-    </div>
-<<<<<<< HEAD
-    <div class="w-full flex justify-center mt-5">
-      <editor-content v-if="editor" :editor="editor" />
-    </div>
-=======
->>>>>>> master
-    <div class="w-full flex justify-center mt-5">
-      <button @click="getEditorContent" class="btn">
-        ดึงข้อมูลจาก Editor
-      </button>
     </div>
   </div>
 </template>
