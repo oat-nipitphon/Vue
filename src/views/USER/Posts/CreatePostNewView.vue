@@ -120,7 +120,7 @@ onMounted(async () => {
             imageUrl ||
             'https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg'
           "
-          class="w-48 h-48 object-cover"
+          class="w-auto h-48 object-cover"
           alt="ShowImageUrl"
         />
       </div>

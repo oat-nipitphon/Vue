@@ -26,9 +26,8 @@ export const useAuthStore = defineStore('authStore', {
                     });
 
                     if (res.ok) {
-                        const data = await res.json()
-                        console.log("auth store data user_login", data.user_login);
-                        this.storeUser = data;
+                        this.storeUser = await res.json();
+                        console.log("auth store data user_login", res.user_login);
                     } else {
                         console.error("Failed to fetch user data. Status:", res.status);
                         return;

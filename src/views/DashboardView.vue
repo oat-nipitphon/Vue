@@ -210,6 +210,7 @@ onMounted(async () => {
                         }"
                         class="dropdown-item btn btn-sm btn-warning m-2"
                       >
+                      {{ post.id }}
                         Edit
                       </RouterLink>
                     </li>
@@ -411,7 +412,7 @@ onMounted(async () => {
 }
 .ibox-image {
   width: 100%;
-  height: 150px;
+  height: 250px;
 }
 .ibox-userprofile-image {
   width: 150px;
