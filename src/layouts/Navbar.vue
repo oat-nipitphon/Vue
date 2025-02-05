@@ -45,16 +45,6 @@ const closeDropdown = (event) => {
         <div class="flex h-16 items-center justify-between">
           <!-- *********  Main Menu Login and Register Auth true **************** -->
           <div class="flex items-center">
-            <div class="shrink-0">
-              <RouterLink class="p-auto" :to="{ name: 'HomeView' }">
-                <img
-                  class="size-8"
-                  src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
-                  alt="Your Company"
-                />
-              </RouterLink>
-            </div>
-
             <div class="hidden md:block" v-if="authStore.storeUser">
               <div class="ml-10 flex items-baseline space-x-4">
                 <RouterLink
@@ -65,7 +55,7 @@ const closeDropdown = (event) => {
                    Home page
                 </RouterLink>
 
-                <!-- Navbar Developer OR Admin -->
+                
                 <div
                   v-if="storeUser.user_login.status_id === '1' || storeUser.user_login.status_id === '2'"
                 >
@@ -86,7 +76,7 @@ const closeDropdown = (event) => {
                         Manager UserProfile
                       </RouterLink>
                 </div>
-                <!-- Navbar Developer OR Admin -->
+                
 
               </div>
             </div>
@@ -110,14 +100,13 @@ const closeDropdown = (event) => {
                 <span class="absolute -inset-1.5"></span>
                 <span class="sr-only">Open user menu</span>
                 <img
-                  class="size-12 rounded-full"
+                  class="size-8 rounded-full"
                   :src="'data:image/png;base64,' + profileImage.image_data"
                   alt="userProfileImage"
                 />
                 
               </button>
             </div>
-            <label class="m-2 text-sm text-gray-100">{{ authStore.storeUser.name }}</label>
             <!-- Menu image profile dropdown -->
             <div
               v-if="isDropdownOpen"

@@ -82,7 +82,7 @@ onMounted(async () => {
           >
             <td class="w-2 py-2 text-center">
               <img
-                src="../../../LaravelAPI/public/storage/images/key.jpg"
+                src=""
                 class="w-50 h-10 m-auto"
                 alt="UserProfileImage"
               />

@@ -44,7 +44,6 @@ export const usePostStore = defineStore('postStore', {
                 const data = await res.json();
 
                 if (res.ok) {
-                    console.log("post store response ", data.posts);
                     return data.posts;
                 } else {
                     console.log("store get post response false :", data.error);
@@ -62,7 +61,7 @@ export const usePostStore = defineStore('postStore', {
                 })
 
                 const data = await res.json()
-                
+
                 if (res.ok) {
                     return data.post_types;
                 } else {
@@ -86,7 +85,8 @@ export const usePostStore = defineStore('postStore', {
                 const data = await res.json();
                 if (data.ok) {
                     this.storePost = data.createPostNew;
-                    this.router.push({ name: 'DashboardView' });
+                    const router = useRouter();
+                    router.push({ name: 'DashboardView' });
                 } else {
                     console.log("store function api create post new success", data.error);
                 }
@@ -95,56 +95,19 @@ export const usePostStore = defineStore('postStore', {
             }
         },
 
-        async apiEditPost(formData) {
+        async apiEditPost() {
             try {
 
                 const result = await Swal.fire({
-                    title: "Confirm Edit !",
+                    title: "Confirm Edit!",
                     text: "Are you sure you want to edit this post?",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#3085d6",
                     cancelButtonColor: "#d33",
                     confirmButtonText: "Confirm",
-                    cancelButtonText: "Cancel",
                 });
 
-                if (result.isConfirmed) {
-
-                    const res = await fetch(`/api/posts/${formData.postID}`, {
-                        method: "PUT",
-                        headers: {
-                            authorization: `Bearer ${localStorage.getItem('token')}`
-                        },
-                        body: JSON.stringify(formData)
-                    })
-
-                    const data = await res.json();
-
-                    if (data.ok) {
-                        Swal.fire({
-                            title: "Success.",
-                            text: "Edit post successfully.",
-                            icon: "success"
-                        }).then(() => {
-                            this.router.push({ name: 'DashboardView' });
-                        });
-
-                    } else {
-                        console.log("store edit post res false ", data.error);
-                    }
-
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    Swal.close();
-                } else {
-                    Swal.fire({
-                        title: "Edit Post Error",
-                        text: res.error,
-                        icon: "error"
-                    }).then(() => {
-                        console.log("store response error", res);
-                    });
-                }
             } catch (error) {
                 console.error("store api edit post error :", error);
             }
@@ -181,7 +144,7 @@ export const usePostStore = defineStore('postStore', {
                             text: "delete post successfully.",
                             icon: "success"
                         }).then(() => {
-                            window.location.reload();
+                            this.storePost = this.storePost.filter(post => post.id !== id);
                         });
                     } else {
                         console.error("store delete post res error ", data.error);
@@ -195,6 +158,133 @@ export const usePostStore = defineStore('postStore', {
 
             } catch (error) {
                 console.error("store apiDeletePost error", error);
+            }
+        },
+
+        async apiConfirmDelete(postID) {
+            try {
+
+                const result = await Swal.fire({
+                    title: "Confirm Delete!",
+                    text: "Are you sure you want to delete this post?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Confirm",
+                    cancelButtonText: "Cancel",
+                });
+
+                if (result.isConfirmed) {
+
+                    const res = await fetch(`/api/posts/confirmDelete/${postID}`, {
+                        method: "DELETE",
+                        headers: {
+                            authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+                    
+                    const data = await res.json();
+
+                    if (res.ok) {
+                        Swal.fire({
+                            title: "Success",
+                            text: "post delete successfully.",
+                            icon: "success",
+                            timer: 1000,
+                        }).then(() => {
+                            // this.storePost = this.storePost.filter(post => post.id !== postID);
+                            console.log("success");
+                        });
+                    } else {
+                        console.log("store apiDeleteConfirm response false or data error", data.error);
+                    }
+
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    Swal.close();
+                } else {
+                    console.log("store result swal false");
+                }
+
+            } catch (error) {
+                console.error("store function api delete confirm", error);
+            }
+        },
+
+        async apiRecoverGetPost(userID) {
+            try {
+                const response = await fetch(`/api/posts/report_recover/${userID}`, {
+                    method: "POST",
+                    headers: {
+                        authorization: `Bearer ${localStorage.getItem('token')}`
+                    },
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    console.log("store recover post data error", data.error);
+                }
+
+                return data.recoverPosts;
+
+
+            } catch (error) {
+                console.error("store recover get post error", error);
+            }
+        },
+
+        async apiRecoverPost(postID) {
+            try {
+
+                if (postID) {
+                    const result = await Swal.fire({
+                        title: "Your Recover Post ?",
+                        text: "your confirm recover post yes and on",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Confirm Recover.",
+                        cancelButtonText: "Cancel Recover."
+                    });
+
+                    if (result.dismiss === Swal.DismissReason.cancel) {
+
+                        console.log("store apiRecoverPost Cancel recover post");
+
+                    } else if (result.isConfirmed) {
+
+                        const response = await fetch(`/api/posts/recover/${postID}`, {
+                            method: "POST",
+                            headers: {
+                                authorization: `Bearer ${localStorage.getItem('token')}`
+                            },
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+
+                        Swal.fire({
+                            title: "Recover success.",
+                            text: "Post recover successfully.",
+                            icon: "success",
+                            timer: 800,
+                        }).then(() => {
+                            const router = useRouter();
+                            router.push({ name: 'DashboardView' });
+                        });
+
+                    } else {
+                        console.log("store recover post response false ", response.error);
+                    }
+
+                }
+
+            } catch (error) {
+                console.error("store recover get post error", error);
             }
         },
 

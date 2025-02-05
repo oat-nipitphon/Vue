@@ -16,7 +16,10 @@ const form = ref({
   content: "",
   refer: "",
   typeID: "",
+  newType: ""
 });
+
+const isNewType = ref(false);
 
 const imageFile = ref(null);
 const imageUrl = ref(null);
@@ -26,15 +29,28 @@ const handleImageSelected = (e) => {
   imageFile.value = e.target.files[0];
 };
 
+const onSelectType = () => {
+  if (form.value.typeID === "new") {
+    isNewType.value = true;
+    form.value.typeID = "";
+  }
+  console.log("form new type ", form.value.newType);
+};
+
 const onCreatePost = async () => {
-  console.log(authAuth.storeUser.user_login.id);
+
   const formData = new FormData();
   formData.append("userID", authAuth.storeUser.user_login.id);
   formData.append("title", form.value.title);
   formData.append("content", form.value.content);
   formData.append("refer", form.value.refer);
-  formData.append("typeID", form.value.typeID);
   formData.append("imageFile", imageFile.value);
+
+  if (form.value.typeID === "new") {
+    formData.append("newType", form.value.newType);
+  } else {
+    formData.append("typeID", form.value.typeID);
+  }
 
   // Pinia Store function action fetch api
   // await apiCreatePostNew(form);
@@ -50,15 +66,11 @@ const onCreatePost = async () => {
   if (response.ok) {
     console.log("create post successfully.");
     router.push({ name: 'DashboardView' });
-  } else {
-    console.log("create response false ", response.error);
   }
 
   } catch (error) {
     console.error("function on create post error ", error);
   }
-
-
 
 };
 
@@ -81,11 +93,18 @@ onMounted(async () => {
         <label for="Post-Type" class="mt-3 mb-3 text-gray-900 text-2x1">
           Post Type
         </label>
-        <select class="form-control" v-model="form.typeID">
+        <select class="form-control" v-model="form.typeID" @change="onSelectType">
           <option v-for="type in postTypes" :key="type.id" :value="type.id">
             {{ type.post_type_name }}
           </option>
+          <option value="new">add +</option>
         </select>
+      </div>
+      <div class="mt-2 text-md" v-if="isNewType">
+        <label for="Type-New" class="mt-3 mb-3 text-gray-900 text-2x1">
+          Type new
+        </label>
+        <input type="text" class="form-control" v-model="form.newType">
       </div>
       <div class="mt-2 text-sm">
         <label for="Post-Title"> Title </label>

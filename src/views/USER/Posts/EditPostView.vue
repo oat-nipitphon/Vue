@@ -1,4 +1,5 @@
 <script setup>
+import axiosAPI from "@/services/axiosAPI";
 import { ref, onMounted, reactive } from "vue";
 import { useRoute, RouterLink, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
@@ -10,21 +11,27 @@ const route = useRoute();
 const authStore = useAuthStore();
 const { apiGetPost, apiGetPostTypes, apiEditPost } = usePostStore();
 const { errors } = storeToRefs(usePostStore());
+
 const post = ref([]);
 const postTypes = ref([]);
 const imageFile = ref(null);
 const imageUrl = ref(null);
-const formData = reactive({
+const isShowImageData = ref(true);
+const isShowImageUrl = ref(false);
+
+const form = reactive({
+  userID: authStore.storeUser.user_login.id,
   postID: "",
   title: "",
   content: "",
   refer: "",
   typeID: "",
-  userID: authStore.storeUser.user_login.id,
+  newType: ""
 });
 
-const isShowImageData = ref(true);
-const isShowImageUrl = ref(false);
+// const newType = ref(null);
+const isNewType = ref(false);
+
 const handleImageSelected = (e) => {
   try {
     imageFile.value = e.target.files[0];
@@ -39,60 +46,101 @@ const handleImageSelected = (e) => {
   }
 };
 
-onMounted(async () => {
+const onSelectType = () => {
+  if (form.typeID === "new") {
+    isNewType.value = true;
+    form.typeID = "new";
+  }
+  console.log("form new type ", form.newType);
+};
 
-  // Get Post Edit API
+const onEditUpdate = async () => {
+
+  const formData = new FormData();
+  formData.append("userID", authStore.storeUser.user_login.id);
+  formData.append("postID", form.postID);
+  formData.append("title", form.title);
+  formData.append("content", form.content);
+  formData.append("refer", form.refer);
+  formData.append("imageFile", imageFile.value);
+  formData.append("newType", form.newType);
+  formData.append("typeID", form.typeID);
+
+
+
+
   try {
 
-    post.value = await apiGetPost(route.params.id);
+    // Pinia Store function action fetch api
+    await apiEditPost(formData);
+  
+  //   const response = await axiosAPI.post("/api/posts", formData, {
+  //   headers: {
+  //     "Content-Type": "multipart/form-data",
+  //     authorization: `Bearer ${localStorage.getItem("token")}`,
+  //   },
+  // });
 
-    if (post.value) {
+  // if (response.ok) {
+  //   console.log("create post successfully.");
+  //   console.log(response);
+  //   // router.push({ name: 'DashboardView' });
+  // }
 
-      formData.postID = post.value.id || [];
-      formData.title = post.value.title || [];
-      formData.content = post.value.content || [];
-      formData.refer = post.value.refer || [];
-      formData.typeID = post.value.postType.id || [];
-      formData.userID = post.value.userID || [];
-      imageFile.value =
-        post.value.postImage?.map((imgFile) => ({
-          id: imgFile.id,
-          imgData: imgFile.imageData,
-        })) || [];
-
-    }
+  // console.log("response update error", response.error);
 
   } catch (error) {
-    console.error("Error fetching post :", error);
+    console.error("function on create post error ", error);
   }
 
-  // Get Post Types API
-  try {
-    postTypes.value = await apiGetPostTypes();
-  } catch (error) {
-    console.error("Error fetching post types:", error);
-  }
-});
-
-const btnEditUpdate = async () => {
-  try {
-    const payload = new FormData();
-    payload.append();
-    await apiEditPost(payload);
-  } catch (error) {
-    console.error("function on update error", error);
-  }
 };
 
 const btnCancel = () => {
   router.push({ name: "DashboardView" });
 };
+
+onMounted(async () => {
+
+// Get Post Edit API
+try {
+
+  post.value = await apiGetPost(route.params.id);
+
+  if (post.value) {
+
+    form.postID = post.value.id || [];
+    form.title = post.value.title || [];
+    form.content = post.value.content || [];
+    form.refer = post.value.refer || [];
+    form.typeID = post.value.postType.id || [];
+    form.userID = post.value.userID || [];
+    imageFile.value =
+      post.value.postImage?.map((imgFile) => ({
+        id: imgFile.id,
+        imgData: imgFile.imageData,
+      })) || [];
+
+  }
+
+} catch (error) {
+  console.error("Error fetching post :", error);
+}
+
+// Get Post Types API
+try {
+  postTypes.value = await apiGetPostTypes();
+} catch (error) {
+  console.error("Error fetching post types:", error);
+}
+});
+
 </script>
 <template>
   <div v-if="post">
     <div class="container">
+      <!-- <form class="w-10/12 m-auto p-2 mt-5" @submit.prevent="apiEditPost(form)"> -->
       <div class="mt-10 text-md">
-        <label for="Create Post New"> Create Post New. </label>
+        <label for="Create Post New"> Edit Post</label>
         <div class="mt-2 text-md">
           <label
             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -103,22 +151,31 @@ const btnCancel = () => {
           <select
             id="PostType"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            v-model="formData.typeID"
+            v-model="form.typeID"
+            @change="onSelectType"
           >
             <option v-for="type in postTypes" :key="type.id" :value="type.id">
               {{ type.post_type_name }}
             </option>
+            <option value="new">
+              add +
+            </option>
           </select>
-          <label>Select your country</label>
+        </div>
+        <div
+          v-if="isNewType"
+        >
+          <label for="newType" class="text-gray-900 text-sm">New Type</label>
+          <input type="text" v-model="form.newType" class="form-control">
         </div>
         <div class="mt-2 text-sm">
           <label for="Post-Title"> Title </label>
-          <input v-model="formData.title" type="text" class="form-control" />
+          <input v-model="form.title" type="text" class="form-control" />
         </div>
         <div class="mt-2 text-md">
           <label for="Post-Content"> Content </label>
           <textarea
-            v-model="formData.content"
+            v-model="form.content"
             class="form-control"
             rows="5"
             cols="10"
@@ -126,7 +183,7 @@ const btnCancel = () => {
         </div>
         <div class="mt-2 text-md">
           <label for="Post-Refer"> Refer </label>
-          <input v-model="formData.refer" type="text" class="form-control" />
+          <input v-model="form.refer" type="text" class="form-control" />
         </div>
         <div class="w-full mt-5">
           <div class="m-auto flex justify-center">
@@ -170,8 +227,8 @@ const btnCancel = () => {
         </div>
         <div class="mt-10 flex justify-end">
           <button
-            @click="btnEditUpdate"
-            type="button"
+          @click="onEditUpdate"
+            type="submit"
             class="m-5 text-back inline-flex justify-end bg-yellow-300 hover:bg-yellow-300 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-yellow-300 dark:hover:bg-yellow-300 dark:focus:ring-yellow-300"
           >
             <svg
@@ -192,7 +249,11 @@ const btnCancel = () => {
             </svg>
             Update
           </button>
-          <button
+        </div>
+      </div>
+      <!-- </form> -->
+      <div class="flex justify-end mt-5">
+        <button
             @click="btnCancel"
             type="button"
             class="m-5 inline-flex justify-end text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
@@ -212,7 +273,6 @@ const btnCancel = () => {
             </svg>
             Cancel
           </button>
-        </div>
       </div>
     </div>
   </div>
