@@ -6,14 +6,22 @@ import { storeToRefs } from "pinia";
 
 const { errors } = storeToRefs(useAuthStore());
 const { apiStoreRegister } = useAuthStore();
+const userStatus = ref([]);
 
-const userStatusID = ref(null);
-const statusUser = async () => {
+const getStatusUser = async () => {
   try {
-    const response = await axios.get("http://localhost:8000/api/status_user");
-    userStatusID.value = response.data.status_user;
+    const res = await fetch(`/api/status_user`, {
+      method: "GET",
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      userStatus.value = data.userStatus;
+      console.log(userStatus.value);
+    }
+
   } catch (error) {
-    console.error("Error fetching user status:", error);
+    console.error("register view get status user error", error);
   }
 };
 
@@ -32,7 +40,9 @@ const passwordConfirmErrorMessage = computed(() => {
   return "";
 });
 
-onMounted(statusUser);
+onMounted(async () => {
+  getStatusUser();
+});
 </script>
 
 <template>
@@ -48,20 +58,19 @@ onMounted(statusUser);
         @submit.prevent="apiStoreRegister(`register`, formData)"
       >
         <!-- Status Dropdown -->
-        <div v-if="userStatusID">
-          <label for="status" class="block text-sm font-medium text-gray-900">
-            Select your status account
+        <div>
+          <label for="User-Status" class="block text-sm font-medium text-gray-900">
+            Status
           </label>
           <select
             id="status"
             v-model="formData.statusID"
             class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
+            placeholder="selete user status"
           >
             <option value="null" disabled>Select your status</option>
             <option
-              v-for="status in userStatusID"
-              :key="status.id"
-              :value="status.id"
+              v-for="status in userStatus" :key="status.id" :value="status.id"
             >
               {{ status.status_name }}
             </option>

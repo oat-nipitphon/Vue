@@ -73,12 +73,6 @@ export const useAdminPostStore = defineStore("adminPostStore", {
 
                 }
 
-                // else if (result.dismiss === Swal.DismissReason.cancel) {
-                //     Swal.close();
-                // } else {
-                //     Swal.close();
-                // }
-
             } catch (error) {
                 console.error("Admin delete post function error:", error);
                 Swal.fire({

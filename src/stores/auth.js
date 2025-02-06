@@ -9,70 +9,45 @@ export const useAuthStore = defineStore('authStore', {
     }),
     actions: {
 
-        // call token auth login router index vue 
         async apiAuthStore() {
-
             try {
                 const token = localStorage.getItem('token');
-
                 if (token) {
-
                     const res = await fetch(`/api/user`, {
                         method: "GET",
                         headers: {
                             "Content-Type": "multipart/form-data",
-                            authorization: `Bearer ${localStorage.getItem('token')}`
+                            authorization: `Bearer ${token}`
                         },
                     });
-
                     if (res.ok) {
                         this.storeUser = await res.json();
-                        console.log("auth store data user_login", res.user_login);
-                    } else {
-                        console.error("Failed to fetch user data. Status:", res.status);
-                        return;
                     }
-
-                } else {
-                    // console.log("No token found.")
                 }
             } catch (error) {
                 console.error("Error in apiAuthStore:", error)
             }
         },
 
-        // register
         async apiStoreRegister(apiRouter, formData) {
+            const res = await fetch(`/api/${apiRouter}`, {
+                method: "POST",
+                body: JSON.stringify(formData),
+            });
 
-            try {
-                const res = await fetch(`/api/${apiRouter}`, {
-                    method: "POST",
-                    body: JSON.stringify(formData),
+            const data = await res.json();
+
+            if (res.ok) {
+                Swal.fire({
+                    title: "Success",
+                    text: "Register account successfully.",
+                    icon: "success",
+                    timer: 1200,
+                }).then(() => {
+                    localStorage.setItem('token', data.token);
+                    this.storeUser = data.user;
+                    this.router.push({ name: 'DashboardView' });
                 });
-
-                const data = await res.json();
-
-                if (res.ok) {
-
-
-                    Swal.fire({
-                        title: "New Account.",
-                        text: "Register account successfully.",
-                        icon: "success",
-                        timer: 1200,
-                        timerProgressBar: true,
-                    }).then(() => {
-                        localStorage.setItem('token', data.token);
-                        this.storeUser = data.user;
-                        this.router.push({ name: 'DashboardView' }); // Use router instance
-                    });
-
-                } else {
-                    console.error("Registration failed:", data.error);
-                }
-
-            } catch (error) {
-                console.error("Error in apiStoreRegister:", error);
             }
         },
 
@@ -94,9 +69,8 @@ export const useAuthStore = defineStore('authStore', {
                         title: "Login success.",
                         text: "You login successfully, welcome to my world!",
                         icon: "success",
+                        timer: 1200,
                     }).then(() => {
-                        Swal.close();
-
                         if (data.user.status_id === '1') {
                             this.router.push({ name: 'AdminDashboardView' });
                         } else {
