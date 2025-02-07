@@ -25,7 +25,7 @@ onMounted(async () => {
       </RouterLink>
     </div>
     <div class="w-full">
-      <!-- <AdminTableReportPost /> -->
+      <AdminTableReportPost />
     </div>
   </div>
 </template>

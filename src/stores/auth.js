@@ -25,7 +25,11 @@ export const useAuthStore = defineStore('authStore', {
                     }
                 }
             } catch (error) {
-                console.error("Error in apiAuthStore:", error)
+                Swal.fire({
+                    title: "Error",
+                    text: error,
+                    icon: "error",
+                });
             }
         },
 
@@ -54,22 +58,26 @@ export const useAuthStore = defineStore('authStore', {
         // login
         async apiStoreLogin(apiRouter, formData) {
             try {
-
                 const res = await fetch(`/api/${apiRouter}`, {
                     method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
                     body: JSON.stringify(formData)
-                })
+                });
 
                 const data = await res.json();
 
-                if (res.ok) {
+                if (res.status === 200) {
+
                     localStorage.setItem('token', data.token);
 
                     Swal.fire({
                         title: "Login success.",
                         text: "You login successfully, welcome to my world!",
                         icon: "success",
-                        timer: 1200,
+                        showConfirmButton: false,
+                        timer: 1500,
                     }).then(() => {
                         if (data.user.status_id === '1') {
                             this.router.push({ name: 'AdminDashboardView' });
@@ -77,14 +85,28 @@ export const useAuthStore = defineStore('authStore', {
                             this.router.push({ name: 'DashboardView' });
                         }
                     });
-
+                } else {
+                    Swal.fire({
+                        title: "Login failed.",
+                        text: "Incorrect system access information!",
+                        icon: "error",
+                        confirmButtonText: "Try Again",
+                        cancelButtonText: "Cancel"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Swal.close;
+                        }
+                    });
                 }
-
-
             } catch (error) {
-                console.log("api store login function error :: ", error)
+                Swal.fire({
+                    title: "Error",
+                    text: error,
+                    icon: "error",
+                });
             }
         },
+
 
         // logout
         async apiStoreLogout() {
@@ -95,32 +117,51 @@ export const useAuthStore = defineStore('authStore', {
                     console.error('token false.')
                     return
                 }
-                const res = await fetch(`/api/logout`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                        authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                })
-                if (res.ok) {
-                    this.storeUser = null
-                    this.errors = {}
-                    localStorage.removeItem('token')
-                    Swal.fire({
-                        title: "Logout success.",
-                        text: "You logout successfully bye bye bye!",
-                        icon: "success",
-                        timer: 1200,
-                        timerProgressBar: true,
-                    }).then(() => {
-                        this.router.push({ name: 'HomeView' })
+                const result = await Swal.fire({
+                    title: "Confirm Logout",
+                    text: "Do you want to confirm logout ?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Confirm",
+                    cancelButtonText: "Cancel"
+                });
+
+                if (result.isConfirmed) {
+
+                    const res = await fetch(`/api/logout`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                            authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
                     })
-                } else {
-                    console.log("api store logout res false :: ", res)
+
+                    if (res.status === 200) {
+
+                        this.storeUser = null;
+                        this.errors = {};
+                        localStorage.removeItem('token')
+
+                        Swal.fire({
+                            title: "Logout success.",
+                            text: "You logout successfully bye bye bye!",
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 1500,
+                        }).then(() => {
+                            this.router.push({ name: 'HomeView' })
+                        })
+                    }
                 }
 
             } catch (error) {
-                console.error("api store logout function error :: ", error)
+                Swal.fire({
+                    title: "Error",
+                    text: error,
+                    icon: "error",
+                });
             }
         },
 
@@ -141,7 +182,11 @@ export const useAuthStore = defineStore('authStore', {
                     console.log("api store users res false ", res)
                 }
             } catch (error) {
-                console.error("api store function error :", error)
+                Swal.fire({
+                    title: "Error",
+                    text: error,
+                    icon: "error",
+                });
             }
         },
 
@@ -201,7 +246,11 @@ export const useAuthStore = defineStore('authStore', {
                 }
 
             } catch (error) {
-                console.error("api store reset password error :: ", error)
+                Swal.fire({
+                    title: "Error",
+                    text: error,
+                    icon: "error",
+                });
             }
         },
 
