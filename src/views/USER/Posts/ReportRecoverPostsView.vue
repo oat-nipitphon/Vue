@@ -67,19 +67,20 @@ onMounted(async () => {
             </td>
             <td class="w-2 py-2 text-center">
               <form @submit.prevent="apiRecoverPost(post.id)">
-                <button type="button" class="btn btn-sm btn-success m-auto">
+                <button type="submit" class="btn btn-sm btn-success m-auto">
                   <span class="text-sm"> Recover </span>
                 </button>
               </form>
             </td>
             <td class="w-2 py-2 text-center">
-              <button
-                @click="apiConfirmDelete(post.id)"
-                type="button"
+              <form @submit.prevent="apiConfirmDelete(post.id)">
+                <button
+                type="submit"
                 class="btn btn-sm btn-danger"
               >
                 Delete
               </button>
+              </form>
             </td>
           </tr>
         </tbody>

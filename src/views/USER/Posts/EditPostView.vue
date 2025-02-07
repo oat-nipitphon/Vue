@@ -1,4 +1,5 @@
 <script setup>
+import Swal from "sweetalert2";
 import axiosAPI from "@/services/axiosAPI";
 import { ref, onMounted, reactive } from "vue";
 import { useRoute, RouterLink, useRouter } from "vue-router";
@@ -19,6 +20,7 @@ const imageUrl = ref(null);
 const isShowImageData = ref(true);
 const isShowImageUrl = ref(false);
 
+// console.log("user ID ", authStore.storeUser.user_login.id);
 const form = reactive({
   userID: authStore.storeUser.user_login.id,
   postID: "",
@@ -26,7 +28,7 @@ const form = reactive({
   content: "",
   refer: "",
   typeID: "",
-  newType: ""
+  newType: "",
 });
 
 // const newType = ref(null);
@@ -55,44 +57,59 @@ const onSelectType = () => {
 };
 
 const onEditUpdate = async () => {
-
   const formData = new FormData();
-  formData.append("userID", authStore.storeUser.user_login.id);
+  formData.append("userID", form.userID);
   formData.append("postID", form.postID);
   formData.append("title", form.title);
   formData.append("content", form.content);
   formData.append("refer", form.refer);
-  formData.append("imageFile", imageFile.value);
-  formData.append("newType", form.newType);
-  formData.append("typeID", form.typeID);
 
+  if (imageFile.value) {
+    formData.append("imageFile", imageFile.value);
+  } 
 
-
-
-  try {
-
-    // Pinia Store function action fetch api
-    await apiEditPost(formData);
-  
-  //   const response = await axiosAPI.post("/api/posts", formData, {
-  //   headers: {
-  //     "Content-Type": "multipart/form-data",
-  //     authorization: `Bearer ${localStorage.getItem("token")}`,
-  //   },
-  // });
-
-  // if (response.ok) {
-  //   console.log("create post successfully.");
-  //   console.log(response);
-  //   // router.push({ name: 'DashboardView' });
-  // }
-
-  // console.log("response update error", response.error);
-
-  } catch (error) {
-    console.error("function on create post error ", error);
+  if (form.typeID === "new") {
+    formData.append("newType", form.newType);
+  } else {
+    formData.append("typeID", form.typeID);
   }
 
+  try {
+    const response = await axiosAPI.post("/api/posts/update", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    console.log(response);
+    if (response.status === 200) {
+      Swal.fire({
+      title: "Edit Post!",
+      text: "Your confirm edit new post?",
+      icon: "warning",
+      showCancelButton: true,
+      cancelButtonColor: "#d33",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#3085d6",
+      confirmButtonText: "Confirm",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Success",
+          text: "Edit post successfullry.",
+          icon: "success",
+          timer: 1500,
+        }).then(() => {
+          router.push({ name: "DashboardView" });
+        });
+      }
+    });
+    }
+
+  } catch (error) {
+    console.error("function on update post error ", error);
+  }
 };
 
 const btnCancel = () => {
@@ -100,40 +117,39 @@ const btnCancel = () => {
 };
 
 onMounted(async () => {
+  // Get Post Edit API
+  try {
+    post.value = await apiGetPost(route.params.id);
 
-// Get Post Edit API
-try {
+    if (post.value) {
+      form.postID = post.value.id || [];
+      form.title = post.value.title || [];
+      form.content = post.value.content || [];
+      form.refer = post.value.refer || [];
+      form.typeID = post.value.postType.id || [];
+      form.userID = post.value.userID || [];
+      imageFile.value =
+        post.value.postImage?.map((imgFile) => ({
+          id: imgFile.id,
+          imgData: imgFile.imageData,
+        })) || [];
 
-  post.value = await apiGetPost(route.params.id);
+        console.log("form post ID", form.postID);
+    }
 
-  if (post.value) {
 
-    form.postID = post.value.id || [];
-    form.title = post.value.title || [];
-    form.content = post.value.content || [];
-    form.refer = post.value.refer || [];
-    form.typeID = post.value.postType.id || [];
-    form.userID = post.value.userID || [];
-    imageFile.value =
-      post.value.postImage?.map((imgFile) => ({
-        id: imgFile.id,
-        imgData: imgFile.imageData,
-      })) || [];
 
+  } catch (error) {
+    console.error("Error fetching post :", error);
   }
 
-} catch (error) {
-  console.error("Error fetching post :", error);
-}
-
-// Get Post Types API
-try {
-  postTypes.value = await apiGetPostTypes();
-} catch (error) {
-  console.error("Error fetching post types:", error);
-}
+  // Get Post Types API
+  try {
+    postTypes.value = await apiGetPostTypes();
+  } catch (error) {
+    console.error("Error fetching post types:", error);
+  }
 });
-
 </script>
 <template>
   <div v-if="post">
@@ -157,16 +173,12 @@ try {
             <option v-for="type in postTypes" :key="type.id" :value="type.id">
               {{ type.post_type_name }}
             </option>
-            <option value="new">
-              add +
-            </option>
+            <option value="new">add +</option>
           </select>
         </div>
-        <div
-          v-if="isNewType"
-        >
+        <div v-if="isNewType">
           <label for="newType" class="text-gray-900 text-sm">New Type</label>
-          <input type="text" v-model="form.newType" class="form-control">
+          <input type="text" v-model="form.newType" class="form-control" />
         </div>
         <div class="mt-2 text-sm">
           <label for="Post-Title"> Title </label>
@@ -227,7 +239,7 @@ try {
         </div>
         <div class="mt-10 flex justify-end">
           <button
-          @click="onEditUpdate"
+            @click="onEditUpdate"
             type="submit"
             class="m-5 text-back inline-flex justify-end bg-yellow-300 hover:bg-yellow-300 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-yellow-300 dark:hover:bg-yellow-300 dark:focus:ring-yellow-300"
           >
@@ -254,25 +266,25 @@ try {
       <!-- </form> -->
       <div class="flex justify-end mt-5">
         <button
-            @click="btnCancel"
-            type="button"
-            class="m-5 inline-flex justify-end text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
+          @click="btnCancel"
+          type="button"
+          class="m-5 inline-flex justify-end text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
+        >
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5 mr-1.5 -ml-1"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <svg
-              aria-hidden="true"
-              class="w-5 h-5 mr-1.5 -ml-1"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                clip-rule="evenodd"
-              ></path>
-            </svg>
-            Cancel
-          </button>
+            <path
+              fill-rule="evenodd"
+              d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+          Cancel
+        </button>
       </div>
     </div>
   </div>

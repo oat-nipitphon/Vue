@@ -143,11 +143,9 @@ export const usePostStore = defineStore('postStore', {
                             text: "delete post successfully.",
                             icon: "success"
                         }).then(() => {
-                            this.storePost = this.storePost.filter(post => post.id !== id);
+                            window.location.reload();
                         });
                     } 
-
-                    console.error("error store post delete", data.error);
 
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
                     Swal.close()
@@ -160,12 +158,12 @@ export const usePostStore = defineStore('postStore', {
             }
         },
 
-        async apiConfirmDelete(postID) {
+        async apiStorePost(postID) {
             try {
 
                 const result = await Swal.fire({
-                    title: "Confirm Delete!",
-                    text: "Are you sure you want to delete this post?",
+                    title: "Confirm Store !",
+                    text: "Are you sure you want to store this post?",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#3085d6",
@@ -176,8 +174,8 @@ export const usePostStore = defineStore('postStore', {
 
                 if (result.isConfirmed) {
 
-                    const res = await fetch(`/api/posts/confirmDelete/${postID}`, {
-                        method: "DELETE",
+                    const res = await fetch(`/api/posts/store/${postID}`, {
+                        method: "POST",
                         headers: {
                             authorization: `Bearer ${localStorage.getItem('token')}`
                         }
@@ -188,15 +186,14 @@ export const usePostStore = defineStore('postStore', {
                     if (res.ok) {
                         Swal.fire({
                             title: "Success",
-                            text: "post delete successfully.",
+                            text: "store post successfully.",
                             icon: "success",
-                            timer: 1000,
+                            timer: 1500,
                         }).then(() => {
-                            // this.storePost = this.storePost.filter(post => post.id !== postID);
-                            console.log("success");
+                            window.location.reload();
                         });
                     } else {
-                        console.log("store apiDeleteConfirm response false or data error", data.error);
+                        console.log("store apiStorePost response false or data error", data.error);
                     }
 
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -206,7 +203,7 @@ export const usePostStore = defineStore('postStore', {
                 }
 
             } catch (error) {
-                console.error("store function api delete confirm", error);
+                console.error("store function api store confirm", error);
             }
         },
 
@@ -261,21 +258,17 @@ export const usePostStore = defineStore('postStore', {
                             },
                         });
 
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
+                        if (response.ok) {
+                            Swal.fire({
+                                title: "Recover success.",
+                                text: "Post recover successfully.",
+                                icon: "success",
+                                timer: 1500,
+                            }).then(() => {
+                                console.log("recover post success");
+                                window.location.reload();
+                            });
                         }
-
-
-                        Swal.fire({
-                            title: "Recover success.",
-                            text: "Post recover successfully.",
-                            icon: "success",
-                            timer: 800,
-                        }).then(() => {
-                            const router = useRouter();
-                            router.push({ name: 'DashboardView' });
-                        });
-
                     } else {
                         console.log("store recover post response false ", response.error);
                     }

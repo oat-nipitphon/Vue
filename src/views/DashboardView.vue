@@ -7,8 +7,13 @@ import { usePostStore } from "@/stores/post";
 const authStore = useAuthStore();
 const userID = ref(authStore.storeUser?.user_login?.id || null);
 
-const { apiGetPosts, apiDeletePost, apiPostPopLike, apiPostPopDisLike } =
-  usePostStore();
+const {
+  apiGetPosts,
+  apiStorePost,
+  apiDeletePost,
+  apiPostPopLike,
+  apiPostPopDisLike,
+} = usePostStore();
 const posts = ref([]);
 const selectedPostContent = ref([]);
 const selectedUserProfile = ref([]);
@@ -53,12 +58,6 @@ const handleDislike = async (post) => {
 
 const modalValuePostContent = (content) => {
   selectedPostContent.value = content;
-};
-
-const btnDeletePost = async (id) => {
-  const postDelete = await apiDeletePost(id);
-  console.log(postDelete);
-  // posts.value = posts.value.filter((post) => post.id !== id); // Remove from UI
 };
 
 const formatDate = (dateString) => {
@@ -119,11 +118,9 @@ onMounted(async () => {
                           @click="onModalShowUserProfile(profileImage)"
                           data-bs-toggle="modal"
                           data-bs-target="#modalShowUserProfileCreatePost"
-                          class="size-15 rounded"
+                          class="ibox-image-profile rounded-full"
                           alt="ImageUserProfile"
-                          :src="
-                            'data:image/png;base64,' + profileImage.imageData
-                          "
+                          :src="`${profileImage.imageData}`"
                         />
                       </div>
                       <!-- Modal show user profile detail -->
@@ -165,9 +162,12 @@ onMounted(async () => {
                     <!-- Start Card User Profile Image Followers Popualiry -->
                     <div class="col-md-2 m-1">
                       <div class="row">
-                       <label for="FullName-UserProfile" class="text-lg text-gray-900">
-                        {{ post.user.username }}
-                       </label>
+                        <label
+                          for="FullName-UserProfile"
+                          class="text-lg text-gray-900"
+                        >
+                          {{ post.user.username }}
+                        </label>
                       </div>
                       <div class="row text-center mt-3">
                         <div class="col-md-6">
@@ -179,9 +179,11 @@ onMounted(async () => {
                             fill="currentColor"
                             viewBox="0 0 16 16"
                           >
-                          <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                            <path
+                              fill-rule="evenodd"
+                              d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
+                            />
                           </svg>
-                          
                         </div>
                         <div class="col-md-6">
                           <svg
@@ -225,6 +227,18 @@ onMounted(async () => {
                     </svg>
                     <ul class="dropdown-menu">
                       <li>
+                        <form @submit.prevent="apiStorePost(post.id)">
+                          <button class="dropdown-item" type="submit">
+                            <label
+                              for="Event-Store"
+                              class="text-sm text-gray-900"
+                            >
+                              Store
+                            </label>
+                          </button>
+                        </form>
+                      </li>
+                      <li>
                         <RouterLink
                           :to="{
                             name: 'EditPostView',
@@ -242,7 +256,7 @@ onMounted(async () => {
                       </li>
                       <li>
                         <button
-                          @click="btnDeletePost(post.id)"
+                          @click="apiDeletePost(post.id)"
                           class="dropdown-item"
                         >
                           <label
@@ -458,8 +472,8 @@ onMounted(async () => {
   width: 100%;
   height: 320px;
 }
-.ibox-userprofile-image {
-  width: 150px;
-  height: 150px;
+.ibox-image-profile {
+  width: 90px;
+  height: 70px;
 }
 </style>

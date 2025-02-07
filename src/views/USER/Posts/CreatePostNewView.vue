@@ -1,5 +1,5 @@
 <script setup>
-import axios from "axios";
+import Swal from "sweetalert2";
 import axiosAPI from "@/services/axiosAPI";
 import { ref, onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";
@@ -16,11 +16,13 @@ const form = ref({
   content: "",
   refer: "",
   typeID: "",
-  newType: ""
+  newType: "",
 });
 
 const isNewType = ref(false);
 
+const imageFileBasic = ref(null);
+imageFileBasic.value = "https://scontent.fkkc3-1.fna.fbcdn.net/v/t39.30808-6/461897536_3707658799483986_794048670785055411_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeHVG0UH5FgwbVkdtl70b39it0I862Qbciu3QjzrZBtyK4PmJExwkjQwGNMpc0Sbm9HeXRE2Yi7Fvc_GrvrUrXJN&_nc_ohc=pQ4M4LiSPCcQ7kNvgG9_eZm&_nc_oc=AdhODB76hbqSN1gojgQ0Qq6D7lQv-Vn-JZhJdzoX-r6dgACwHNvmdNDKiqapObYu7JNiSz3NNQKlb359fz2DNJs3&_nc_zt=23&_nc_ht=scontent.fkkc3-1.fna&_nc_gid=AOUeEXHhWhEXESqz8T9UQbq&oh=00_AYCjcN5cI21D3BpxKTLg5zdiLZhSzRrjFbqI0EWHQOE-zA&oe=67AC3071";
 const imageFile = ref(null);
 const imageUrl = ref(null);
 
@@ -38,13 +40,17 @@ const onSelectType = () => {
 };
 
 const onCreatePost = async () => {
-
   const formData = new FormData();
   formData.append("userID", authAuth.storeUser.user_login.id);
   formData.append("title", form.value.title);
   formData.append("content", form.value.content);
   formData.append("refer", form.value.refer);
-  formData.append("imageFile", imageFile.value);
+ 
+  if (imageFile.value) {
+    formData.append("imageFile", imageFile.value);
+  } else {
+    formData.append("imageFile", imageFileBasic.value);
+  }
 
   if (form.value.typeID === "new") {
     formData.append("newType", form.value.newType);
@@ -57,23 +63,36 @@ const onCreatePost = async () => {
 
   try {
     const response = await axiosAPI.post("/api/posts", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-      authorization: `Bearer ${localStorage.getItem("token")}`,
-    }
-  });
+      headers: {
+        "Content-Type": "multipart/form-data",
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
 
-  if (!response.status === 200) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  console.log("create post successfully");
-  router.push({ name: 'DashboardView' });
-
+    Swal.fire({
+      title: "New Post!",
+      text: "Your confirm create new post?",
+      icon: "warning",
+      showCancelButton: true,
+      cancelButtonColor: "#d33",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#3085d6",
+      confirmButtonText: "Confirm",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Success",
+          text: "Create new successfullry.",
+          icon: "success",
+          timer: 1500,
+        }).then(() => {
+          router.push({ name: "DashboardView" });
+        });
+      }
+    });
   } catch (error) {
     console.error("function on create post error ", error);
   }
-
 };
 
 const btnCancel = () => {
@@ -96,7 +115,11 @@ onMounted(async () => {
         <label for="Post-Type" class="mt-3 mb-3 text-gray-900 text-2x1">
           Post Type
         </label>
-        <select class="form-control" v-model="form.typeID" @change="onSelectType">
+        <select
+          class="form-control"
+          v-model="form.typeID"
+          @change="onSelectType"
+        >
           <option v-for="type in postTypes" :key="type.id" :value="type.id">
             {{ type.post_type_name }}
           </option>
@@ -107,7 +130,7 @@ onMounted(async () => {
         <label for="Type-New" class="mt-3 mb-3 text-gray-900 text-2x1">
           Type new
         </label>
-        <input type="text" class="form-control" v-model="form.newType">
+        <input type="text" class="form-control" v-model="form.newType" />
       </div>
       <div class="mt-2 text-sm">
         <label for="Post-Title"> Title </label>
