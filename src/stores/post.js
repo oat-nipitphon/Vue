@@ -19,7 +19,6 @@ export const usePostStore = defineStore('postStore', {
                     }
                 });
                 const data = await res.json();
-                console.log("post store response ", res.posts);
                 if (res.ok) {
                     return data.posts;
                 } else {
@@ -56,14 +55,14 @@ export const usePostStore = defineStore('postStore', {
 
         async apiGetPostTypes() {
             try {
-                const res = await fetch(`/api/post_types`, {
+                const res = await fetch(`/api/postTypes`, {
                     method: "GET"
                 })
 
                 const data = await res.json()
 
                 if (res.ok) {
-                    return data.post_types;
+                    return data.postTypes;
                 } else {
                     console.log("data post type false", data.error)
                 }
@@ -146,9 +145,9 @@ export const usePostStore = defineStore('postStore', {
                         }).then(() => {
                             this.storePost = this.storePost.filter(post => post.id !== id);
                         });
-                    } else {
-                        console.error("store delete post res error ", data.error);
-                    }
+                    } 
+
+                    console.error("error store post delete", data.error);
 
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
                     Swal.close()

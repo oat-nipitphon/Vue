@@ -57,7 +57,7 @@ const closeDropdown = (event) => {
 
                 
                 <div
-                  v-if="storeUser.user_login.status_id === '1' || storeUser.user_login.status_id === '2'"
+                  v-if="authStore.storeUser.user_login.status_id === 1 || authStore.storeUser.user_login.status_id === 2"
                 >
                 <RouterLink
                          class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
@@ -87,7 +87,7 @@ const closeDropdown = (event) => {
           <div class="relative ml-3" v-if="authStore.storeUser">
             <!-- Button image profile dropdown -->
             <div
-              v-for="(profileImage, index) in authStore.storeUser.user_login.user_profile.user_profile_image" :key="index"
+              v-for="(profileImage, index) in authStore.storeUser.user_login.userProfileImage" :key="index"
             >
               <button
                 type="button"
@@ -101,7 +101,7 @@ const closeDropdown = (event) => {
                 <span class="sr-only">Open user menu</span>
                 <img
                   class="size-8 rounded-full"
-                  :src="'data:image/png;base64,' + profileImage.image_data"
+                  :src="`${profileImage.imageData}` || '../assets/icon/keyboard.jpg'"
                   alt="userProfileImage"
                 />
                 
@@ -159,7 +159,7 @@ const closeDropdown = (event) => {
                 role="menuitem"
                 tabindex="-1"
                 id="user-menu-item-2"
-                >Sign out</a
+                >Logout</a
               >
             </div>
           </div>

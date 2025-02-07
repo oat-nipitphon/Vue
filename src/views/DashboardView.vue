@@ -28,30 +28,26 @@ const enrichedPosts = computed(() =>
     const userDisliked = post.postPopularity.some(
       (pop) => pop.userID === userID.value && pop.status === "DisLike"
     );
-    // const postImageData = post.postImage.map((imageData) => post.postImage.imageData).length;
-    // console.log(postImageData);
     return {
       ...post,
       likeCount,
       disLikeCount,
       userLiked,
       userDisliked,
-      // postImageData,
     };
   })
 );
 
-// Handle like
 const handleLike = async (post) => {
   await apiPostPopLike(userID.value, post.id, "Like");
-  const updatedPosts = await apiGetPosts(); // Refresh posts after the like
+  const updatedPosts = await apiGetPosts();
   posts.value = updatedPosts;
 };
 
 // Handle dis like
 const handleDislike = async (post) => {
   await apiPostPopDisLike(userID.value, post.id, "DisLike");
-  const updatedPosts = await apiGetPosts(); // Refresh posts after the dislike
+  const updatedPosts = await apiGetPosts();
   posts.value = updatedPosts;
 };
 
@@ -60,7 +56,8 @@ const modalValuePostContent = (content) => {
 };
 
 const btnDeletePost = async (id) => {
-  await apiDeletePost(id);
+  const postDelete = await apiDeletePost(id);
+  console.log(postDelete);
   // posts.value = posts.value.filter((post) => post.id !== id); // Remove from UI
 };
 
@@ -79,12 +76,10 @@ const formatDate = (dateString) => {
 
 const onModalShowUserProfile = (userProfile) => {
   selectedUserProfile.value = userProfile;
-  console.log(selectedUserProfile.value);
 };
 
 onMounted(async () => {
   posts.value = await apiGetPosts();
-  console.log("posts :: ", posts.value);
 });
 </script>
 

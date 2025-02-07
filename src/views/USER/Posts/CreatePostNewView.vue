@@ -60,13 +60,15 @@ const onCreatePost = async () => {
     headers: {
       "Content-Type": "multipart/form-data",
       authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
+    }
   });
 
-  if (response.ok) {
-    console.log("create post successfully.");
-    router.push({ name: 'DashboardView' });
+  if (!response.status === 200) {
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
+
+  console.log("create post successfully");
+  router.push({ name: 'DashboardView' });
 
   } catch (error) {
     console.error("function on create post error ", error);
@@ -80,6 +82,7 @@ const btnCancel = () => {
 
 onMounted(async () => {
   postTypes.value = await apiGetPostTypes();
+  console.log("create post get post type ", postTypes.value);
 });
 </script>
 
