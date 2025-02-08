@@ -6,7 +6,7 @@ import { usePostStore } from "@/stores/post";
 
 const authStore = useAuthStore();
 const userID = ref(authStore.storeUser?.user_login?.id || null);
-
+console.log(authStore.storeUser.user_login);
 const {
   apiGetPosts,
   apiStorePost,

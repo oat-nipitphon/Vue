@@ -7,6 +7,34 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
     }),
     actions: {
 
+        // get status user
+        async apiGetStatusUser() {
+            try {
+                const res = await fetch(`/api/status_user`, {
+                    method: "GET",
+                });
+                if (!res.ok) {
+                    statusUser.value = null;
+                }
+                const data = await res.json();
+                return data.status_user;
+            } catch (error) {
+                console.error("function status user error", error);
+            }
+        },
+
+        // Update user
+        async apiUpdateUser(userID) { 
+            try {
+
+                return userID;
+
+            } catch (error) {
+                console.error("store update user function error", error);
+            }
+        },
+
+        // get user profile all
         async apiGetAllUserProfile(userProfile) {
             try {
                 const res = await fetch(`/api/user_profiles/${userProfile}`, {
@@ -26,7 +54,8 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
             }
         },
 
-        async apiGETUserProfile (userProfile) {
+        // get user profile where profile id
+        async apiGETUserProfile(userProfile) {
             try {
                 const res = await fetch(`/api/user_profiles/${userProfile}`, {
                     method: "GET",
@@ -47,18 +76,42 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
             }
         },
 
-        async apiGetStatusUser() {
+        // Update user profile detail
+        async apiUpdateDetailUserProfile(formData) {
             try {
-                const res = await fetch(`/api/status_user`, {
-                    method: "GET",
-                });
-                if (!res.ok) {
-                    statusUser.value = null;
+
+                const res = await fetch(`/api/user_profiles`, {
+                    method: "POST",
+                    headers: {
+                        authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                    body: JSON.stringify(formData)
+                })
+
+                if (res.ok) {
+
+                    const data = await res.json()
+
+
+                    Swal.fire({
+                        title: "Update Success.",
+                        content: "update user profile successfully.",
+                        icon: "success",
+                        timer: 1200,
+                        timerProgressBar: true,
+                    }).then(() => {
+
+                        console.log("detail update :: ", data.user)
+                        this.userProfile = data.user
+                        // window.location.reload()
+                    })
+
+                } else {
+                    console.log("api store res false :: ", res)
                 }
-                const data = await res.json();
-                return data.status_user;
+
             } catch (error) {
-                console.error("function status user error", error);
+                console.error("api store function error :: ", error)
             }
         },
 
@@ -93,48 +146,10 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
                 } else {
                     console.log("res error", res.error);
                 }
-                
+
 
             } catch (error) {
                 console.error("store user profile upload image profile error :: ");
-            }
-        },
-
-        async apiUpdateDetailUserProfile(formData) {
-            try {
-
-                const res = await fetch(`/api/user_profiles`, {
-                    method: "POST",
-                    headers: {
-                        authorization: `Bearer ${localStorage.getItem('token')}`,
-                    },
-                    body: JSON.stringify(formData)
-                })
-
-                if (res.ok) {
-
-                    const data = await res.json()
-
-
-                    Swal.fire({
-                        title: "Update Success.",
-                        content: "update user profile successfully.",
-                        icon: "success",
-                        timer: 1200,
-                        timerProgressBar: true,
-                    }).then(() => {
-
-                        console.log("detail update :: ", data.user)
-                        this.userProfile = data.user
-                        window.location.reload()
-                    })
-
-                } else {
-                    console.log("api store res false :: ", res)
-                }
-
-            } catch (error) {
-                console.error("api store function error :: ", error)
             }
         },
 

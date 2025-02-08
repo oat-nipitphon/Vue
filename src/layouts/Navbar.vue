@@ -1,15 +1,16 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, computed } from "vue";
 import { RouterLink, useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 import { usePostStore } from "@/stores/post";
+const profileImageUrlNull = new URL('@/assets/icon/keyboard.jpg', import.meta.url).href;
 const route = useRoute();
 
 const { apiStoreLogout } = useAuthStore();
 const authStore = useAuthStore();
-
 const { storeUser } = storeToRefs(authStore);
+
 
 const btnLogout = async () => {
   await apiStoreLogout();
@@ -24,7 +25,6 @@ onUnmounted(() => {
   window.removeEventListener("click", closeDropdown);
 });
 
-// ********** Start Main Menu **********
 const isDropdownOpen = ref(false);
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value;
@@ -36,10 +36,18 @@ const closeDropdown = (event) => {
     isDropdownOpen.value = false;
   }
 };
-// ********** End Main Menu **********
+
 </script>
 <template>
-  <div class="header">
+  <div>
+    <!-- <div v-if="authStore.storeUser" class="text-lg text-gray-500">
+    <p
+      v-for="profileImage in authStore.storeUser.user_login.userProfileImage" :key="profileImage.id"
+    >
+      {{ profileImage.imageData || profileImageNull }}
+    </p>
+  </div> -->
+    <div class="header">
     <nav class="bg-gray-800">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
@@ -87,7 +95,7 @@ const closeDropdown = (event) => {
           <div class="relative ml-3" v-if="authStore.storeUser">
             <!-- Button image profile dropdown -->
             <div
-              v-for="(profileImage, index) in authStore.storeUser.user_login.userProfileImage" :key="index"
+              
             >
               <button
                 type="button"
@@ -101,13 +109,13 @@ const closeDropdown = (event) => {
                 <span class="sr-only">Open user menu</span>
                 <img
                   class="size-8 rounded-full"
-                  :src="`${profileImage.imageData}` || '../assets/icon/keyboard.jpg'"
+                  :src="profileImageUrlNull"
                   alt="userProfileImage"
                 />
                 
               </button>
             </div>
-            <!-- Menu image profile dropdown -->
+             <!-- item dropdown profile image   -->
             <div
               v-if="isDropdownOpen"
               class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none"
@@ -116,16 +124,6 @@ const closeDropdown = (event) => {
               aria-labelledby="user-menu-button"
               tabindex="-1"
             >
-              <!--Dropdown menu, show/hide based on menu state.
-                  Entering: "transition ease-out duration-100"
-                    From: "transform opacity-0 scale-95"
-                    To: "transform opacity-100 scale-100"
-                    Leaving: "transition ease-in duration-75"
-                    From: "transform opacity-100 scale-100"
-                    To: "transform opacity-0 scale-95"
-                -->
-
-              <!-- Active: "bg-gray-100 outline-none", Not Active: "" -->
               <RouterLink
                 :to="{
                   name: 'UserProfileDashboardView',
@@ -135,7 +133,7 @@ const closeDropdown = (event) => {
                 role="menuitem"
                 tabindex="-1"
                 id="user-menu-item-0"
-              >
+              >{{ storeUser.user_login.id }}
                 Your Profile
               </RouterLink>
               <RouterLink 
@@ -162,6 +160,7 @@ const closeDropdown = (event) => {
                 >Logout</a
               >
             </div>
+            <p class="text-gray-100 text-lg">{{ authStore.storeUser.user_login.userProfileImage.imageData }}</p>
           </div>
           <!-- *************** Profile dropdown Auth true************************** -->
 
@@ -188,6 +187,7 @@ const closeDropdown = (event) => {
         </div>
       </div>
     </nav>
+  </div>
   </div>
 </template>
 

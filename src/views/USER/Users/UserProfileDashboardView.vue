@@ -115,7 +115,7 @@ const btnUpdateProfile = async () => {
                 >
                 <img 
                   class="h-180 w-90 m-auto"
-                  :src="`data:image/png;base64,` + rowImage.imageData"
+                  :src="rowImage.imageData"
                   alt="profileImage"
                 >
                 </div>
