@@ -5,37 +5,35 @@ import { useAdminUserProfileStore } from "@/stores/admin.user.profile";
 
 const { adminAPIGETuserProfile } = useAdminUserProfileStore();
 const userProfiles = ref([]);
-const currentPage = ref(1); // กำหนดหน้าเริ่มต้น
-const itemsPerPage = ref(5); // จำนวนข้อมูลต่อหน้า
 
-// คำนวณจำนวนหน้า
-const totalPages = computed(() =>
-  Math.ceil(userProfiles.value.length / itemsPerPage.value)
-);
-
-//  คำนวณข้อมูลที่จะแสดงในแต่ละหน้า
-const computedUserProfiles = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage.value;
-  const end = start + itemsPerPage.value;
-  return userProfiles.value.slice(start, end);
-});
-
-const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++;
-  }
-};
-
-const prevPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value--;
-  }
-};
 
 onMounted(async () => {
   userProfiles.value = await adminAPIGETuserProfile();
   console.log("user profile :: ", userProfiles.value);
 });
+
+// Start button next pages
+// const currentPage = ref(1);
+// const itemsPerPage = ref(5); 
+// const totalPages = computed(() =>
+//   Math.ceil(userProfiles.value.length / itemsPerPage.value)
+// );
+// const computedUserProfiles = computed(() => {
+//   const start = (currentPage.value - 1) * itemsPerPage.value;
+//   const end = start + itemsPerPage.value;
+//   return userProfiles.value.slice(start, end);
+// });
+// const nextPage = () => {
+//   if (currentPage.value < totalPages.value) {
+//     currentPage.value++;
+//   }
+// };
+// const prevPage = () => {
+//   if (currentPage.value > 1) {
+//     currentPage.value--;
+//   }
+// };
+// Stop button next pages
 </script>
 <template>
   <div class="w-full">
@@ -74,9 +72,9 @@ onMounted(async () => {
             <th scope="col" class="w-5 p-3 text-center font-semibold">Event</th>
           </tr>
         </thead>
-        <tbody v-if="computedUserProfiles.length > 0">
+        <tbody v-if="userProfiles.length > 0">
           <tr
-            v-for="(userProfile, index) in computedUserProfiles"
+            v-for="(userProfile, index) in userProfiles"
             :key="index"
             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
           >
@@ -89,30 +87,36 @@ onMounted(async () => {
             </td>
             <td class="text-sm text-gray-900 text-center">
               <p
-                v-if="userProfile.user.user_login.status_login === 'online'"
+                v-if="userProfile.userLogin.status_login === 'online'"
                 class="text-sm text-center text-green-500"
               >
                 online
               </p>
               <p
-                v-if="userProfile.user.user_login.status_login === 'offline'"
+                v-if="userProfile.userLogin.status_login === 'offline'"
+                class="text-sm text-center text-red-500"
+              >
+                offline
+              </p>
+              <p
+                v-else
                 class="text-sm text-center text-red-500"
               >
                 offline
               </p>
             </td>
             <td class="text-sm text-gray-900 text-center">
-              {{ userProfile.user.email }}
+              {{ userProfile.email }}
             </td>
             <td class="text-sm text-gray-900 text-center">
-              {{ userProfile.user.username }}
+              {{ userProfile.username }}
             </td>
             <td class="text-sm text-gray-900 text-center">
               {{ userProfile.full_name }}
             </td>
             <td class="text-sm text-gray-900 text-center">
               <div
-                v-for="(contact, index) in userProfile.user_contact"
+                v-for="(contact, index) in userProfile.userContact"
                 :key="index"
               >
                 <!-- แสดง icon ถ้ามี contact_icon_data -->
@@ -142,7 +146,7 @@ onMounted(async () => {
         <tbody v-else>
           <tr>
             <td class="flex justify-center text-lg m-5 text-red-600">
-              Data posts false.
+              Data response false.
             </td>
           </tr>
         </tbody>

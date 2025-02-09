@@ -34,6 +34,7 @@ const toggleEventCencelUpdateProfile = async () => {
 const {
   apiGetAllUserProfile,
   apiGetStatusUser,
+  apiUpdateUser,
   apiUpdateDetailUserProfile,
   apiUploadImageUserProfile,
 } = useStoreUserProfile();
@@ -71,7 +72,6 @@ const age = computed(() => {
 
 onMounted(async () => {
   userProfile.value = await apiGetAllUserProfile(route.params.id);
-  console.log("View", userProfile.value);
   if (userProfile.value) {
     formData.userID = userProfile.value.id || "";
     formData.name = userProfile.value.name || "";
@@ -118,6 +118,7 @@ const btnUpdateProfile = async () => {
                   :src="rowImage.imageData"
                   alt="profileImage"
                 >
+                {{ rowImage.imageData }}
                 </div>
                 <FileImageModal />
               </div>

@@ -53,19 +53,19 @@ const closeDropdown = (event) => {
         <div class="flex h-16 items-center justify-between">
           <!-- *********  Main Menu Login and Register Auth true **************** -->
           <div class="flex items-center">
-            <div class="hidden md:block" v-if="authStore.storeUser">
+            <div class="hidden md:block" v-if="storeUser">
               <div class="ml-10 flex items-baseline space-x-4">
                 <RouterLink
                   class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
                   aria-current="page"
                   :to="{ name: 'HomeView' }"
                 >
-                   Home page
+                   Home
                 </RouterLink>
 
                 
                 <div
-                  v-if="authStore.storeUser.user_login.status_id === 1 || authStore.storeUser.user_login.status_id === 2"
+                  v-if="storeUser.user_login.status_id === 1 || storeUser.user_login.status_id === 2"
                 >
                 <RouterLink
                          class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
@@ -133,8 +133,8 @@ const closeDropdown = (event) => {
                 role="menuitem"
                 tabindex="-1"
                 id="user-menu-item-0"
-              >{{ storeUser.user_login.id }}
-                Your Profile
+              >
+                Profile
               </RouterLink>
               <RouterLink 
                 :to="{
@@ -148,7 +148,7 @@ const closeDropdown = (event) => {
                 tabindex="-1"
                 id="user-menu-item-1"
               >
-                Recover posts
+                Recover post
               </RouterLink>
               <a
                 type="button"

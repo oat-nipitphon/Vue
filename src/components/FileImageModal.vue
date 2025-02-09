@@ -52,12 +52,10 @@
   </div>
 </template>
 <script>
-import axios from "axios";
 import axiosAPI from "@/services/axiosAPI.js";
 import Swal from "sweetalert2";
 import { ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
-import { useStoreUserProfile } from "@/stores/user.profile";
 export default {
   setup() {
     const file = ref(null);
@@ -65,15 +63,16 @@ export default {
     const onFileChange = (e) => {
       file.value = e.target.files[0];
       console.log("file change", file.value);
+      console.log("storeUser", authStore.storeUser.user_login.id);
     };
 
     const uploadFile = async () => {
       const formData = new FormData();
-      formData.append(
-        "profileID",
-        authStore.storeUser.user_login.user_profile.id
-      );
-      formData.append("imageFile", file.value);
+      formData.append("userID", authStore.storeUser.user_login.id);
+      
+      if(file.value) {
+        formData.append("imageFile", file.value);
+      }
       
       try {
         const response = await axiosAPI.post("/api/user_profile/upload_image", formData, {
