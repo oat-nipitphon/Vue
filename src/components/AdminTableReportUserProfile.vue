@@ -2,10 +2,10 @@
 import { ref, onMounted, computed } from "vue";
 import { RouterLink, useRoute } from "vue-router";
 import { useAdminUserProfileStore } from "@/stores/admin.user.profile";
+const defaultProfileImage = "https://scontent.fkkc3-1.fna.fbcdn.net/v/t39.30808-6/461897536_3707658799483986_794048670785055411_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeHVG0UH5FgwbVkdtl70b39it0I862Qbciu3QjzrZBtyK4PmJExwkjQwGNMpc0Sbm9HeXRE2Yi7Fvc_GrvrUrXJN&_nc_ohc=_8IVpzSUJz8Q7kNvgH981ad&_nc_oc=AdjwNRCxXwtMr0TUQFjkBXTSR68KItzLfOXsS06bglRQ93A4l_N8TKdv4UJtxEVVgHa4BQVpEdDKu6htxiHQdrbk&_nc_zt=23&_nc_ht=scontent.fkkc3-1.fna&_nc_gid=AhlEAgeCssMinnIwKJwfgMQ&oh=00_AYBEFNyZ8w4XoptZM9dz2smOltNWG3lclgbLROlVgZYUVg&oe=67B024F1";
 
 const { adminAPIGETuserProfile } = useAdminUserProfileStore();
 const userProfiles = ref([]);
-
 
 onMounted(async () => {
   userProfiles.value = await adminAPIGETuserProfile();
@@ -13,38 +13,35 @@ onMounted(async () => {
 });
 
 // Start button next pages
-// const currentPage = ref(1);
-// const itemsPerPage = ref(5); 
-// const totalPages = computed(() =>
-//   Math.ceil(userProfiles.value.length / itemsPerPage.value)
-// );
-// const computedUserProfiles = computed(() => {
-//   const start = (currentPage.value - 1) * itemsPerPage.value;
-//   const end = start + itemsPerPage.value;
-//   return userProfiles.value.slice(start, end);
-// });
-// const nextPage = () => {
-//   if (currentPage.value < totalPages.value) {
-//     currentPage.value++;
-//   }
-// };
-// const prevPage = () => {
-//   if (currentPage.value > 1) {
-//     currentPage.value--;
-//   }
-// };
+const currentPage = ref(1);
+const itemsPerPage = ref(5);
+const totalPages = computed(() =>
+  Math.ceil(userProfiles.value.length / itemsPerPage.value)
+);
+const computedUserProfiles = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return userProfiles.value.slice(start, end);
+});
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
 // Stop button next pages
 </script>
 <template>
   <div class="w-full">
-    <div class="grid grid-cols-2">
+    <div class="grid grid-cols-1">
       <div class="flex justify-start">
         <h2 for="AdminManagerPost" class="text-gray-900 mt-4 mb-4 p-2">
-          Admin Manager user profiles.
+          Table report user
         </h2>
-      </div>
-      <div class="flex">
-        <!-- Event -->
       </div>
     </div>
     <div class="relative overflow-x-auto">
@@ -72,18 +69,32 @@ onMounted(async () => {
             <th scope="col" class="w-5 p-3 text-center font-semibold">Event</th>
           </tr>
         </thead>
-        <tbody v-if="userProfiles.length > 0">
+        <tbody v-if="computedUserProfiles.length > 0">
           <tr
-            v-for="(userProfile, index) in userProfiles"
+            v-for="(userProfile, index) in computedUserProfiles"
             :key="index"
             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
           >
             <td class="w-2 py-2 text-center">
-              <img
-                src=""
-                class="w-50 h-10 m-auto"
-                alt="UserProfileImage"
-              />
+              <div v-if="userProfile?.userProfileImage?.length">
+                <div
+                  v-for="imageProfile in userProfile.userProfileImage"
+                  :key="imageProfile?.id"
+                >
+                  <img
+                    :src="imageProfile?.image_data || defaultProfileImage"
+                    class="w-40 h-20 m-auto object-cover"
+                    alt="User Profile Image"
+                  />
+                </div>
+              </div>
+              <div v-else>
+                <img
+                  :src="defaultProfileImage"
+                  class="w-40 h-20 m-auto object-cover"
+                  alt="Default Profile Image"
+                />
+              </div>
             </td>
             <td class="text-sm text-gray-900 text-center">
               <p
@@ -93,47 +104,37 @@ onMounted(async () => {
                 online
               </p>
               <p
-                v-if="userProfile.userLogin.status_login === 'offline'"
+                v-if="userProfile.userLogin.status_login === 'offline' || userProfile.userLogin.status_login ==='null'"
                 class="text-sm text-center text-red-500"
               >
                 offline
               </p>
-              <p
-                v-else
-                class="text-sm text-center text-red-500"
-              >
-                offline
-              </p>
+              <!-- <p v-else class="text-sm text-center text-red-500">offline</p> -->
             </td>
             <td class="text-sm text-gray-900 text-center">
-              {{ userProfile.email }}
+              {{ userProfile?.email }}
             </td>
             <td class="text-sm text-gray-900 text-center">
-              {{ userProfile.username }}
+              {{ userProfile?.username }}
             </td>
             <td class="text-sm text-gray-900 text-center">
-              {{ userProfile.full_name }}
+              {{ userProfile?.full_name }}
             </td>
             <td class="text-sm text-gray-900 text-center">
               <div
-                v-for="(contact, index) in userProfile.userContact"
+                v-for="(contact, index) in userProfile?.userContact"
                 :key="index"
               >
-                <!-- แสดง icon ถ้ามี contact_icon_data -->
                 <label for="m-auto">
                   <img
                     class="h-25 w-25 m-auto"
-                    v-if="contact.contact_icon_data"
-                    :src="
-                    `${contact.contact_icon_data}`
-                    "
+                    v-if="contact?.contact_icon_data"
+                    :src="`${contact?.contact_icon_data}`"
                     alt="ContactIconData"
                   />
                 </label>
-                
-                <!-- แสดง contact_name -->
                 <label class="text-sm m-auto">
-                  {{ contact.contact_name }}
+                  {{ contact?.contact_name }}
                 </label>
               </div>
             </td>
@@ -152,7 +153,7 @@ onMounted(async () => {
         </tbody>
       </table>
       <!-- Pagination -->
-      <!-- <div class="flex justify-between items-center mt-4">
+      <div class="flex justify-between items-center mt-4">
         <button
           @click="prevPage"
           :disabled="currentPage === 1"
@@ -168,7 +169,7 @@ onMounted(async () => {
         >
           Next
         </button>
-      </div> -->
+      </div>
     </div>
   </div>
 </template>

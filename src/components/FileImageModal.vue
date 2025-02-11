@@ -3,11 +3,11 @@
     <!-- Button trigger modal -->
     <button
       type="button"
-      class="btn btn-primary"
+      class="btn btn-sm btn-outline-primary"
       data-bs-toggle="modal"
       data-bs-target="#exampleModal"
     >
-      upload images.
+      upload images
     </button>
 
     <!-- Modal -->
@@ -41,7 +41,7 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button class="btn btn-md btn-primary" type="submit">
+              <button class="btn btn-sm btn-primary" type="button">
                 Upload
               </button>
             </div>
@@ -51,6 +51,13 @@
     </div>
   </div>
 </template>
+<style>
+.btn-upload-image-user-profile {
+  width: 30px;
+  height: 15px;
+  margin: 2px;
+}
+</style>
 <script>
 import axiosAPI from "@/services/axiosAPI.js";
 import Swal from "sweetalert2";

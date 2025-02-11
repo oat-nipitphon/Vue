@@ -79,7 +79,7 @@ export const useAuthStore = defineStore('authStore', {
                         showConfirmButton: false,
                         timer: 1500,
                     }).then(() => {
-                        if (data.user.status_id === '1') {
+                        if (data.user.status_id === 1) {
                             this.router.push({ name: 'AdminDashboardView' });
                         } else {
                             this.router.push({ name: 'DashboardView' });
