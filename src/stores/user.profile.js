@@ -24,7 +24,7 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
         },
 
         // Update user
-        async apiUpdateUser(userID) { 
+        async apiUpdateUser(userID) {
             try {
 
                 return userID;
@@ -78,40 +78,48 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
 
         // Update user profile detail
         async apiUpdateDetailUserProfile(formData) {
-            try {
+            const result = await Swal.fire({
+                title: "Confirm Delete!",
+                text: "Are you sure you want to delete this post?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Confirm delete",
+                cancelButtonText: "Cancel",
+            });
 
-                const res = await fetch(`/api/user_profiles`, {
-                    method: "POST",
-                    headers: {
-                        authorization: `Bearer ${localStorage.getItem('token')}`,
-                    },
-                    body: JSON.stringify(formData)
-                })
-
-                if (res.ok) {
-
-                    const data = await res.json()
-
-
-                    Swal.fire({
-                        title: "Update Success.",
-                        content: "update user profile successfully.",
-                        icon: "success",
-                        timer: 1200,
-                        timerProgressBar: true,
-                    }).then(() => {
-
-                        console.log("detail update :: ", data.user)
-                        this.userProfile = data.user
-                        // window.location.reload()
+            if (result.isConfirmed) {
+                try {
+                    const res = await fetch(`/api/user_profiles`, {
+                        method: "POST",
+                        headers: {
+                            authorization: `Bearer ${localStorage.getItem('token')}`,
+                        },
+                        body: JSON.stringify(formData)
                     })
 
-                } else {
-                    console.log("api store res false :: ", res)
-                }
+                    if (res.ok) {
 
-            } catch (error) {
-                console.error("api store function error :: ", error)
+                        const data = await res.json()
+
+
+                        Swal.fire({
+                            title: "Success",
+                            content: "update successfully.",
+                            icon: "success",
+                            timer: 1500,
+                            timerProgressBar: true,
+                        }).then(() => {
+                            this.userProfile = data.user;
+                            window.location.reload();
+                        })
+                    }
+                } catch (error) {
+                    console.error("store function apiUpdateDetailUserProfile", error)
+                }
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                Swal.close();
             }
         },
 
@@ -127,8 +135,6 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
                     },
                     body: formData
                 });
-
-                // const data = await res.json();
 
                 if (res.ok) {
 

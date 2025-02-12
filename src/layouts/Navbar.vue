@@ -13,6 +13,7 @@ const route = useRoute();
 const { apiStoreLogout } = useAuthStore();
 const authStore = useAuthStore();
 const { storeUser } = storeToRefs(authStore);
+const userDetail = ref([]);
 
 const btnLogout = async () => {
   await apiStoreLogout();
@@ -38,6 +39,12 @@ const closeDropdown = (event) => {
     isDropdownOpen.value = false;
   }
 };
+
+const onModalUserUpdate = async (userLogin) => {
+  userDetail.value = userLogin;
+  console.log("user modal", userDetail.value);
+};
+
 </script>
 <template>
   <div>
@@ -93,7 +100,7 @@ const closeDropdown = (event) => {
             <!-- *********  Main Menu Login and Register Auth true **************** -->
 
             <!-- *************** Profile dropdown Auth true************************** -->
-            <div class="relative ml-3" v-if="authStore.storeUser">
+            <div class="relative ml-3 mt-3 mb-auto" v-if="authStore.storeUser">
               <!-- Button image profile dropdown -->
               <div>
                 <button
@@ -113,7 +120,7 @@ const closeDropdown = (event) => {
                       :key="profileImage?.id"
                     >
                       <img
-                        class="size-8 rounded-full"
+                        class="size-9 rounded-full"
                         :src="profileImage?.imageData || defaultProfileImage"
                         alt="userProfileImage"
                       />
@@ -155,7 +162,7 @@ const closeDropdown = (event) => {
                     name: 'UserProfileDashboardView',
                     params: { id: storeUser.user_login.id },
                   }"
-                  class="block px-4 py-2 text-sm text-gray-700"
+                  class="block px-4 py-2 text-sm text-gray-700 btn btn-sm"
                   role="menuitem"
                   tabindex="-1"
                   id="user-menu-item-0"
@@ -169,17 +176,45 @@ const closeDropdown = (event) => {
                       userID: storeUser.user_login.id,
                     },
                   }"
-                  class="block px-4 py-2 text-sm text-gray-700"
+                  class="block px-4 py-2 text-sm text-gray-700 btn btn-sm"
                   role="menuitem"
                   tabindex="-1"
                   id="user-menu-item-1"
                 >
                   Recover post
                 </RouterLink>
+                <div>
+                  <!-- Button trigger modal -->
+                  <button @click="onModalUserUpdate(storeUser.user_login)" type="button" class="btn btn-sm block px-4 py-2 text-sm text-gray-700" data-bs-toggle="modal" data-bs-target="#modalUserUpdate">
+                    Setting
+                  </button>
+
+                  <!-- Modal -->
+                  <div class="modal fade" id="modalUserUpdate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">
+                            Setting user ID: {{ userDetail.id }}
+                          </h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          {{ userDetail.email }}
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
                 <a
                   type="button"
                   @click="btnLogout"
-                  class="block px-4 py-2 text-sm text-gray-700"
+                  class="block px-4 py-2 text-sm text-gray-700 btn btn-sm"
                   role="menuitem"
                   tabindex="-1"
                   id="user-menu-item-2"
