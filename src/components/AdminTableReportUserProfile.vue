@@ -1,181 +1,154 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
-import { RouterLink, useRoute } from "vue-router";
+const defaultProfileImage =
+  "https://scontent.fkkc3-1.fna.fbcdn.net/v/t39.30808-6/461897536_3707658799483986_794048670785055411_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeHVG0UH5FgwbVkdtl70b39it0I862Qbciu3QjzrZBtyK4PmJExwkjQwGNMpc0Sbm9HeXRE2Yi7Fvc_GrvrUrXJN&_nc_ohc=_8IVpzSUJz8Q7kNvgH981ad&_nc_oc=AdjwNRCxXwtMr0TUQFjkBXTSR68KItzLfOXsS06bglRQ93A4l_N8TKdv4UJtxEVVgHa4BQVpEdDKu6htxiHQdrbk&_nc_zt=23&_nc_ht=scontent.fkkc3-1.fna&_nc_gid=AhlEAgeCssMinnIwKJwfgMQ&oh=00_AYBEFNyZ8w4XoptZM9dz2smOltNWG3lclgbLROlVgZYUVg&oe=67B024F1";
+import { ref, onMounted, reactive } from "vue";
 import { useAdminUserProfileStore } from "@/stores/admin.user.profile";
-const defaultProfileImage = "https://scontent.fkkc3-1.fna.fbcdn.net/v/t39.30808-6/461897536_3707658799483986_794048670785055411_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeHVG0UH5FgwbVkdtl70b39it0I862Qbciu3QjzrZBtyK4PmJExwkjQwGNMpc0Sbm9HeXRE2Yi7Fvc_GrvrUrXJN&_nc_ohc=_8IVpzSUJz8Q7kNvgH981ad&_nc_oc=AdjwNRCxXwtMr0TUQFjkBXTSR68KItzLfOXsS06bglRQ93A4l_N8TKdv4UJtxEVVgHa4BQVpEdDKu6htxiHQdrbk&_nc_zt=23&_nc_ht=scontent.fkkc3-1.fna&_nc_gid=AhlEAgeCssMinnIwKJwfgMQ&oh=00_AYBEFNyZ8w4XoptZM9dz2smOltNWG3lclgbLROlVgZYUVg&oe=67B024F1";
+import DataTable from "datatables.net-vue3";
+import DataTablesCore from "datatables.net-bs5";
+DataTable.use(DataTablesCore);
 
-const { adminAPIGETuserProfile } = useAdminUserProfileStore();
+const { adminAPIGETuserProfiles, deleteUserProfile } =
+  useAdminUserProfileStore();
+
+const storeAPI = useAdminUserProfileStore();
 const userProfiles = ref([]);
 
 onMounted(async () => {
-  userProfiles.value = await adminAPIGETuserProfile();
-  console.log("user profile :: ", userProfiles.value);
+  await storeAPI.adminAPIGETuserProfiles();
+  userProfiles.value = storeAPI.storeUserProfiles.map((profile) => ({
+    id: profile.id,
+    imageProfile: profile.userProfileImage.image_data || null,
+    titleName: profile.titleName,
+    fullName: profile.fullName,
+    nickName: profile.nickName,
+    birthDay: formatDate(profile.birthDay),
+    telPhone: profile.telPhone,
+  }));
 });
 
-// Start button next pages
-const currentPage = ref(1);
-const itemsPerPage = ref(5);
-const totalPages = computed(() =>
-  Math.ceil(userProfiles.value.length / itemsPerPage.value)
-);
-const computedUserProfiles = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage.value;
-  const end = start + itemsPerPage.value;
-  return userProfiles.value.slice(start, end);
+function formatDate(date) {
+  const d = new Date(date);
+  const day = d.getDate().toString().padStart(2, "0");
+  const month = (d.getMonth() + 1).toString().padStart(2, "0");
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+const columns = [
+  {
+    title: "id",
+    data: "id",
+  },
+  {
+    title: "image",
+    data: "imageProfile",
+    render(html) {
+      return `
+        <img :src="${imageProfile}">
+      `;
+    }
+  },
+  {
+    title: "fullname",
+    data: "id",
+    render(html) {
+      return `
+        <span class='m-auto text-sm'>${titleName}</span>
+        <span class='m-auto text-sm'>${fullName}</span>
+      `;
+    }
+  },
+  {
+    title: "nickName",
+    data: "nickName",
+  },
+  {
+    title: "birthDay",
+    data: "birthDay",
+  },
+  {
+    title: "telPhone",
+    data: "telPhone",
+  },
+  {
+    title: "Event",
+    data: "id",
+    render(data) {
+      return `
+              <div class="btn-group dropend">
+                <button class="btn btn-primary btn-sm dropdown-toggle dropdown-toggle-split" type="button" 
+                data-bs-toggle="dropdown" aria-expanded="false">
+                Event
+              </button>
+          <ul class="dropdown-menu">
+            <li>
+              <button class="dropdown-item btn btn-sm btn-warning event-edit" data-id="${data}">
+                Edit
+              </button>
+            </li>
+            <li>
+              <button class="dropdown-item btn btn-sm btn-danger event-delete" data-id="${data}">
+                Delete
+              </button>
+            </li>
+          </ul>
+        </div>
+        `;
+    },
+  },
+];
+
+const option = reactive({
+  paging: true,
+  searching: true,
+  ordering: true,
+  response: true,
+  drawCallback: function () {
+    const table = document.querySelector(".table-report-userprofiles");
+
+    table.addEventListener("click", (event) => {
+      console.log(event.target.getAttribute("data-id"));
+      let userID = event.target.getAttribute("data-id");
+
+      if (event.target.matches(".event-edit")) {
+        console.log("Edit function", userID);
+      }
+
+      if (event.target.matches(".event-delete")) {
+        console.log("Delete function", userID);
+        btnEventDelete(userID);
+      }
+
+    });
+  },
 });
-const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++;
-  }
+
+const btnEventDelete = async (userID) => {
+  console.log("btnEventDelete ", userID);
+  await deleteUserProfile(userID);
 };
-const prevPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value--;
-  }
-};
-// Stop button next pages
+
 </script>
-<template>
-  <div class="w-full">
-    <div class="grid grid-cols-1">
-      <div class="flex justify-start">
-        <h2 for="AdminManagerPost" class="text-gray-900 mt-4 mb-4 p-2">
-          Table report user
-        </h2>
-      </div>
-    </div>
-    <div class="relative overflow-x-auto">
-      <table
-        class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-      >
-        <thead
-          class="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400"
-        >
-          <tr class="w-full">
-            <th scope="col" class="w-2 p-2 text-center font-semibold">Image</th>
-            <th scope="col" class="w-2 p-2 text-center font-semibold">
-              Status
-            </th>
-            <th scope="col" class="w-2 p-2 text-center font-semibold">Email</th>
-            <th scope="col" class="w-4 p-3 text-center font-semibold">
-              Username
-            </th>
-            <th scope="col" class="w-3 p-3 text-center font-semibold">
-              Full Name
-            </th>
-            <th scope="col" class="w-5 p-3 text-center font-semibold">
-              Contact
-            </th>
-            <th scope="col" class="w-5 p-3 text-center font-semibold">Event</th>
-          </tr>
-        </thead>
-        <tbody v-if="computedUserProfiles.length > 0">
-          <tr
-            v-for="(userProfile, index) in computedUserProfiles"
-            :key="index"
-            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-          >
-            <td class="w-2 py-2 text-center">
-              <div v-if="userProfile?.userProfileImage?.length">
-                <div
-                  v-for="imageProfile in userProfile.userProfileImage"
-                  :key="imageProfile?.id"
-                >
-                  <img
-                    :src="imageProfile?.image_data || defaultProfileImage"
-                    class="w-40 h-20 m-auto object-cover"
-                    alt="User Profile Image"
-                  />
-                </div>
-              </div>
-              <div v-else>
-                <img
-                  :src="defaultProfileImage"
-                  class="w-40 h-20 m-auto object-cover"
-                  alt="Default Profile Image"
-                />
-              </div>
-            </td>
-            <td class="text-sm text-gray-900 text-center">
-              <p
-                v-if="userProfile.userLogin.status_login === 'online'"
-                class="text-sm text-center text-green-500"
-              >
-                online
-              </p>
-              <p
-                v-if="userProfile.userLogin.status_login === 'offline' || userProfile.userLogin.status_login ==='null'"
-                class="text-sm text-center text-red-500"
-              >
-                offline
-              </p>
-              <!-- <p v-else class="text-sm text-center text-red-500">offline</p> -->
-            </td>
-            <td class="text-sm text-gray-900 text-center">
-              {{ userProfile?.email }}
-            </td>
-            <td class="text-sm text-gray-900 text-center">
-              {{ userProfile?.username }}
-            </td>
-            <td class="text-sm text-gray-900 text-center">
-              {{ userProfile?.full_name }}
-            </td>
-            <td class="text-sm text-gray-900 text-center">
-              <div
-                v-for="(contact, index) in userProfile?.userContact"
-                :key="index"
-              >
-                <label for="m-auto">
-                  <img
-                    class="h-25 w-25 m-auto"
-                    v-if="contact?.contact_icon_data"
-                    :src="`${contact?.contact_icon_data}`"
-                    alt="ContactIconData"
-                  />
-                </label>
-                <label class="text-sm m-auto">
-                  {{ contact?.contact_name }}
-                </label>
-              </div>
-            </td>
-            <td class="text">
-              <button class="btn-size">Event</button>
-            </td>
-          </tr>
-        </tbody>
 
-        <tbody v-else>
-          <tr>
-            <td class="flex justify-center text-lg m-5 text-red-600">
-              Data response false.
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <!-- Pagination -->
-      <div class="flex justify-between items-center mt-4">
-        <button
-          @click="prevPage"
-          :disabled="currentPage === 1"
-          class="btn btn-primary"
-        >
-          Previous
-        </button>
-        <span>Page {{ currentPage }} of {{ totalPages }}</span>
-        <button
-          @click="nextPage"
-          :disabled="currentPage === totalPages"
-          class="btn btn-primary"
-        >
-          Next
-        </button>
-      </div>
-    </div>
+<template>
+  <div class="container">
+    <h2>Report userprofiles.</h2>
+    <p>DataTables + Vue3 example + Bootstrap 5</p>
+
+    <DataTable
+      :columns="columns"
+      :data="userProfiles"
+      class="table table-hover table-striped table-report-userprofiles"
+      width="100%"
+    >
+      <thead></thead>
+      <tbody></tbody>
+      <tfoot></tfoot>
+    </DataTable>
   </div>
 </template>
+
 <style>
-.btn-size {
-  width: auto;
-  height: 30px;
-}
+@import "bootstrap";
+@import "datatables.net-bs5";
 </style>

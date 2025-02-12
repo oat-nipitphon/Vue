@@ -74,7 +74,6 @@ const age = computed(() => {
 
 onMounted(async () => {
   userProfile.value = await apiGetAllUserProfile(route.params.id);
-  console.log('user profile dashboard', userProfile.value);
   if (userProfile.value) {
     formData.userID = userProfile.value.id || "";
     formData.name = userProfile.value.name || "";
