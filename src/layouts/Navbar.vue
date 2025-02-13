@@ -1,53 +1,80 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
+import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
-import { RouterLink } from "vue-router";
+import { routeLocationKey, RouterLink } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 
+const router = useRouter();
+const { apiStoreLogout } = useAuthStore();
 const authStore = useAuthStore();
 const { storeUser } = storeToRefs(authStore);
 
-// Start Main Menu **********
-const isDropdownOpen = ref(false);
-
-const toggleDropdown = () => {
-  isDropdownOpen.value = !isDropdownOpen.value;
+// Main Menu
+const isMainDropdownOpen = ref(false);
+const toggleMainDropdown = (event) => {
+  event.stopPropagation();
+  isMainDropdownOpen.value = !isMainDropdownOpen.value;
 };
 
+// Mobile Menu
+const isMobileDropdownOpen = ref(false);
+const toggleMobileDropdown = (event) => {
+  event.stopPropagation();
+  isMobileDropdownOpen.value = !isMobileDropdownOpen.value;
+};
+
+// Close Dropdown เมื่อคลิกข้างนอก
 const closeDropdown = (event) => {
-  const menuButton = document.getElementById("user-menu-button");
-
-  if (menuButton && !menuButton.contains(event.target)) {
-    isDropdownOpen.value = false;
+  if (!event.target.closest("#navbar-main-menu")) {
+    isMainDropdownOpen.value = false;
+  }
+  if (
+    !event.target.closest("#navbar-mobile-menu") &&
+    !event.target.closest("#mobile-menu-button")
+  ) {
+    isMobileDropdownOpen.value = false;
   }
 };
-// End Main Menu **********
 
-// Start Mobile Menu **********
-const isDropdownMobileOpen = ref(false);
-
-const toggleDropdownMobile = () => {
-  isDropdownMobileOpen.value = !isDropdownMobileOpen.value;
-};
-
-const closeDropdownMoblie = (event) => {
-  const menuButtonMobile = document.getElementById("mobile-menu");
-
-  if (menuButtonMobile && !menuButtonMobile.contains(event.target)) {
-    isDropdownMobileOpen.value = false;
-  }
-};
-// End Mobile Menu **********
-
+// Add/Remove Event Listeners
 onMounted(() => {
   window.addEventListener("click", closeDropdown);
-  window.addEventListener("click", closeDropdownMoblie);
 });
 
 onUnmounted(() => {
   window.removeEventListener("click", closeDropdown);
-  window.removeEventListener("click", closeDropdownMoblie);
 });
+
+const onHome = () => {
+  router.push({ name: "DashboardView" });
+  isMobileDropdownOpen.value = false;
+};
+const onAdminManager = () => {
+  router.push({ name: "AdminDashboardView" });
+  isMobileDropdownOpen.value = false;
+};
+
+const onUserProfile = async () => {
+  router.push({
+    name: "UserProfileDashboardView",
+    params: { id: authStore.storeUser.user_login.id },
+  });
+  isMobileDropdownOpen.value = false;
+};
+
+const onRecoverPost = async () => {
+  router.push({
+    name: "ReportRecoverPostsView",
+    params: { userID: authStore.storeUser.user_login.id },
+  });
+  isMobileDropdownOpen.value = false;
+};
+
+const onLogout = async () => {
+  await apiStoreLogout();
+  isMobileDropdownOpen.value = false;
+};
 </script>
 <template>
   <div class="header">
@@ -62,7 +89,7 @@ onUnmounted(() => {
             <div class="shrink-0">
               <img
                 class="size-8"
-                src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
+                src="../assets/icon/tailwind.png"
                 alt="Your Company"
               />
             </div>
@@ -77,17 +104,34 @@ onUnmounted(() => {
                 Default:   "text-gray-300 hover:bg-gray-700 hover:text-white"
                             "ml-10 flex items-baseline space-x-4"
                  -->
-                <a
-                  href="#"
+                <RouterLink
                   class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
                   aria-current="page"
-                  >Home</a
+                  :to="{ name: 'DashboardView' }"
                 >
-                <a
-                  href="#"
+                  Home
+                </RouterLink>
+                <RouterLink
                   class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                  >Team</a
+                  :to="{ name: 'AdminDashboardView' }"
+                  v-if="authStore.storeUser.user_login.status_id === 1"
                 >
+                  AdminDashboardView
+                </RouterLink>
+                <RouterLink
+                  class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                  :to="{ name: 'AdminManagerUserProfileView' }"
+                  v-if="authStore.storeUser.user_login.status_id === 1"
+                >
+                  AdminManagerUserProfileView
+                </RouterLink>
+                <RouterLink
+                  class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                  :to="{ name: 'AdminManagerPostView' }"
+                  v-if="authStore.storeUser.user_login.status_id === 1"
+                >
+                  AdminManagerPostView
+                </RouterLink>
               </div>
             </div>
           </div>
@@ -96,12 +140,93 @@ onUnmounted(() => {
           <div class="hidden md:block">
             <div class="ml-4 flex items-center md:ml-6">
               <!-- Notifications -->
+
+              <!-- Profile dropdown -->
+              <div class="relative mt-4 ml-4">
+                <!-- Button image profile dropdown -->
+                <div v-if="storeUser.user_login.userProfileImage">
+                  <button
+                    type="button"
+                    @click="toggleMainDropdown"
+                    id="navbar-main-menu"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                  >
+                    <p
+                      v-for="image in storeUser.user_login.userProfileImage"
+                      :key="image.id"
+                    >
+                      <img
+                        class="size-10 rounded-full"
+                        alt="Profile-Image"
+                        :src="image.imageData"
+                      />
+                    </p>
+                  </button>
+                </div>
+
+                <!-- Menu image profile dropdown -->
+                <div
+                  v-if="isMainDropdownOpen"
+                  class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none"
+                  role="menu"
+                  aria-orientation="vertical"
+                  aria-labelledby="navbar-main-menu"
+                  tabindex="-1"
+                >
+                  <!--Dropdown menu, show/hide based on menu state.
+                  Entering: "transition ease-out duration-100"
+                    From: "transform opacity-0 scale-95"
+                    To: "transform opacity-100 scale-100"
+                    Leaving: "transition ease-in duration-75"
+                    From: "transform opacity-100 scale-100"
+                    To: "transform opacity-0 scale-95"
+                -->
+
+                  <!-- Active: "bg-gray-100 outline-none", Not Active: "" -->
+                  <RouterLink
+                    class="block px-4 py-2 text-sm text-gray-700"
+                    :to="{
+                      name: 'UserProfileDashboardView',
+                      params: {
+                        id: authStore.storeUser.user_login.id,
+                      },
+                    }"
+                  >
+                    User Profile
+                  </RouterLink>
+                  <RouterLink
+                    class="block px-4 py-2 text-sm text-gray-700"
+                    :to="{
+                      name: 'ReportRecoverPostsView',
+                      params: {
+                        userID: authStore.storeUser.user_login.id,
+                      },
+                    }"
+                  >
+                    Recover post
+                  </RouterLink>
+                  <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-gray-700"
+                    role="menuitem"
+                    tabindex="-1"
+                    id="user-menu-item-1"
+                    >Settings</a
+                  >
+                  <button
+                    type="submit"
+                    class="block px-4 py-2 text-sm text-gray-700 btn btn-sm"
+                    @click="onLogout"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
               <button
                 type="button"
-                class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                class="relative rounded-full ml-3 bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
               >
-                <span class="absolute -inset-1.5"></span>
-                <span class="sr-only">View notifications</span>
                 <svg
                   class="size-6"
                   fill="none"
@@ -118,97 +243,24 @@ onUnmounted(() => {
                   />
                 </svg>
               </button>
-
-              <!-- Profile dropdown -->
-              <div class="relative ml-3">
-                <!-- Button image profile dropdown -->
-                <div>
-                  <button
-                    type="button"
-                    @click="toggleDropdown"
-                    class="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                    id="user-menu-button"
-                    aria-expanded="false"
-                    aria-haspopup="true"
-                  >
-                    <span class="absolute -inset-1.5"></span>
-                    <span class="sr-only">Open user menu</span>
-                    <img
-                      class="size-8 rounded-full"
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt=""
-                    />
-                  </button>
-                </div>
-
-                <!-- Menu image profile dropdown -->
-                <div
-                  v-if="isDropdownOpen"
-                  class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none"
-                  role="menu"
-                  aria-orientation="vertical"
-                  aria-labelledby="user-menu-button"
-                  tabindex="-1"
-                >
-                  <!--Dropdown menu, show/hide based on menu state.
-                  Entering: "transition ease-out duration-100"
-                    From: "transform opacity-0 scale-95"
-                    To: "transform opacity-100 scale-100"
-                    Leaving: "transition ease-in duration-75"
-                    From: "transform opacity-100 scale-100"
-                    To: "transform opacity-0 scale-95"
-                -->
-
-                  <!-- Active: "bg-gray-100 outline-none", Not Active: "" -->
-                  <a
-                    href="#"
-                    class="block px-4 py-2 text-sm text-gray-700"
-                    role="menuitem"
-                    tabindex="-1"
-                    id="user-menu-item-0"
-                    >Your Profile</a
-                  >
-                  <a
-                    href="#"
-                    class="block px-4 py-2 text-sm text-gray-700"
-                    role="menuitem"
-                    tabindex="-1"
-                    id="user-menu-item-1"
-                    >Settings</a
-                  >
-                  <a
-                    href="#"
-                    class="block px-4 py-2 text-sm text-gray-700"
-                    role="menuitem"
-                    tabindex="-1"
-                    id="user-menu-item-2"
-                    >Sign out</a
-                  >
-                </div>
-              </div>
             </div>
           </div>
 
-          <!-- Mobile menu button -->
+          <!-- Mobile Menu Button -->
           <div class="-mr-2 flex md:hidden">
             <button
-              type="button"
-              @click="toggleDropdownMobile"
-              class="relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-              aria-controls="mobile-menu"
-              aria-expanded="false"
+              id="mobile-menu-button"
+              @click="toggleMobileDropdown"
+              class="relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white"
             >
-              <span class="absolute -inset-0.5"></span>
               <span class="sr-only">Open main menu</span>
-              <!-- Menu open: "hidden", Menu closed: "block" -->
               <svg
-                class="block size-6"
+                v-if="!isMobileDropdownOpen"
+                class="size-6"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
-                aria-hidden="true"
-                data-slot="icon"
               >
                 <path
                   stroke-linecap="round"
@@ -216,15 +268,13 @@ onUnmounted(() => {
                   d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
                 />
               </svg>
-              <!-- Menu open: "block", Menu closed: "hidden" -->
               <svg
-                class="hidden size-6"
+                v-else
+                class="size-6"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
-                aria-hidden="true"
-                data-slot="icon"
               >
                 <path
                   stroke-linecap="round"
@@ -234,107 +284,106 @@ onUnmounted(() => {
               </svg>
             </button>
           </div>
-          <!-- Mobile menu, show/hide based on menu state. -->
-          <div class="md:hidden" id="mobile-menu" v-if="isDropdownMobileOpen">
-            <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3">
-              <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+
+          <!-- Mobile Menu -->
+          <div
+            v-if="isMobileDropdownOpen"
+            id="navbar-mobile-menu"
+            class="md:hidden absolute top-16 left-0 w-full bg-gray-800"
+          >
+            <!-- <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3">
               <RouterLink
                 class="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white"
-                aria-current="page"
                 :to="{ name: 'DashboardView' }"
+                >Home</RouterLink
               >
-                Dashboard
-              </RouterLink>
               <RouterLink
-                class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                :to="{ name: 'UserProfileDashboardView' }"
+                class="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white"
+                :to="{ name: 'AdminDashboardView' }"
+                v-if="authStore.storeUser.user_login.status_id === 1"
               >
-                UserProfiles
+                AdminDashboardView
               </RouterLink>
-              <RouterLink
-                class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                :to="{ name: 'PostDashboardView' }"
-              >
-                Posts
-              </RouterLink>
-            </div>
+            </div> -->
             <div class="border-t border-gray-700 pb-3 pt-4">
               <div class="flex items-center px-5">
-                <div class="shrink-0">
-                  <img
-                    class="size-10 rounded-full"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    alt=""
-                  />
+                <div
+                  class="shrink-0"
+                  v-if="storeUser.user_login.userProfileImage"
+                >
+                  <p
+                    v-for="image in storeUser.user_login.userProfileImage"
+                    :key="image.id"
+                  >
+                    <img
+                      class="size-10 rounded-full"
+                      alt="Profile-Image"
+                      :src="image.imageData"
+                    />
+                  </p>
                 </div>
                 <div class="ml-3">
-                  <div class="text-base/5 font-medium text-white">Tom Cook</div>
+                  <div class="text-base font-medium text-white">
+                    {{ storeUser.user_login.username }}
+                  </div>
                   <div class="text-sm font-medium text-gray-400">
-                    tom@example.com
+                    {{ storeUser.user_login.email }}
                   </div>
                 </div>
-                <button
-                  type="button"
-                  class="relative ml-auto shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                >
-                  <span class="absolute -inset-1.5"></span>
-                  <span class="sr-only">View notifications</span>
-                  <svg
-                    class="size-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                    data-slot="icon"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
-                    />
-                  </svg>
-                </button>
               </div>
               <div class="mt-3 space-y-1 px-2">
-                <a
-                  href="#"
+                <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                  >Your Profile</a
+                  @click="onAdminManager"
+                  v-if="authStore.storeUser.user_login.status_id === 1"
                 >
-                <a
-                  href="#"
+                  Admin Manager
+                </span>
+                <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                  >Settings</a
+                  @click="onHome"
+                  >Home</span
                 >
-                <a
-                  href="#"
+
+                <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                  >Sign out</a
+                  @click="onUserProfile"
+                  >User Profile</span
                 >
+                <span
+                  class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                  @click="onRecoverPost"
+                  >Recover post</span
+                >
+                <span
+                  class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                  @click="onLogout"
+                >
+                  Logout
+                </span>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div 
+
+      <div
         v-else
         class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex justify-end"
       >
         <div class="m-1">
-          <RouterLink class="text-white m-auto p-3 btn btn-md" :to="{ name: 'LoginView' }">
-          Login
-        </RouterLink>
-        <RouterLink class="text-white m-auto p-3 btn btn-md" :to="{ name: 'RegisterView' }">
-          Register
-        </RouterLink>
+          <RouterLink
+            class="text-white m-auto p-3 btn btn-md"
+            :to="{ name: 'LoginView' }"
+            >Login</RouterLink
+          >
+          <RouterLink
+            class="text-white m-auto p-3 btn btn-md"
+            :to="{ name: 'RegisterView' }"
+            >Register</RouterLink
+          >
         </div>
       </div>
     </nav>
   </div>
 </template>
-<style>
-.header {
-  max-width: 100%;
-}
-</style>
