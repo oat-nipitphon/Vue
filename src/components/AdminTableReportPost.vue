@@ -245,31 +245,31 @@ onMounted(async () => {
                 </button>
                 <ul class="dropdown-menu">
                   <li>
-                    <label
+                    <button
                       v-if="post.block_status === 'false'"
                       type="button"
                       @click="adminAPIPostBlockOrUnBlock(post.id, 'Block')"
                       class="btn btn-block dropdown-item m-2"
                     >
                       Block
-                    </label>
-                    <label
+                    </button>
+                    <button
                       v-if="post.block_status === 'true'"
                       type="button"
                       @click="adminAPIPostBlockOrUnBlock(post.id, 'Unblock')"
                       class="btn btn-unblock dropdown-item m-2"
                     >
                       Unblock
-                    </label>
+                    </button>
                   </li>
                   <li>
-                    <label
+                    <button
                       type="button"
                       @click="adminAPIPostDelete(post.id)"
                       class="btn btn-delete dropdown-item m-2"
                     >
                       Delete
-                    </label>
+                    </button>
                   </li>
                 </ul>
               </div>

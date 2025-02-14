@@ -114,21 +114,21 @@ const onLogout = async () => {
                 <RouterLink
                   class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                   :to="{ name: 'AdminDashboardView' }"
-                  v-if="authStore.storeUser.user_login.status_id === 1"
+                  v-if="authStore.storeUser.user_login.status_id === 1 || authStore.storeUser.user_login.status_id === 2"
                 >
                   AdminDashboardView
                 </RouterLink>
                 <RouterLink
                   class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                   :to="{ name: 'AdminManagerUserProfileView' }"
-                  v-if="authStore.storeUser.user_login.status_id === 1"
+                  v-if="authStore.storeUser.user_login.status_id === 1 || authStore.storeUser.user_login.status_id === 2"
                 >
                   AdminManagerUserProfileView
                 </RouterLink>
                 <RouterLink
                   class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                   :to="{ name: 'AdminManagerPostView' }"
-                  v-if="authStore.storeUser.user_login.status_id === 1"
+                  v-if="authStore.storeUser.user_login.status_id === 1 || authStore.storeUser.user_login.status_id === 2"
                 >
                   AdminManagerPostView
                 </RouterLink>
@@ -335,7 +335,7 @@ const onLogout = async () => {
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                   @click="onAdminManager"
-                  v-if="authStore.storeUser.user_login.status_id === 1"
+                  v-if="authStore.storeUser.user_login.status_id === 1 || authStore.storeUser.user_login.status_id === 2"
                 >
                   Admin Manager
                 </span>

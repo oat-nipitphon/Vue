@@ -7,17 +7,7 @@ import AdminTableReportUserProfile from "@/components/AdminTableReportUserProfil
 </script>
 <template>
   <div class="container">
-    <div class="row">
-      <RouterLink
-        class="btn btn-sm btn-dargen mt-5 mr-5 mb-5"
-        :to="{
-          name: 'AdminDashboardView',
-        }"
-      >
-        back
-      </RouterLink>
-    </div>
-    <div class="w-full">
+    <div class="w-full mt-10">
       <AdminTableReportUserProfile />
     </div>
   </div>
