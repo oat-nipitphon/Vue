@@ -99,7 +99,8 @@ onMounted(async () => {
       <!-- Start Report Data Posts Dashboard View -->
 
       <div class="w-full" v-if="enrichedPosts.length > 0">
-        <div v-for="(post, index) in enrichedPosts" :key="index" class="post">
+        <div class="container mt-5 bg-white rounded shadow-lg"
+        v-for="(post, index) in enrichedPosts" :key="index" >
           <section class="bg-white dark:bg-gray-900">
             <div class="py-8 px-4 mx-auto max-w-5xl lg:py-16">
               <div class="grid grid-cols-2">
@@ -107,7 +108,7 @@ onMounted(async () => {
                 <div class="grid grid-rows2 m-2">
                   <div class="row">
                     <!-- Start Modal User Profile-->
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                       <div
                         v-for="(profileImage, index) in post.userProfileImage"
                         :key="index"
@@ -117,7 +118,7 @@ onMounted(async () => {
                           @click="onModalShowUserProfile(profileImage)"
                           data-bs-toggle="modal"
                           data-bs-target="#modalShowUserProfileCreatePost"
-                          class="ibox-image-profile rounded-full"
+                          class="image-profile-title-post"
                           alt="ImageUserProfile"
                           :src="`${profileImage.imageData}`"
                         />
@@ -463,16 +464,8 @@ onMounted(async () => {
   </div>
 </template>
 <style>
-.btn-edit__size {
-  width: 50px;
-  height: 45px;
-}
-.ibox-image {
-  width: 100%;
-  height: 320px;
-}
-.ibox-image-profile {
-  width: 90px;
-  height: 70px;
+.image-profile-title-post {
+  width: 200px;
+  height: 120px;
 }
 </style>

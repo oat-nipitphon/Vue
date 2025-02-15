@@ -1,5 +1,7 @@
-// /** @type {import('tailwindcss').Config} */
-const defaultTheme = require('tailwindcss/defaultTheme')
+const defaultTheme = require('tailwindcss/defaultTheme');
+const flowbite = require('flowbite/plugin');
+import typography from '@tailwindcss/typography';
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     "./index.html",
@@ -13,7 +15,5 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    require('flowbite/plugin'),
-  ],
+  plugins: [flowbite, typography],
 };

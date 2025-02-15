@@ -1,80 +1,98 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
-import { useRouter } from "vue-router";
-import { storeToRefs } from "pinia";
-import { routeLocationKey, RouterLink } from "vue-router";
-import { useAuthStore } from "@/stores/auth";
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { routeLocationKey, RouterLink } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
-const router = useRouter();
-const { apiStoreLogout } = useAuthStore();
-const authStore = useAuthStore();
-const { storeUser } = storeToRefs(authStore);
+const route = useRoute()
+const router = useRouter()
+const { apiStoreLogout } = useAuthStore()
+const authStore = useAuthStore()
+const { storeUser } = storeToRefs(authStore)
 
-// Main Menu
-const isMainDropdownOpen = ref(false);
-const toggleMainDropdown = (event) => {
-  event.stopPropagation();
-  isMainDropdownOpen.value = !isMainDropdownOpen.value;
-};
+const isAdmin = computed(() => {
+  return (
+    authStore.storeUser.user_login.status_id === 1 ||
+    authStore.storeUser.user_login.status_id === 2
+  )
+})
 
-// Mobile Menu
-const isMobileDropdownOpen = ref(false);
-const toggleMobileDropdown = (event) => {
-  event.stopPropagation();
-  isMobileDropdownOpen.value = !isMobileDropdownOpen.value;
-};
+const isActive = name => (route.name === name ? 'page' : null)
 
-// Close Dropdown เมื่อคลิกข้างนอก
-const closeDropdown = (event) => {
-  if (!event.target.closest("#navbar-main-menu")) {
-    isMainDropdownOpen.value = false;
+const navClass = name =>
+  route.name === name
+    ? 'rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white'
+    : 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white'
+
+const isMainDropdownOpen = ref(false)
+const toggleMainDropdown = event => {
+  event.stopPropagation()
+  isMainDropdownOpen.value = !isMainDropdownOpen.value
+}
+
+const isMobileDropdownOpen = ref(false)
+const toggleMobileDropdown = event => {
+  event.stopPropagation()
+  isMobileDropdownOpen.value = !isMobileDropdownOpen.value
+}
+
+const closeDropdown = event => {
+  if (!event.target.closest('#navbar-main-menu')) {
+    isMainDropdownOpen.value = false
   }
   if (
-    !event.target.closest("#navbar-mobile-menu") &&
-    !event.target.closest("#mobile-menu-button")
+    !event.target.closest('#navbar-mobile-menu') &&
+    !event.target.closest('#mobile-menu-button')
   ) {
-    isMobileDropdownOpen.value = false;
+    isMobileDropdownOpen.value = false
   }
-};
+}
 
-// Add/Remove Event Listeners
 onMounted(() => {
-  window.addEventListener("click", closeDropdown);
-});
+  window.addEventListener('click', closeDropdown)
+})
 
 onUnmounted(() => {
-  window.removeEventListener("click", closeDropdown);
-});
+  window.removeEventListener('click', closeDropdown)
+})
 
 const onHome = () => {
-  router.push({ name: "DashboardView" });
-  isMobileDropdownOpen.value = false;
-};
+  router.push({ name: 'DashboardView' })
+  isMobileDropdownOpen.value = false
+}
 const onAdminManager = () => {
-  router.push({ name: "AdminDashboardView" });
-  isMobileDropdownOpen.value = false;
-};
+  router.push({ name: 'AdminDashboardView' })
+  isMobileDropdownOpen.value = false
+}
 
 const onUserProfile = async () => {
   router.push({
-    name: "UserProfileDashboardView",
+    name: 'UserProfileDashboardView',
     params: { id: authStore.storeUser.user_login.id },
-  });
-  isMobileDropdownOpen.value = false;
-};
+  })
+  isMobileDropdownOpen.value = false
+}
 
 const onRecoverPost = async () => {
   router.push({
-    name: "ReportRecoverPostsView",
+    name: 'ReportRecoverPostsView',
     params: { userID: authStore.storeUser.user_login.id },
-  });
-  isMobileDropdownOpen.value = false;
-};
+  })
+  isMobileDropdownOpen.value = false
+}
+
+const onEditorTipTap = async () => {
+  router.push({
+    name: 'EditorTipTap',
+  })
+  isMobileDropdownOpen.value = false
+}
 
 const onLogout = async () => {
-  await apiStoreLogout();
-  isMobileDropdownOpen.value = false;
-};
+  await apiStoreLogout()
+  isMobileDropdownOpen.value = false
+}
 </script>
 <template>
   <div class="header">
@@ -105,32 +123,42 @@ const onLogout = async () => {
                             "ml-10 flex items-baseline space-x-4"
                  -->
                 <RouterLink
-                  class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
-                  aria-current="page"
+                  :aria-current="isActive('DashboardView')"
+                  :class="navClass('DashboardView')"
                   :to="{ name: 'DashboardView' }"
                 >
                   Home
                 </RouterLink>
                 <RouterLink
-                  class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                  :aria-current="isActive('AdminDashboardView')"
+                  :class="navClass('AdminDashboardView')"
                   :to="{ name: 'AdminDashboardView' }"
-                  v-if="authStore.storeUser.user_login.status_id === 1 || authStore.storeUser.user_login.status_id === 2"
+                  v-if="isAdmin"
                 >
                   AdminDashboardView
                 </RouterLink>
                 <RouterLink
-                  class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                  :aria-current="isActive('AdminManagerUserProfileView')"
+                  :class="navClass('AdminManagerUserProfileView')"
                   :to="{ name: 'AdminManagerUserProfileView' }"
-                  v-if="authStore.storeUser.user_login.status_id === 1 || authStore.storeUser.user_login.status_id === 2"
+                  v-if="isAdmin"
                 >
                   AdminManagerUserProfileView
                 </RouterLink>
                 <RouterLink
-                  class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                  :aria-current="isActive('AdminManagerPostView')"
+                  :class="navClass('AdminManagerPostView')"
                   :to="{ name: 'AdminManagerPostView' }"
-                  v-if="authStore.storeUser.user_login.status_id === 1 || authStore.storeUser.user_login.status_id === 2"
+                  v-if="isAdmin"
                 >
                   AdminManagerPostView
+                </RouterLink>
+                <RouterLink
+                  :aria-current="isActive('EditorTipTap')"
+                  :class="navClass('EditorTipTap')"
+                  :to="{ name: 'EditorTipTap' }"
+                >
+                  EditorTipTap
                 </RouterLink>
               </div>
             </div>
@@ -153,13 +181,23 @@ const onLogout = async () => {
                     aria-haspopup="true"
                   >
                     <p
-                      v-for="image in storeUser.user_login.userProfileImage"
-                      :key="image.id"
+                      v-for="(image, index) in storeUser.user_login
+                        .userProfileImage"
+                      :key="index"
                     >
-                      <img
+                      <!-- <img
                         class="size-10 rounded-full"
                         alt="Profile-Image"
                         :src="image.imageData"
+                      /> -->
+                      <img
+                        class="size-10 rounded-full"
+                        alt="ImageUserProfile"
+                        :src="
+                          image.imageData
+                            ? image.imageData
+                            : 'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png'
+                        "
                       />
                     </p>
                   </button>
@@ -205,6 +243,14 @@ const onLogout = async () => {
                     }"
                   >
                     Recover post
+                  </RouterLink>
+                  <RouterLink
+                    class="block px-4 py-2 text-sm text-gray-700"
+                    :to="{
+                      name: 'EditorTipTap',
+                    }"
+                  >
+                    EditorTipTap
                   </RouterLink>
                   <a
                     href="#"
@@ -335,7 +381,7 @@ const onLogout = async () => {
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                   @click="onAdminManager"
-                  v-if="authStore.storeUser.user_login.status_id === 1 || authStore.storeUser.user_login.status_id === 2"
+                  v-if="isAdmin"
                 >
                   Admin Manager
                 </span>
@@ -354,6 +400,11 @@ const onLogout = async () => {
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                   @click="onRecoverPost"
                   >Recover post</span
+                >
+                <span
+                  class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                  @click="onEditorTipTap"
+                  >Editor TipTap</span
                 >
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"

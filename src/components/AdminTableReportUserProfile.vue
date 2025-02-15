@@ -4,7 +4,8 @@ import { useAdminUserProfileStore } from "@/stores/admin.user.profile";
 const defaultProfileImage =
   "https://scontent.fkkc3-1.fna.fbcdn.net/v/t39.30808-6/461897536_3707658799483986_794048670785055411_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeHVG0UH5FgwbVkdtl70b39it0I862Qbciu3QjzrZBtyK4PmJExwkjQwGNMpc0Sbm9HeXRE2Yi7Fvc_GrvrUrXJN&_nc_ohc=_8IVpzSUJz8Q7kNvgH981ad&_nc_oc=AdjwNRCxXwtMr0TUQFjkBXTSR68KItzLfOXsS06bglRQ93A4l_N8TKdv4UJtxEVVgHa4BQVpEdDKu6htxiHQdrbk&_nc_zt=23&_nc_ht=scontent.fkkc3-1.fna&_nc_gid=AhlEAgeCssMinnIwKJwfgMQ&oh=00_AYBEFNyZ8w4XoptZM9dz2smOltNWG3lclgbLROlVgZYUVg&oe=67B024F1";
 
-const { adminAPIGETuserProfiles, deleteUserProfile } = useAdminUserProfileStore();
+const { adminAPIGETuserProfiles, deleteUserProfile } =
+  useAdminUserProfileStore();
 const userProfiles = ref([]);
 
 const currentPage = ref(1);
@@ -50,7 +51,6 @@ function formatDate(date) {
   const year = d.getFullYear();
   return `${day}/${month}/${year}`;
 }
-
 </script>
 
 <template>
@@ -82,12 +82,8 @@ function formatDate(date) {
             <th scope="col" class="w-2 p-2 text-center font-semibold">
               Status
             </th>
-            <th scope="col" class="w-4 p-3 text-center font-semibold">
-              Image
-            </th>
-            <th scope="col" class="w-3 p-3 text-center font-semibold">
-              Name
-            </th>
+            <th scope="col" class="w-4 p-3 text-center font-semibold">Image</th>
+            <th scope="col" class="w-3 p-3 text-center font-semibold">Name</th>
             <th scope="col" class="w-4 p-3 text-center font-semibold">
               Tel phone
             </th>
@@ -103,7 +99,7 @@ function formatDate(date) {
             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
           >
             <td class="w-2 py-2 text-center">
-              <p 
+              <p
                 class="text-green-500 text-sm text-center"
                 v-if="userProfile.userLogin.status_login === 'online'"
               >
@@ -115,49 +111,57 @@ function formatDate(date) {
               >
                 {{ userProfile.userLogin.status_login }}
               </p> -->
-              <p
-                v-else
-                class="text-red-600 text-sm text-center"
-              >
-                offline
-              </p>
+              <p v-else class="text-red-600 text-sm text-center">offline</p>
             </td>
             <td class="w-5 p-3 text-start m-1">
               <div
-                v-for="image in userProfile.userProfileImage" :key="image.id"
+                v-for="image in userProfile.userProfileImage"
+                :key="image.id"
               >
-                <img 
-                  :src="image.image_data" 
+                <img
+                  :src="image.image_data"
                   alt="Profile-Image"
                   class="size-8 rounded-full m-auto"
-                >
+                />
               </div>
             </td>
             <td class="w-4 p-3 text-center m-1">
-              <label class="text-sm text-gray-900">
-                {{ userProfile.userProfile.full_name }}
+              <label
+                v-for="profile in userProfile.userProfile"
+                :key="profile.id"
+                class="text-sm text-gray-900"
+              >
+                {{ profile.full_name }}
               </label>
             </td>
             <td class="w-4 p-3 text-center m-1">
-              <label class="text-sm text-gray-900">
-                {{ formatDate(userProfile.userProfile.birth_day) }}
+              <label
+                v-for="profile in userProfile.userProfile"
+                :key="profile.id"
+                class="text-sm text-gray-900"
+              >
+                {{ formatDate(profile.birth_day) }}
               </label>
             </td>
             <td class="flex text-center">
               <div class="dropdown m-auto">
                 <button
-                  class="dropdown-toggle btn btn-sm btn-event mt-2"
+                  class="btn btn-sm btn-primary mt-2"
                   type="button"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
                   Event
                 </button>
-                <ul class="dropdown-menu">
+                <ul
+                  class="dropdown-menu"
+                  v-for="user in userProfile"
+                  :key="user.id"
+                >
                   <li>
                     <label
                       type="button"
-                      @click="btnEventEdit(userProfile.id)"
+                      @click="btnEventEdit(user.id)"
                       class="btn btn-delete dropdown-item m-2"
                     >
                       Edit
@@ -166,7 +170,7 @@ function formatDate(date) {
                   <li>
                     <label
                       type="button"
-                      @click="btnEventDelete(userProfile.id)"
+                      @click="btnEventDelete(user.id)"
                       class="btn btn-delete dropdown-item m-2"
                     >
                       Delete

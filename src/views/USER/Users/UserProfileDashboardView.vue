@@ -1,101 +1,100 @@
 <script setup>
-import { reactive, ref, onMounted, computed } from "vue";
-import { useRoute } from "vue-router";
-import { useStoreUserProfile } from "@/stores/user.profile";
-import FileImageModal from "@/components/FileImageModal.vue";
-import CardFollowers from "@/components/CardFollowers.vue";
+import { reactive, ref, onMounted, computed, defineAsyncComponent } from 'vue'
+import { useRoute } from 'vue-router'
+import { useStoreUserProfile } from '@/stores/user.profile'
+import FileImageModal from '@/components/FileImageModal.vue'
+import CardFollowers from '@/components/CardFollowers.vue'
 const defaultProfileImage =
-  "https://scontent.fkkc3-1.fna.fbcdn.net/v/t39.30808-6/461897536_3707658799483986_794048670785055411_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeHVG0UH5FgwbVkdtl70b39it0I862Qbciu3QjzrZBtyK4PmJExwkjQwGNMpc0Sbm9HeXRE2Yi7Fvc_GrvrUrXJN&_nc_ohc=_8IVpzSUJz8Q7kNvgH981ad&_nc_oc=AdjwNRCxXwtMr0TUQFjkBXTSR68KItzLfOXsS06bglRQ93A4l_N8TKdv4UJtxEVVgHa4BQVpEdDKu6htxiHQdrbk&_nc_zt=23&_nc_ht=scontent.fkkc3-1.fna&_nc_gid=AhlEAgeCssMinnIwKJwfgMQ&oh=00_AYBEFNyZ8w4XoptZM9dz2smOltNWG3lclgbLROlVgZYUVg&oe=67B024F1";
+  'https://scontent.fkkc3-1.fna.fbcdn.net/v/t39.30808-6/461897536_3707658799483986_794048670785055411_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeHVG0UH5FgwbVkdtl70b39it0I862Qbciu3QjzrZBtyK4PmJExwkjQwGNMpc0Sbm9HeXRE2Yi7Fvc_GrvrUrXJN&_nc_ohc=_8IVpzSUJz8Q7kNvgH981ad&_nc_oc=AdjwNRCxXwtMr0TUQFjkBXTSR68KItzLfOXsS06bglRQ93A4l_N8TKdv4UJtxEVVgHa4BQVpEdDKu6htxiHQdrbk&_nc_zt=23&_nc_ht=scontent.fkkc3-1.fna&_nc_gid=AhlEAgeCssMinnIwKJwfgMQ&oh=00_AYBEFNyZ8w4XoptZM9dz2smOltNWG3lclgbLROlVgZYUVg&oe=67B024F1'
 
-const route = useRoute();
-const statusUser = ref(null);
-const userProfile = ref(null);
-const userProfileImage = ref(null);
-const isEventSpanDetailProfile = ref(true);
-const isEventInputDetailProfile = ref(false);
-const isEventButtonEditDetailProfile = ref(true);
-const isEventButtonUpdateDetailProfile = ref(false);
-const isEventButtonCencelUpdateDetailProfile = ref(false);
+const route = useRoute()
+const statusUser = ref(null)
+const userProfile = ref(null)
+const userProfileImage = ref(null)
+const isEventSpanDetailProfile = ref(true)
+const isEventInputDetailProfile = ref(false)
+const isEventButtonEditDetailProfile = ref(true)
+const isEventButtonUpdateDetailProfile = ref(false)
+const isEventButtonCencelUpdateDetailProfile = ref(false)
 
 const toggleEventInputDetailProfile = async () => {
-  isEventInputDetailProfile.value = true;
-  isEventSpanDetailProfile.value = false;
-  isEventButtonUpdateDetailProfile.value = true;
-  isEventButtonCencelUpdateDetailProfile.value = true;
-  isEventButtonEditDetailProfile.value - false;
-};
+  isEventInputDetailProfile.value = true
+  isEventSpanDetailProfile.value = false
+  isEventButtonUpdateDetailProfile.value = true
+  isEventButtonCencelUpdateDetailProfile.value = true
+  isEventButtonEditDetailProfile.value - false
+}
 
 const toggleEventCencelUpdateProfile = async () => {
-  isEventInputDetailProfile.value = false;
-  isEventSpanDetailProfile.value = true;
-  isEventButtonUpdateDetailProfile.value = false;
-  isEventButtonCencelUpdateDetailProfile.value = false;
-  isEventButtonEditDetailProfile.value - true;
-};
+  isEventInputDetailProfile.value = false
+  isEventSpanDetailProfile.value = true
+  isEventButtonUpdateDetailProfile.value = false
+  isEventButtonCencelUpdateDetailProfile.value = false
+  isEventButtonEditDetailProfile.value - true
+}
 
 const {
   apiGetAllUserProfile,
   apiGetStatusUser,
   apiUpdateDetailUserProfile,
   apiUploadImageUserProfile,
-} = useStoreUserProfile();
+} = useStoreUserProfile()
 
-const imageFile = ref(null);
-const imageUrl = ref(null);
+const imageFile = ref(null)
+const imageUrl = ref(null)
 const formData = reactive({
-  userID: "",
-  name: "",
-  email: "",
-  userName: "",
-  statusID: "",
-  statusName: "",
-  profileID: "",
-  titleName: "",
-  fullName: "",
-  nickName: "",
-  telPhone: "",
-  birthDay: "",
-});
+  userID: '',
+  name: '',
+  email: '',
+  userName: '',
+  statusID: '',
+  statusName: '',
+  profileID: '',
+  titleName: '',
+  fullName: '',
+  nickName: '',
+  telPhone: '',
+  birthDay: '',
+})
 
 const age = computed(() => {
-  if (!formData.birthDay) return "Age not available";
-  const birthDate = new Date(formData.birthDay);
-  const currentDate = new Date();
-  let calculatedAge = currentDate.getFullYear() - birthDate.getFullYear();
-  const monthDifference = currentDate.getMonth() - birthDate.getMonth();
+  if (!formData.birthDay) return 'Age not available'
+  const birthDate = new Date(formData.birthDay)
+  const currentDate = new Date()
+  let calculatedAge = currentDate.getFullYear() - birthDate.getFullYear()
+  const monthDifference = currentDate.getMonth() - birthDate.getMonth()
   if (
     monthDifference < 0 ||
     (monthDifference === 0 && currentDate.getDate() < birthDate.getDate())
   ) {
-    calculatedAge--; // ลดอายุถ้ายังไม่ถึงวันเกิดในปีนี้
+    calculatedAge-- // ลดอายุถ้ายังไม่ถึงวันเกิดในปีนี้
   }
-  return `Age ${calculatedAge} years`;
-});
+  return `Age ${calculatedAge} years`
+})
 
 onMounted(async () => {
-  userProfile.value = await apiGetAllUserProfile(route.params.id);
+  userProfile.value = await apiGetAllUserProfile(route.params.id)
   if (userProfile.value) {
-    formData.userID = userProfile.value.id || "";
-    formData.name = userProfile.value.name || "";
-    formData.email = userProfile.value.email || "";
-    formData.userName = userProfile.value.username || "";
-    formData.statusID = userProfile.value.statusUser.id || "";
-    formData.statusName = userProfile.value.statusUser.status_name || "";
-    formData.profileID = userProfile.value.userProfile.id || "";
-    formData.titleName = userProfile.value.userProfile.title_name || "";
-    formData.fullName = userProfile.value.userProfile.full_name || "";
-    formData.nickName = userProfile.value.userProfile.nick_name || "";
-    formData.telPhone = userProfile.value.userProfile.tel_phone || "";
-    formData.birthDay = userProfile.value.userProfile.birth_day || "";
-    imageFile.value = userProfile.value.userProfileImage.image_data || "";
+    formData.userID = userProfile.value.id || ''
+    formData.name = userProfile.value.name || ''
+    formData.email = userProfile.value.email || ''
+    formData.userName = userProfile.value.username || ''
+    formData.statusID = userProfile.value.statusUser.id || ''
+    formData.statusName = userProfile.value.statusUser.status_name || ''
+    formData.profileID = userProfile.value.userProfile.id || ''
+    formData.titleName = userProfile.value.userProfile.title_name || ''
+    formData.fullName = userProfile.value.userProfile.full_name || ''
+    formData.nickName = userProfile.value.userProfile.nick_name || ''
+    formData.telPhone = userProfile.value.userProfile.tel_phone || ''
+    formData.birthDay = userProfile.value.userProfile.birth_day || ''
+    imageFile.value = userProfile.value.userProfileImage.imageData || ''
   }
-  statusUser.value = await apiGetStatusUser();
-});
+  statusUser.value = await apiGetStatusUser()
+})
 
 const btnUpdateProfile = async () => {
-  await apiUpdateDetailUserProfile(formData);
-};
-
+  await apiUpdateDetailUserProfile(formData)
+}
 </script>
 <template>
   <div v-if="userProfile">
@@ -113,15 +112,19 @@ const btnUpdateProfile = async () => {
               <!-- Card Profile left -->
               <!-- https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png -->
               <div class="space-y-4">
-                <div class="flex space-x-4"
-                  v-for="image in userProfile.userProfileImage" :key="image.id"
+                <div
+                  class="flex space-x-4"
+                  v-for="(image, index) in userProfile.userProfileImage"
+                  :key="index"
                 >
                   <img
-                    width="100%"
-                    height="100%"
-                    class="rounded-full w-96 h-96"
-                    :src="image?.imageData || defaultProfileImage"
-                    alt="Helene avatar"
+                    class="ibox-image-profile w-full h-auto"
+                    alt="ImageUserProfile"
+                    :src="
+                      image.image_data
+                        ? image.image_data
+                        : 'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png'
+                    "
                   />
                 </div>
                 <FileImageModal />
@@ -236,10 +239,8 @@ const btnUpdateProfile = async () => {
                   >
                     Title name
                   </label>
-                  <div
-                    class="font-semibold text-gray-500 dark:text-white"
-                  >
-                    <select 
+                  <div class="font-semibold text-gray-500 dark:text-white">
+                    <select
                       v-model="formData.titleName"
                       class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
                     >

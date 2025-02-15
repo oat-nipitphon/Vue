@@ -14,14 +14,16 @@ import AdminManagerPostView from '@/views/ADMIN/Posts/AdminManagerPostView.vue'
 import AdminManagerUserProfileView from '@/views/ADMIN/USER/AdminManagerUserProfileView.vue'
 
 // --------------------------------- Zone USER -------------------------------------------------
-// ******** View users
+// ******** User Profiles **********
 import UserProfileDashboardView from '@/views/USER/Users/UserProfileDashboardView.vue'
 
-// ******** View posts
+// ******** Posts *************
+import EditorTipTap from '@/views/EditorTipTap.vue'
 import DetailPostView from '@/views/USER/Posts/DetailPostView.vue'
 import CreatePostNewView from '@/views/USER/Posts/CreatePostNewView.vue'
 import EditPostView from '@/views/USER/Posts/EditPostView.vue'
 import ReportRecoverPostsView from '@/views/USER/Posts/ReportRecoverPostsView.vue';
+
 
 
 const router = createRouter({
@@ -65,7 +67,7 @@ const router = createRouter({
 
     //  ----------------------------- Zone USER Views  ---------------------------------------------
     
-    // ******* View users
+    // ******* User Profiles **********
     {
       path: '/user_profiles/show/:id',
       name: 'UserProfileDashboardView',
@@ -73,7 +75,15 @@ const router = createRouter({
       meta: { auth: true }
     },
 
-    // ******* View posts 
+    // ******* Posts **************** 
+
+    // Editor TipTap
+    {
+      path: '/EditorTipTap',
+      name: 'EditorTipTap',
+      component: EditorTipTap,
+      meta: { auth: true }
+    },
     {
       path: '/DetailPostView',
       name: 'DetailPostView',
