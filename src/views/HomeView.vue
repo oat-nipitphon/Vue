@@ -1,17 +1,23 @@
-<script setup>
-
-</script>
-
 <template>
   <div class="container">
-    <div class="flex justify-center" style="margin-top: 15%;">
-      <div class="row">
-        <div class="col-md-6">
-          <img class="icon-laravel" src="../assets/icon/laravel.png" alt="icon-laravel" />
-        </div>
-        <div class="col-md-6">
-          <img class="icon-vue" src="../assets/icon/vue.png" alt="icon-vue" />
-        </div>
+    <div class="row mt-10">
+      <div class="col-md-6 flex justify-center">
+        <img
+          class="icon-laravel"
+          src="../assets/icon/laravel.png"
+          alt="icon-laravel"
+        />
+      </div>
+      <div class="col-md-6 flex justify-center">
+        <img class="icon-vue" src="../assets/icon/vue.png" alt="icon-vue" />
+      </div>
+    </div>
+    <div class="row mt-10">
+      <div class="flex justify-center">
+        <article class="prose mt-10">
+        <h1>Tailwind Typography Test</h1>
+        <p>This is a paragraph to check if typography is working.</p>
+      </article>
       </div>
     </div>
   </div>

@@ -30,7 +30,7 @@ export const useAdminUserProfileStore = defineStore("adminUserProfileStore", {
             }
         },
 
-        async getDataEditUserProfile(userID) {
+        async adminGetDataEditUserProfile(userID) {
             try {
 
                 const res = await fetch(`/api/admin/userProfile/manager/${userID}`, {
@@ -52,7 +52,7 @@ export const useAdminUserProfileStore = defineStore("adminUserProfileStore", {
                 console.error("get data edit function error", error);
             }
         },
-        async updateUserProfile() {
+        async adminUpdateUserProfile() {
             const result = await Swal.fire({
                 title: "Confirm Update!",
                 text: "Are you sure you want to update this userprofile?",
@@ -65,7 +65,7 @@ export const useAdminUserProfileStore = defineStore("adminUserProfileStore", {
             });
         },
 
-        async deleteUserProfile(userID) {
+        async adminDeleteUserProfile(userID) {
             if (userID) {
                 const result = await Swal.fire({
                     title: "Confirm Delete!",

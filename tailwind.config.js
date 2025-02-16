@@ -1,7 +1,8 @@
+/** @type {import('tailwindcss').Config} */
 const defaultTheme = require('tailwindcss/defaultTheme');
 const flowbite = require('flowbite/plugin');
-import typography from '@tailwindcss/typography';
-/** @type {import('tailwindcss').Config} */
+const typography = require('@tailwindcss/typography');
+
 module.exports = {
   content: [
     "./index.html",

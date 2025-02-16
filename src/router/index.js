@@ -16,9 +16,9 @@ import AdminManagerUserProfileView from '@/views/ADMIN/USER/AdminManagerUserProf
 // --------------------------------- Zone USER -------------------------------------------------
 // ******** User Profiles **********
 import UserProfileDashboardView from '@/views/USER/Users/UserProfileDashboardView.vue'
+import AdminGetUserProfileEdit from '@/views/ADMIN/USER/AdminGetUserProfileEdit.vue'
 
 // ******** Posts *************
-import EditorTipTap from '@/views/EditorTipTap.vue'
 import DetailPostView from '@/views/USER/Posts/DetailPostView.vue'
 import CreatePostNewView from '@/views/USER/Posts/CreatePostNewView.vue'
 import EditPostView from '@/views/USER/Posts/EditPostView.vue'
@@ -77,13 +77,6 @@ const router = createRouter({
 
     // ******* Posts **************** 
 
-    // Editor TipTap
-    {
-      path: '/EditorTipTap',
-      name: 'EditorTipTap',
-      component: EditorTipTap,
-      meta: { auth: true }
-    },
     {
       path: '/DetailPostView',
       name: 'DetailPostView',
@@ -128,6 +121,12 @@ const router = createRouter({
       path: '/AdminManagerUserProfileView',
       name: 'AdminManagerUserProfileView',
       component: AdminManagerUserProfileView,
+      meta: { auth: true }
+    },
+    {
+      path: '/admin/userProfiles/manager/:userProfileID',
+      name: 'AdminGetUserProfileEdit',
+      component: AdminGetUserProfileEdit,
       meta: { auth: true }
     },
 

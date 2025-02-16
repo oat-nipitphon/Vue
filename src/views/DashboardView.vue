@@ -1,84 +1,84 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
-import { RouterLink } from "vue-router";
-import { useAuthStore } from "@/stores/auth";
-import { usePostStore } from "@/stores/post";
+import { ref, onMounted, computed } from 'vue'
+import { RouterLink } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import { usePostStore } from '@/stores/post'
 
-const authStore = useAuthStore();
-const userID = ref(authStore.storeUser?.user_login?.id || null);
+const authStore = useAuthStore()
+const userID = ref(authStore.storeUser?.user_login?.id || null)
 const {
   apiGetPosts,
   apiStorePost,
   apiDeletePost,
   apiPostPopLike,
   apiPostPopDisLike,
-} = usePostStore();
-const posts = ref([]);
-const selectedPostContent = ref([]);
-const selectedUserProfile = ref([]);
+} = usePostStore()
+const posts = ref([])
+const selectedPostContent = ref([])
+const selectedUserProfile = ref([])
 
 // Compute enriched data for posts
 const enrichedPosts = computed(() =>
-  posts.value.map((post) => {
+  posts.value.map(post => {
     const likeCount = post.postPopularity.filter(
-      (pop) => pop.status === "Like"
-    ).length;
+      pop => pop.status === 'Like'
+    ).length
     const disLikeCount = post.postPopularity.filter(
-      (pop) => pop.status === "DisLike"
-    ).length;
+      pop => pop.status === 'DisLike'
+    ).length
     const userLiked = post.postPopularity.some(
-      (pop) => pop.userID === userID.value && pop.status === "Like"
-    );
+      pop => pop.userID === userID.value && pop.status === 'Like'
+    )
     const userDisliked = post.postPopularity.some(
-      (pop) => pop.userID === userID.value && pop.status === "DisLike"
-    );
+      pop => pop.userID === userID.value && pop.status === 'DisLike'
+    )
     return {
       ...post,
       likeCount,
       disLikeCount,
       userLiked,
       userDisliked,
-    };
+    }
   })
-);
+)
 
-const handleLike = async (post) => {
-  await apiPostPopLike(userID.value, post.id, "Like");
-  const updatedPosts = await apiGetPosts();
-  posts.value = updatedPosts;
-};
+const handleLike = async post => {
+  await apiPostPopLike(userID.value, post.id, 'Like')
+  const updatedPosts = await apiGetPosts()
+  posts.value = updatedPosts
+}
 
 // Handle dis like
-const handleDislike = async (post) => {
-  await apiPostPopDisLike(userID.value, post.id, "DisLike");
-  const updatedPosts = await apiGetPosts();
-  posts.value = updatedPosts;
-};
+const handleDislike = async post => {
+  await apiPostPopDisLike(userID.value, post.id, 'DisLike')
+  const updatedPosts = await apiGetPosts()
+  posts.value = updatedPosts
+}
 
-const modalValuePostContent = (content) => {
-  selectedPostContent.value = content;
-};
+const modalValuePostContent = content => {
+  selectedPostContent.value = content
+}
 
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleString("th-TH", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+const formatDate = dateString => {
+  const date = new Date(dateString)
+  return date.toLocaleString('th-TH', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
     // hour: "2-digit",
     // minute: "2-digit",
     // second: "2-digit",
     // timeZoneName: "short",
-  });
-};
+  })
+}
 
-const onModalShowUserProfile = (userProfile) => {
-  selectedUserProfile.value = userProfile;
-};
+const onModalShowUserProfile = userProfile => {
+  selectedUserProfile.value = userProfile
+}
 
 onMounted(async () => {
-  posts.value = await apiGetPosts();
-});
+  posts.value = await apiGetPosts()
+})
 </script>
 
 <template>
@@ -95,12 +95,23 @@ onMounted(async () => {
       </RouterLink>
     </div>
 
+    <div class="container bg-orange-400" v-if="posts">
+      <div class="grid grid-cols-3">
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+      </div>
+    </div>
+
     <div class="">
       <!-- Start Report Data Posts Dashboard View -->
 
       <div class="w-full" v-if="enrichedPosts.length > 0">
-        <div class="container mt-5 bg-white rounded shadow-lg"
-        v-for="(post, index) in enrichedPosts" :key="index" >
+        <div
+          class="container mt-5 bg-white rounded shadow-lg"
+          v-for="(post, index) in enrichedPosts"
+          :key="index"
+        >
           <section class="bg-white dark:bg-gray-900">
             <div class="py-8 px-4 mx-auto max-w-5xl lg:py-16">
               <div class="grid grid-cols-2">

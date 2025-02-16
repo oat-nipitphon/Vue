@@ -82,13 +82,6 @@ const onRecoverPost = async () => {
   isMobileDropdownOpen.value = false
 }
 
-const onEditorTipTap = async () => {
-  router.push({
-    name: 'EditorTipTap',
-  })
-  isMobileDropdownOpen.value = false
-}
-
 const onLogout = async () => {
   await apiStoreLogout()
   isMobileDropdownOpen.value = false
@@ -152,13 +145,6 @@ const onLogout = async () => {
                   v-if="isAdmin"
                 >
                   AdminManagerPostView
-                </RouterLink>
-                <RouterLink
-                  :aria-current="isActive('EditorTipTap')"
-                  :class="navClass('EditorTipTap')"
-                  :to="{ name: 'EditorTipTap' }"
-                >
-                  EditorTipTap
                 </RouterLink>
               </div>
             </div>
@@ -243,14 +229,6 @@ const onLogout = async () => {
                     }"
                   >
                     Recover post
-                  </RouterLink>
-                  <RouterLink
-                    class="block px-4 py-2 text-sm text-gray-700"
-                    :to="{
-                      name: 'EditorTipTap',
-                    }"
-                  >
-                    EditorTipTap
                   </RouterLink>
                   <a
                     href="#"
@@ -400,11 +378,6 @@ const onLogout = async () => {
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                   @click="onRecoverPost"
                   >Recover post</span
-                >
-                <span
-                  class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                  @click="onEditorTipTap"
-                  >Editor TipTap</span
                 >
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
