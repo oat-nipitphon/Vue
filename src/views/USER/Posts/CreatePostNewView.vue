@@ -1,102 +1,112 @@
 <template>
-  <div class="container">
-    <div class="container mt-10 text-md bg-white ronunded shadow">
-      <label class="m-auto p-2 text-gray-900 text-3xl" for="Create Post New">
-        Form create post
+  <div class="w-full mx-auto px-4 bg-white ronunded shadow-lg mt-5">
+    <label class="m-auto p-2 text-gray-900 text-3xl" for="Create Post New">
+      Form create post
+    </label>
+    <div class="mt-2 text-2x1">
+      <label for="Post-Title" class="mt-3 mb-3 text-gray-900 text-2x1">
+        Title
       </label>
-      <form class="w-10/12 m-auto p-2 mt-5" @submit.prevent="onCreatePost">
-        <div class="mt-2 text-md">
-          <!-- Form Select Type -->
-          <label for="Post-Type" class="mt-3 mb-3 text-gray-900 text-2x1">
-            Post Type
-          </label>
-          <select
-            class="form-control"
-            v-model="form.typeID"
-            @change="onSelectType"
-          >
-            <option v-for="type in postTypes" :key="type.id" :value="type.id">
-              {{ type.post_type_name }}
-            </option>
-            <option value="new">add +</option>
-          </select>
-        </div>
-        <div class="mt-2 text-md" v-if="isNewType">
-          <!-- Form New Type -->
-          <label for="Type-New" class="mt-3 mb-3 text-gray-900 text-2x1">
+      <input v-model="form.title" type="text" class="form-control mt-2" />
+    </div>
+    <div class="mt-2">
+      <label class="mt-3 mb-3 text-gray-900 text-2x1" for="Post-Content">
+        Content
+      </label>
+      <EditorTipTap />
+    </div>
+    <div class="mt-2">
+      <label class="mt-3 mb-3 text-gray-900 text-2x1" for="Post-Refer">
+        Refer
+      </label>
+      <input v-model="form.refer" type="text" class="form-control" />
+    </div>
+    <div class="grid" v-if="isSelectType">
+      <label for="Post-Type" class="text-gray-900 text-2x1"> Post Type </label>
+      <select
+        class="form-control mt-3"
+        v-model="form.typeID"
+        @change="onSelectType"
+      >
+        <option v-for="type in postTypes" :key="type.id" :value="type.id">
+          {{ type.post_type_name }}
+        </option>
+        <option value="new">add +</option>
+      </select>
+    </div>
+
+    <div class="grid grid-rows-3" v-if="isNewType">
+      <div class="mt-3">
+        <div>
+          <label for="Type-New" class="text-gray-900 text-2x1">
             Type new
           </label>
-          <input type="text" class="form-control" v-model="form.newType" />
         </div>
-        <div class="mt-2 text-sm">
-          <!-- Form Title -->
-          <label for="Post-Title"> Title </label>
-          <input v-model="form.title" type="text" class="form-control" />
-        </div>
-        <div class="mt-2 text-md">
-          <!-- Form Content -->
-          <label for="Post-Content"> Content </label>
-          <EditorTipTap />
-          <!-- <textarea
-            v-model="form.content"
-            class="form-control"
-            rows="5"
-            cols="10"
-          ></textarea> -->
-        </div>
-        <div class="mt-2 text-md">
-          <label for="Post-Refer"> Refer </label>
-          <input v-model="form.refer" type="text" class="form-control" />
-        </div>
-        <div class="row m-5">
-          <input
-            id="fileImage"
-            accept="image/*"
-            type="file"
-            class="form-control"
-            @change="handleImageSelected"
-          />
-        </div>
-        <div class="row m-5">
-          <img
-            v-show="imageUrl"
-            :src="
-              imageUrl ||
-              'https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg'
-            "
-            class="w-auto h-48 object-cover"
-            alt="ShowImageUrl"
-          />
-        </div>
-        <div class="mt-2 mr-10 flex justify-end">
-          <button type="submit" class="btn btn-sm btn-primary m-2">Save</button>
-        </div>
-      </form>
-      <div class="mt-2 flex justify-end">
-        <button
-          @click="btnCancel"
-          type="submit"
-          class="btn btn-sm btn-outline-danger m-2"
-        >
-          Cancel
+      </div>
+      <div class="mt-2 text-2x1">
+        <input type="text" class="form-control" v-model="form.newType" />
+      </div>
+      <div v-if="isButtonSelect" class="flex justify-end mr-3 mt-auto mb-auto">
+        <button @click="onSelectAgain" class="btn btn-sm btn-outline-primary">
+          เลือกประเภทที่มีอยู่
         </button>
       </div>
     </div>
+
+    <div class="grid grid-rows-1 mt-2 bg-orange-400">
+      <div class="bg-white">
+        <input
+          id="fileImage"
+          accept="image/*"
+          type="file"
+          class="form-control"
+          @change="handleImageSelected"
+        />
+        <img
+          :src="
+            imageUrl ||
+            'https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg'
+          "
+          alt="Image Preview"
+          class="ibox-image-post"
+        />
+      </div>
+    </div>
+    <div class="flex justify-end mr-2 mt-auto mb-auto">
+      <button @click="onCreatePost" type="button" class="btn btn-primary btn-sm m-3">Save</button>
+      <button @click="onCancel" type="button" class="btn btn-danger btn-sm m-3">Cancel</button>
+    </div>
   </div>
 </template>
+<style>
+.ibox-image-post {
+  margin: auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  width: 90%;
+  height: 350px;
+}
+</style>
 <script setup>
-import Swal from 'sweetalert2'
-import axiosAPI from '@/services/axiosAPI'
-import { ref, onMounted, reactive } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { usePostStore } from '@/stores/post'
+import Swal from 'sweetalert2'
+import axiosAPI from '@/services/axiosAPI'
 import EditorTipTap from '@/components/EditorTipTap.vue'
-const authAuth = useAuthStore()
+import imageFileBasic from '@/assets/icon/keyboard.jpg'
+
 const router = useRouter()
+const authAuth = useAuthStore()
 const postTypes = ref(null)
+const isSelectType = ref(true)
+const isButtonSelect = ref(false)
+const isNewType = ref(false)
+const imageFile = ref(null)
+const imageUrl = ref(null)
+
 const { apiGetPostTypes, apiCreatePostNew } = usePostStore()
-const authUserID = ref(null)
 
 const form = ref({
   title: '',
@@ -106,25 +116,24 @@ const form = ref({
   newType: '',
 })
 
-const isNewType = ref(false)
-
-const imageFileBasic = ref(null)
-imageFileBasic.value =
-  'https://scontent.fkkc3-1.fna.fbcdn.net/v/t39.30808-6/461897536_3707658799483986_794048670785055411_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeHVG0UH5FgwbVkdtl70b39it0I862Qbciu3QjzrZBtyK4PmJExwkjQwGNMpc0Sbm9HeXRE2Yi7Fvc_GrvrUrXJN&_nc_ohc=pQ4M4LiSPCcQ7kNvgG9_eZm&_nc_oc=AdhODB76hbqSN1gojgQ0Qq6D7lQv-Vn-JZhJdzoX-r6dgACwHNvmdNDKiqapObYu7JNiSz3NNQKlb359fz2DNJs3&_nc_zt=23&_nc_ht=scontent.fkkc3-1.fna&_nc_gid=AOUeEXHhWhEXESqz8T9UQbq&oh=00_AYCjcN5cI21D3BpxKTLg5zdiLZhSzRrjFbqI0EWHQOE-zA&oe=67AC3071'
-const imageFile = ref(null)
-const imageUrl = ref(null)
-
-const handleImageSelected = e => {
-  imageUrl.value = URL.createObjectURL(e.target.files[0])
-  imageFile.value = e.target.files[0]
+const handleImageSelected = event => {
+  imageFile.value = event.target.files[0]
+  imageUrl.value = URL.createObjectURL(event.target.files[0])
 }
 
 const onSelectType = () => {
   if (form.value.typeID === 'new') {
+    isSelectType.value = false
     isNewType.value = true
+    isButtonSelect.value = true
     form.value.typeID = ''
   }
-  console.log('form new type ', form.value.newType)
+}
+const onSelectAgain = () => {
+  isSelectType.value = true
+  isNewType.value = false
+  isButtonSelect.value = false
+  form.value.typeID = ''
 }
 
 const onCreatePost = async () => {
@@ -183,7 +192,7 @@ const onCreatePost = async () => {
   }
 }
 
-const btnCancel = () => {
+const onCancel = () => {
   router.push({ name: 'DashboardView' })
 }
 
