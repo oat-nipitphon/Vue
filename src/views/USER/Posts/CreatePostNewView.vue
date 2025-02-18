@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full mx-auto px-4 bg-white ronunded shadow-lg mt-5">
+  <div class="container bg-white ronunded shadow-lg mt-5">
     <label class="m-auto p-2 text-gray-900 text-3xl" for="Create Post New">
       Form create post
     </label>
@@ -13,7 +13,7 @@
       <label class="mt-3 mb-3 text-gray-900 text-2x1" for="Post-Content">
         Content
       </label>
-      <EditorTipTap />
+      <EditorTipTap v-model="form.content" />
     </div>
     <div class="mt-2">
       <label class="mt-3 mb-3 text-gray-900 text-2x1" for="Post-Refer">
@@ -110,7 +110,7 @@ const { apiGetPostTypes, apiCreatePostNew } = usePostStore()
 
 const form = ref({
   title: '',
-  content: '',
+  content: "<p>I'm running Tiptap with Vue.js. 🎉</p>",
   refer: '',
   typeID: '',
   newType: '',
