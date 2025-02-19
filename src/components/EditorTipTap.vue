@@ -20,12 +20,11 @@ const editor = useEditor({
   editorProps: {
     attributes: {
       class:
-        'border border-gray-400 p-4 min-h-[12rem] max-h-[12rem] overflow-y-auto',
+        'border border-gray-400 p-4 min-h-[12rem] max-h-[auto] overflow-y-auto',
     },
   },
 })
 
-// ฟังก์ชันสำหรับจัดการ Format ข้อความ
 const toggleHeading = level => {
   if (!editor.value) return
   if (editor.value.isActive('heading', { level })) {
@@ -54,6 +53,7 @@ const redo = () => {
   if (!editor.value) return
   editor.value.chain().focus().redo().run()
 }
+
 </script>
 
 <template>
@@ -111,6 +111,15 @@ const redo = () => {
         <img src="../assets/icon/editor-post/type-h1.svg" alt="" />
       </button>
       <button
+        @click="toggleHeading(2)"
+        :class="{
+          'bg-gray-400 text-white': editor.isActive('heading', { level: 2 }),
+        }"
+        class="toolbar-btn"
+      >
+        <img src="../assets/icon/editor-post/type-h2.svg" alt="" />
+      </button>
+      <button
         @click="toggleHeading(3)"
         :class="{
           'bg-gray-400 text-white': editor.isActive('heading', { level: 3 }),
@@ -118,6 +127,24 @@ const redo = () => {
         class="toolbar-btn"
       >
         <img src="../assets/icon/editor-post/type-h3.svg" alt="" />
+      </button>
+      <button
+        @click="toggleHeading(4)"
+        :class="{
+          'bg-gray-400 text-white': editor.isActive('heading', { level: 4 }),
+        }"
+        class="toolbar-btn"
+      >
+        <img src="../assets/icon/editor-post/type-h4.svg" alt="" />
+      </button>
+      <button
+        @click="toggleHeading(5)"
+        :class="{
+          'bg-gray-400 text-white': editor.isActive('heading', { level: 5 }),
+        }"
+        class="toolbar-btn"
+      >
+        <img src="../assets/icon/editor-post/type-h5.svg" alt="" />
       </button>
 
       <!-- รายการ -->
@@ -180,7 +207,7 @@ const redo = () => {
 </template>
 
 <style>
-/* ปรับสไตล์ของปุ่ม */
+
 .toolbar-btn {
   padding: 8px;
   border-radius: 6px;
@@ -204,7 +231,6 @@ const redo = () => {
   cursor: not-allowed;
 }
 
-/* ปรับแต่ง Editor Zone */
 .editor-content {
   border: 1px solid #d1d5db;
   padding: 12px;
@@ -214,7 +240,6 @@ const redo = () => {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* ปรับให้ redo icon กลับด้าน */
 .img-redo {
   transform: scaleX(-1);
 }

@@ -20,8 +20,8 @@
         v-model="form.typeID"
         @change="onSelectType"
       >
-        <option v-for="type in posts.postType" :key="type.id" :value="type.id">
-          {{ type.typeName }}
+        <option v-for="type in postTypes" :key="type.id" :value="type.id">
+          {{ type.post_type_name }}
         </option>
         <option value="new">add +</option>
       </select>
@@ -137,10 +137,11 @@
 import { reactive, ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { usePostStore } from '@/stores/post'
-import { storeToRefs } from 'pinia'
+import Swal from 'sweetalert2'
+import axiosAPI from '@/services/axiosAPI'
 import EditorTipTap from '@/components/EditorTipTap.vue'
 
-const router = useRouter();
+const router = useRouter()
 const route = useRoute()
 const { apiGetPostTypes, apiGetPost, apiEditPost } = usePostStore()
 const posts = ref(null)
@@ -152,25 +153,26 @@ const imageFile = ref(null)
 const imageUrl = ref(null)
 
 const form = reactive({
-  userID: "",
-  postID: "",
-  title: "",
-  content: "",
-  refer: "",
-  typeID: "",
-  newType: "",
+  userID: '',
+  postID: '',
+  title: '',
+  content: '',
+  refer: '',
+  typeID: '',
+  newType: '',
 })
 
 onMounted(async () => {
+  postTypes.value = await apiGetPostTypes()
   posts.value = await apiGetPost(route.params.id)
   if (posts.value) {
-    form.userID = posts.value.userID || ""
-    form.postID = posts.value.id || ""
-    form.title = posts.value.title || ""
-    form.content = posts.value.content || ""
-    form.refer = posts.value.refer || ""
-    form.typeID = posts.value.typeID || ""
-    form.newType = posts.value.newType || ""
+    form.userID = posts.value.userID || ''
+    form.postID = posts.value.id || ''
+    form.title = posts.value.title || ''
+    form.content = posts.value.content || ''
+    form.refer = posts.value.refer || ''
+    form.typeID = posts.value.typeID || ''
+    form.newType = posts.value.newType || ''
     if (posts.value.postImage) {
       imageFile.value =
         posts.value.postImage?.map(imgFile => ({
@@ -182,7 +184,7 @@ onMounted(async () => {
 })
 
 const onSelectType = () => {
-  if (form.value.typeID === 'new') {
+  if (form.typeID === 'new') {
     isSelectType.value = false
     isNewType.value = true
     isButtonSelect.value = true
@@ -206,39 +208,69 @@ const onSelectImageFile = event => {
 const onUpdatePost = async () => {
   const formData = new FormData()
 
-  formData.append('userID', form.userID);
-  formData.append('postID', form.postID);
-  formData.append('title', form.title);
-  formData.append('content', form.content);
-  formData.append('refer', form.refer);
+  formData.append('userID', form.userID)
+  formData.append('postID', form.postID)
+  formData.append('title', form.title)
+  formData.append('content', form.content)
+  formData.append('refer', form.refer)
 
-  if (form.value.typeID === 'new') {
-    formData.append('newType', form.value.newType)
+  if (form.typeID === "new") {
+    formData.append('newType', form.newType)
     formData.append('typeID', "newType")
   } else {
-    formData.append('typeID', form.value.typeID)
-    formData.append('newType', "typeID")
+    formData.append('typeID', form.typeID)
+    formData.append('newType', form.typeID)
   }
 
+  console.log("typeID", form.typeID);
+  console.log("newType", form.newType);
+
   if (imageFile.value) {
-    formData.append('imageFile', imageFile.value);
+    formData.append('imageFile', imageFile.value)
   }
 
   try {
-    if (!formData) {
-      console.log("formData false", formData);
+    if (formData == null) {
+      console.log("view edit post formData false");
     }
-    await apiEditPost(formData)
-  } catch (error) {
-    console.error("view edit post function on update post error", error);
-  }
 
+    const res = await axiosAPI.post('/api/posts/update', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+      }
+    })
+    Swal.fire({
+      title: 'Edit Post!',
+      text: 'Your confirm update post?',
+      icon: 'warning',
+      showCancelButton: true,
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: 'Update',
+    }).then(result => {
+      if (result.isConfirmed) {
+        console.log("confirmd");
+        Swal.fire({
+          title: 'Success',
+          text: 'Update post successfully.',
+          icon: 'success',
+          timer: 1500,
+        }).then(() => {
+          router.push({ name: 'DashboardView' })
+        })
+      }
+    })
+
+  } catch (error) {
+    console.error("view edit post function on update post error", error)
+  }
 }
 
 const onCancel = () => {
   router.push({
-    name: 'DashboardView'
-  });
+    name: 'DashboardView',
+  })
 }
-
 </script>

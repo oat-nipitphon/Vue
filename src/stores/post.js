@@ -109,20 +109,30 @@ export const usePostStore = defineStore('postStore', {
 
                 if (result.isConfirmed) {
 
-                    const res = await fetch(`/api/posts`, formData, {
+                    const res = await fetch(`/api/posts/update`, formData, {
                         method: "POST",
                         headers: {
                             "Content-Type": "multipart/form-data",
-                            authorization: `Bearer ${localStorage.getItem('token')}`
+                            authorization: `Bearer ${localStorage.getItem('token')}`,
                         },
                     });
 
-                    const data = await res.json();
-                    
                     if (res.ok) {
-                        console.log("store edit post success", data);
+                        console.log("store res.ok edit post success");
+                        Swal.fire({
+                            title: "Success",
+                            text: "Your update post successfully.",
+                            icon: "success",
+                            timer: 1500,
+                        }).then(() => {
+                            console.log("router view");
+                            const router = useRouter();
+                            router.push({
+                                name: 'DashboardView'
+                            });
+                        });
                     } else {
-                        console.log("store edit post false", res);
+                        console.log("store edit post false");
                     }
 
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -169,7 +179,7 @@ export const usePostStore = defineStore('postStore', {
                         }).then(() => {
                             window.location.reload();
                         });
-                    } 
+                    }
 
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
                     Swal.close()
@@ -204,7 +214,7 @@ export const usePostStore = defineStore('postStore', {
                             authorization: `Bearer ${localStorage.getItem('token')}`
                         }
                     });
-                    
+
                     const data = await res.json();
 
                     if (res.ok) {
@@ -231,7 +241,7 @@ export const usePostStore = defineStore('postStore', {
             }
         },
 
-        async apiRecoverGetPost(userID, ) {
+        async apiRecoverGetPost(userID,) {
             try {
                 const response = await fetch(`/api/posts/report_recover/${userID}`, {
                     method: "POST",
@@ -281,7 +291,7 @@ export const usePostStore = defineStore('postStore', {
                                 authorization: `Bearer ${localStorage.getItem('token')}`
                             },
                         });
-                        
+
                         if (response.ok) {
                             Swal.fire({
                                 title: "Recover success.",
