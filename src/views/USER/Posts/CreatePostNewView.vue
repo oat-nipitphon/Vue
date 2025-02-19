@@ -1,30 +1,18 @@
 <template>
-  <div class="container bg-white ronunded shadow-lg mt-5">
-    <label class="m-auto p-2 text-gray-900 text-3xl" for="Create Post New">
-      Form create post
-    </label>
-    <div class="mt-2 text-2x1">
-      <label for="Post-Title" class="mt-3 mb-3 text-gray-900 text-2x1">
-        Title
-      </label>
-      <input v-model="form.title" type="text" class="form-control mt-2" />
-    </div>
-    <div class="mt-2">
-      <label class="mt-3 mb-3 text-gray-900 text-2x1" for="Post-Content">
-        Content
-      </label>
-      <EditorTipTap v-model="form.content" />
-    </div>
-    <div class="mt-2">
-      <label class="mt-3 mb-3 text-gray-900 text-2x1" for="Post-Refer">
-        Refer
-      </label>
-      <input v-model="form.refer" type="text" class="form-control" />
-    </div>
-    <div class="grid" v-if="isSelectType">
-      <label for="Post-Type" class="text-gray-900 text-2x1"> Post Type </label>
+  <div class="bg-white rounded-xl shadow-lg mt-5 max-w-5xl m-auto p-10">
+    <label
+      for="countries"
+      class="block mb-2 text-4xl font-medium text-gray-900 dark:text-white"
+      >Create post new.</label
+    >
+    <div class="grid mt-5" v-if="isSelectType">
+      <label
+        for="countries"
+        class="block mb-2 text-1xl font-medium text-gray-900 dark:text-white"
+        >Select type post</label
+      >
       <select
-        class="form-control mt-3"
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         v-model="form.typeID"
         @change="onSelectType"
       >
@@ -35,31 +23,62 @@
       </select>
     </div>
 
-    <div class="grid grid-rows-3" v-if="isNewType">
-      <div class="mt-3">
+    <div class="grid grid-rows-2 mt-5" v-if="isNewType">
+      <div class="grid grid-cols-2">
         <div>
-          <label for="Type-New" class="text-gray-900 text-2x1">
-            Type new
-          </label>
+          <label
+            for="countries"
+            class="block mb-2 text-text-1x1 font-medium text-gray-900 dark:text-white"
+            >New type post</label
+          >
+        </div>
+        <div
+          v-if="isButtonSelect"
+          class="flex justify-end mr-3 mt-auto mb-auto"
+        >
+          <button @click="onSelectAgain" class="btn btn-sm btn-outline-primary">
+            <label>Select type post</label>
+          </button>
         </div>
       </div>
-      <div class="mt-2 text-2x1">
-        <input type="text" class="form-control" v-model="form.newType" />
-      </div>
-      <div v-if="isButtonSelect" class="flex justify-end mr-3 mt-auto mb-auto">
-        <button @click="onSelectAgain" class="btn btn-sm btn-outline-primary">
-          เลือกประเภทที่มีอยู่
-        </button>
-      </div>
+      <input type="text" class="form-control" v-model="form.newType" />
     </div>
-
-    <div class="grid grid-rows-1 mt-2 bg-orange-400">
+    <div class="mt-3">
+      <label
+        for="countries"
+        class="block text-1x1 font-medium text-gray-900 dark:text-white"
+        >Title</label
+      >
+      <input v-model="form.title" type="text" class="form-control" />
+    </div>
+    <div class="mt-3">
+      <label
+        for="countries"
+        class="block text-1x1 font-medium text-gray-900 dark:text-white"
+        >Content</label
+      >
+      <EditorTipTap v-model="form.content" />
+    </div>
+    <div class="mt-2">
+      <label
+        for="countries"
+        class="block mb-2 text-1x1 font-medium text-gray-900 dark:text-white"
+        >Refer</label
+      >
+      <input v-model="form.refer" type="text" class="form-control" />
+    </div>
+    <div class="grid grid-rows-1 mt-2">
+      <label
+        class="block mb-2 text-1x1 font-medium text-gray-900 dark:text-white"
+        for="user_avatar"
+        >Upload file</label
+      >
       <div class="bg-white">
         <input
           id="fileImage"
           accept="image/*"
           type="file"
-          class="form-control"
+          class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
           @change="handleImageSelected"
         />
         <img
@@ -73,8 +92,16 @@
       </div>
     </div>
     <div class="flex justify-end mr-2 mt-auto mb-auto">
-      <button @click="onCreatePost" type="button" class="btn btn-primary btn-sm m-3">Save</button>
-      <button @click="onCancel" type="button" class="btn btn-danger btn-sm m-3">Cancel</button>
+      <button
+        @click="onCreatePost"
+        type="button"
+        class="btn btn-primary btn-sm m-3"
+      >
+        Save
+      </button>
+      <button @click="onCancel" type="button" class="btn btn-danger btn-sm m-3">
+        Cancel
+      </button>
     </div>
   </div>
 </template>
@@ -109,31 +136,34 @@ const imageUrl = ref(null)
 const { apiGetPostTypes, apiCreatePostNew } = usePostStore()
 
 const form = ref({
-  title: '',
+  title: "",
   content: "<p>I'm running Tiptap with Vue.js. 🎉</p>",
-  refer: '',
-  typeID: '',
-  newType: '',
+  refer: "",
+  typeID: "",
+  newType: "",
 })
-
-const handleImageSelected = event => {
-  imageFile.value = event.target.files[0]
-  imageUrl.value = URL.createObjectURL(event.target.files[0])
-}
 
 const onSelectType = () => {
   if (form.value.typeID === 'new') {
     isSelectType.value = false
     isNewType.value = true
     isButtonSelect.value = true
-    form.value.typeID = ''
+
   }
 }
 const onSelectAgain = () => {
   isSelectType.value = true
   isNewType.value = false
   isButtonSelect.value = false
-  form.value.typeID = ''
+
+}
+
+const handleImageSelected = event => {
+  const file = event.target.files[0]
+  if (file) {
+    imageFile.value = file
+    imageUrl.value = URL.createObjectURL(file)
+  }
 }
 
 const onCreatePost = async () => {
@@ -146,17 +176,19 @@ const onCreatePost = async () => {
   if (imageFile.value) {
     formData.append('imageFile', imageFile.value)
   } else {
-    formData.append('imageFile', imageFileBasic.value)
+    const response = await fetch(imageFileBasic)
+    const blob = await response.blob()
+    const file = new File([blob], "default-image.jpg", { type: "image/jpeg" })
+    formData.append('imageFile', file)
   }
 
   if (form.value.typeID === 'new') {
     formData.append('newType', form.value.newType)
+    formData.append('typeID', "newType")
   } else {
     formData.append('typeID', form.value.typeID)
+    formData.append('newType', "typeID")
   }
-
-  // Pinia Store function action fetch api
-  // await apiCreatePostNew(form);
 
   try {
     const response = await axiosAPI.post('/api/posts', formData, {
@@ -179,7 +211,7 @@ const onCreatePost = async () => {
       if (result.isConfirmed) {
         Swal.fire({
           title: 'Success',
-          text: 'Create new successfullry.',
+          text: 'Create new successfully.',
           icon: 'success',
           timer: 1500,
         }).then(() => {
@@ -188,7 +220,7 @@ const onCreatePost = async () => {
       }
     })
   } catch (error) {
-    console.error('function on create post error ', error)
+    console.error('Error creating post:', error)
   }
 }
 
@@ -200,4 +232,5 @@ onMounted(async () => {
   postTypes.value = await apiGetPostTypes()
   console.log('create post get post type ', postTypes.value)
 })
+
 </script>

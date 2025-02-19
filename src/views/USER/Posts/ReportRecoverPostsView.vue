@@ -12,10 +12,11 @@ onMounted(async () => {
 
   recoverPosts.value = await apiRecoverGetPost(route.params.userID);
 
+  console.log("view recover post ", recoverPosts.value);
   // ถ้าต้องการเรียงโพสต์ตามวันที่ (ตาม created_at)
-  recoverPosts.value = recoverPosts.value.sort(
-    (a, b) => new Date(b.created_at) - new Date(a.created_at)
-  );
+  // recoverPosts.value = recoverPosts.value.sort(
+  //   (a, b) => new Date(b.created_at) - new Date(a.created_at)
+  // );
 
 });
 

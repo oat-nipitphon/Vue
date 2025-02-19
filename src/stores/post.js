@@ -9,6 +9,25 @@ export const usePostStore = defineStore('postStore', {
     }),
     actions: {
 
+        async apiGetPostTypes() {
+            try {
+                const res = await fetch(`/api/postTypes`, {
+                    method: "GET"
+                })
+
+                const data = await res.json()
+
+                if (res.ok) {
+                    return data.postTypes;
+                } else {
+                    console.log("data post type false", data.error)
+                }
+
+            } catch (error) {
+                console.error("store function api get post type error", error)
+            }
+        },
+
         async apiGetPosts() {
             try {
                 const res = await fetch(`/api/posts`, {
@@ -27,48 +46,6 @@ export const usePostStore = defineStore('postStore', {
 
             } catch (error) {
                 console.error("store function api get posts error", error)
-            }
-        },
-
-        async apiGetPost(post) {
-            try {
-                const res = await fetch(`/api/posts/${post}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                        authorization: `Bearer ${localStorage.getItem('token')}`,
-                    }
-                });
-
-                const data = await res.json();
-
-                if (res.ok) {
-                    return data.posts;
-                } else {
-                    console.log("store get post response false :", data.error);
-                }
-
-            } catch (error) {
-                console.error("store get post error :", error);
-            }
-        },
-
-        async apiGetPostTypes() {
-            try {
-                const res = await fetch(`/api/postTypes`, {
-                    method: "GET"
-                })
-
-                const data = await res.json()
-
-                if (res.ok) {
-                    return data.postTypes;
-                } else {
-                    console.log("data post type false", data.error)
-                }
-
-            } catch (error) {
-                console.error("store function api get post type error", error)
             }
         },
 
@@ -94,9 +71,32 @@ export const usePostStore = defineStore('postStore', {
             }
         },
 
-        async apiEditPost() {
+        async apiGetPost(post) {
             try {
+                const res = await fetch(`/api/posts/${post}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        authorization: `Bearer ${localStorage.getItem('token')}`,
+                    }
+                });
 
+                const data = await res.json();
+                console.log("pinia store api get post ", data.posts);
+                if (res.ok) {
+                    return data.posts;
+                    // this.storePost = data.posts;
+                } else {
+                    console.log("store get post response false :", data.error);
+                }
+
+            } catch (error) {
+                console.error("store get post error :", error);
+            }
+        },
+
+        async apiEditPost(formData) {
+            try {
                 const result = await Swal.fire({
                     title: "Confirm Edit!",
                     text: "Are you sure you want to edit this post?",
@@ -106,6 +106,30 @@ export const usePostStore = defineStore('postStore', {
                     cancelButtonColor: "#d33",
                     confirmButtonText: "Confirm",
                 });
+
+                if (result.isConfirmed) {
+
+                    const res = await fetch(`/api/posts`, formData, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                            authorization: `Bearer ${localStorage.getItem('token')}`
+                        },
+                    });
+
+                    const data = await res.json();
+                    
+                    if (res.ok) {
+                        console.log("store edit post success", data);
+                    } else {
+                        console.log("store edit post false", res);
+                    }
+
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    console.log("store edit post cancel ", formData);
+                }
+
+                console.log("store edit post swal false", formData);
 
             } catch (error) {
                 console.error("store api edit post error :", error);
@@ -207,7 +231,7 @@ export const usePostStore = defineStore('postStore', {
             }
         },
 
-        async apiRecoverGetPost(userID) {
+        async apiRecoverGetPost(userID, ) {
             try {
                 const response = await fetch(`/api/posts/report_recover/${userID}`, {
                     method: "POST",
@@ -223,7 +247,7 @@ export const usePostStore = defineStore('postStore', {
                 }
 
                 return data.recoverPosts;
-
+                // return data.recoverPosts.filter(post => post.id === post.id);
 
             } catch (error) {
                 console.error("store recover get post error", error);
@@ -257,7 +281,7 @@ export const usePostStore = defineStore('postStore', {
                                 authorization: `Bearer ${localStorage.getItem('token')}`
                             },
                         });
-
+                        
                         if (response.ok) {
                             Swal.fire({
                                 title: "Recover success.",
@@ -265,7 +289,7 @@ export const usePostStore = defineStore('postStore', {
                                 icon: "success",
                                 timer: 1500,
                             }).then(() => {
-                                console.log("recover post success");
+                                // return data.recoverPosts.filter(post => post.id !== postID);
                                 window.location.reload();
                             });
                         }

@@ -67,8 +67,8 @@ export const useAuthStore = defineStore('authStore', {
                 });
 
                 const data = await res.json();
-
-                if (res.status === 200) {
+                // console.log("auth login ", data.status);
+                if (data.status === 200) {
 
                     localStorage.setItem('token', data.token);
 
@@ -92,10 +92,6 @@ export const useAuthStore = defineStore('authStore', {
                         icon: "error",
                         confirmButtonText: "Try Again",
                         cancelButtonText: "Cancel"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            Swal.close;
-                        }
                     });
                 }
             } catch (error) {
