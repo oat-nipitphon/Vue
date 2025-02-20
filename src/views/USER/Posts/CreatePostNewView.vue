@@ -136,11 +136,11 @@ const imageUrl = ref(null)
 const { apiGetPostTypes, apiCreatePostNew } = usePostStore()
 
 const form = ref({
-  title: "",
+  title: '',
   content: "<p>I'm running Tiptap with Vue.js. 🎉</p>",
-  refer: "",
-  typeID: "",
-  newType: "",
+  refer: '',
+  typeID: '',
+  newType: '',
 })
 
 const onSelectType = () => {
@@ -148,18 +148,16 @@ const onSelectType = () => {
     isSelectType.value = false
     isNewType.value = true
     isButtonSelect.value = true
-    form.value.typeID = 0;
-    console.log("onSelectType if ", form.value.typeID);
-  } else{
-    form.value.newType = 0;
-    console.log("onSelectType else ", form.value.newType);
+    form.value.typeID = 0
+  } else {
+    form.value.newType = 0
   }
 }
+
 const onSelectAgain = () => {
   isSelectType.value = true
   isNewType.value = false
   isButtonSelect.value = false
-
 }
 
 const handleImageSelected = event => {
@@ -177,15 +175,15 @@ const onCreatePost = async () => {
   formData.append('title', form.value.title)
   formData.append('content', form.value.content)
   formData.append('refer', form.value.refer)
-  formData.append('newType', form.value.newType);
-  formData.append('typeID', form.value.typeID);
+  formData.append('newType', form.value.newType)
+  formData.append('typeID', form.value.typeID)
 
   if (imageFile.value) {
     formData.append('imageFile', imageFile.value)
   } else {
     const response = await fetch(imageFileBasic)
     const blob = await response.blob()
-    const file = new File([blob], "default-image.jpg", { type: "image/jpeg" })
+    const file = new File([blob], 'default-image.jpg', { type: 'image/jpeg' })
     formData.append('imageFile', file)
   }
 
@@ -214,7 +212,7 @@ const onCreatePost = async () => {
           icon: 'success',
           timer: 1500,
         }).then(() => {
-          console.log("create post success response", response);
+          console.log('create post success response', response)
           router.push({ name: 'DashboardView' })
         })
       }
@@ -232,5 +230,4 @@ onMounted(async () => {
   postTypes.value = await apiGetPostTypes()
   console.log('create post get post type ', postTypes.value)
 })
-
 </script>

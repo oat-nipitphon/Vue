@@ -104,9 +104,9 @@ onMounted(async () => {
           <div class="grid grid-cols-[80%_20%]">
             <div class="grid grid-rows-2">
               <div class="grid grid-cols-2">
-                  <p class="ml-4 text-2xl font-semibold text-gray-700">
-                    {{ post.title }}
-                  </p>
+                <p class="ml-4 text-2xl font-semibold text-gray-700">
+                  {{ post.title }}
+                </p>
                 <p v-for="type in post.postType" :key="type.id">
                   {{ type }}
                 </p>
