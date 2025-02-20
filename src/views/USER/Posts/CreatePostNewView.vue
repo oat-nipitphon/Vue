@@ -148,7 +148,11 @@ const onSelectType = () => {
     isSelectType.value = false
     isNewType.value = true
     isButtonSelect.value = true
-
+    form.value.typeID = 0;
+    console.log("onSelectType if ", form.value.typeID);
+  } else{
+    form.value.newType = 0;
+    console.log("onSelectType else ", form.value.newType);
   }
 }
 const onSelectAgain = () => {
@@ -168,10 +172,13 @@ const handleImageSelected = event => {
 
 const onCreatePost = async () => {
   const formData = new FormData()
+
   formData.append('userID', authAuth.storeUser.user_login.id)
   formData.append('title', form.value.title)
   formData.append('content', form.value.content)
   formData.append('refer', form.value.refer)
+  formData.append('newType', form.value.newType);
+  formData.append('typeID', form.value.typeID);
 
   if (imageFile.value) {
     formData.append('imageFile', imageFile.value)
@@ -180,14 +187,6 @@ const onCreatePost = async () => {
     const blob = await response.blob()
     const file = new File([blob], "default-image.jpg", { type: "image/jpeg" })
     formData.append('imageFile', file)
-  }
-
-  if (form.value.typeID === 'new') {
-    formData.append('newType', form.value.newType)
-    formData.append('typeID', "newType")
-  } else {
-    formData.append('typeID', form.value.typeID)
-    formData.append('newType', "typeID")
   }
 
   try {
@@ -215,6 +214,7 @@ const onCreatePost = async () => {
           icon: 'success',
           timer: 1500,
         }).then(() => {
+          console.log("create post success response", response);
           router.push({ name: 'DashboardView' })
         })
       }

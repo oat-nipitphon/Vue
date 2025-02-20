@@ -158,7 +158,7 @@ const onLogout = async () => {
               <!-- Profile dropdown -->
               <div class="relative mt-4 ml-4">
                 <!-- Button image profile dropdown -->
-                <div v-if="storeUser.user_login.userProfileImage">
+                <div v-if="authStore.storeUser.user_login.userImage">
                   <button
                     type="button"
                     @click="toggleMainDropdown"
@@ -166,30 +166,20 @@ const onLogout = async () => {
                     aria-expanded="false"
                     aria-haspopup="true"
                   >
-                    <div v-if="storeUser.user_login.userProfileImage !== null">
+                    <div
+                      v-if="authStore.storeUser.user_login.userImage !== null"
+                    >
                       <div
-                        v-for="(image, index) in storeUser.user_login
-                          .userProfileImage"
+                        class="flex justify-between"
+                        v-for="(image, index) in authStore.storeUser.user_login
+                          .userImage"
                         :key="index"
                       >
-                        <p class="text-sm text-gray-50" v-if="image.imageData">
-                          <!-- {{ image.imageData }} -->
-                          <img
-                            :src="image.imageData"
-                            class="size-8 rounded-full"
-                            alt=""
-                          />
-                        </p>
-                        <p v-else>
-                          <label class="text-sm text-gray-50">
-                             image null {{ image.imageData }}
-                          </label>
-                          <img
-                            src="../assets/icon/laravel.png"
-                            class="size-8 rounded-full"
-                            alt=""
-                          />
-                        </p>
+                        <img
+                          :src="'data:image/png;base64,' + image.imageData"
+                          class="size-8 rounded-full"
+                          alt="UserImage"
+                        />
                       </div>
                     </div>
                   </button>
@@ -337,20 +327,18 @@ const onLogout = async () => {
             </div> -->
             <div class="border-t border-gray-700 pb-3 pt-4">
               <div class="flex items-center px-5">
-                <div
-                  class="shrink-0"
-                  v-if="storeUser.user_login.userProfileImage"
-                >
-                  <p
-                    v-for="image in storeUser.user_login.userProfileImage"
-                    :key="image.id"
+                <div v-if="authStore.storeUser.user_login.userImage !== null">
+                  <div
+                    v-for="(image, index) in authStore.storeUser.user_login
+                      .userImage"
+                    :key="index"
                   >
                     <img
-                      class="size-10 rounded-full"
-                      alt="Profile-Image"
-                      :src="image.imageData"
+                      :src="'data:image/png;base64,' + image.imageData"
+                      class="size-8 rounded-full"
+                      alt="UserImage"
                     />
-                  </p>
+                  </div>
                 </div>
                 <div class="ml-3">
                   <div class="text-base font-medium text-white">

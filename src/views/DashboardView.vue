@@ -99,83 +99,96 @@ onMounted(async () => {
         :key="index"
         class="container rounded overflow-hidden shadow-lg mt-5"
       >
-        <div class="grid grid-cols-[80%_20%] h-12 p-4">
-          <div class="grid grid-rows-2 ml-3">
-            <label
-              class="text-2xl font-semibold text-gray-700"
+        <!-- header post title -->
+        <div class="grid grid-rows-2 w-full m-auto">
+          <div class="grid grid-cols-[80%_20%]">
+            <div class="grid grid-rows-2">
+              <div class="grid grid-cols-2">
+                  <p class="ml-4 text-2xl font-semibold text-gray-700">
+                    {{ post.title }}
+                  </p>
+                <p v-for="type in post.postType" :key="type.id">
+                  {{ type }}
+                </p>
+              </div>
+
+              <label class="font-semibold text-sm text-gray-700 mt-2">
+                สร้างโพสต์ วันที่ {{ formatDate(post.createdAt) }}
+              </label>
+            </div>
+            <div
+              class="flex justify-end"
+              v-if="post.userID === authStore.storeUser.user_login.id"
             >
-              {{ post.title }}
-            </label>
-            <label class="font-semibold text-sm text-gray-700 mt-2">
-              สร้างโพสต์ วันที่ {{ formatDate(post.createdAt) }}
-            </label>
-          </div>
-          <div
-            v-if="post.userID === authStore.storeUser.user_login.id"
-            class="flex justify-end"
-          >
-            <div class="dropdown">
-              <img
-                class="size-6 mr-5 mt-3"
-                src="../assets/icon/editor-post/sliders.svg"
-                alt="SettingPost"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              />
-              <ul class="dropdown-menu">
-                <li>
-                  <form @submit.prevent="apiStorePost(post.id)">
-                    <button class="dropdown-item" type="submit">
+              <div class="dropdown">
+                <img
+                  class="size-6 mr-5 mt-3"
+                  src="../assets/icon/editor-post/sliders.svg"
+                  alt="SettingPost"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                />
+                <ul class="dropdown-menu">
+                  <li>
+                    <form @submit.prevent="apiStorePost(post.id)">
+                      <button class="dropdown-item" type="submit">
+                        <label
+                          for="Event-Store"
+                          class="text-sm ml-2 text-gray-900"
+                        >
+                          Store
+                        </label>
+                      </button>
+                    </form>
+                  </li>
+                  <li>
+                    <RouterLink
+                      :to="{
+                        name: 'EditPostView',
+                        params: { id: post.id },
+                      }"
+                      class="dropdown-item"
+                    >
                       <label
-                        for="Event-Store"
+                        for="Event-Post-Edit"
                         class="text-sm ml-2 text-gray-900"
                       >
-                        Store
+                        Edit
+                      </label>
+                    </RouterLink>
+                  </li>
+                  <li>
+                    <button
+                      @click="apiDeletePost(post.id)"
+                      class="dropdown-item"
+                    >
+                      <label
+                        for="Event-Post-Delete"
+                        class="text-sm ml-2 text-gray-900"
+                      >
+                        Delete
                       </label>
                     </button>
-                  </form>
-                </li>
-                <li>
-                  <RouterLink
-                    :to="{
-                      name: 'EditPostView',
-                      params: { id: post.id },
-                    }"
-                    class="dropdown-item"
-                  >
-                    <label
-                      for="Event-Post-Edit"
-                      class="text-sm ml-2 text-gray-900"
-                    >
-                      Edit
-                    </label>
-                  </RouterLink>
-                </li>
-                <li>
-                  <button @click="apiDeletePost(post.id)" class="dropdown-item">
-                    <label
-                      for="Event-Post-Delete"
-                      class="text-sm ml-2 text-gray-900"
-                    >
-                      Delete
-                    </label>
-                  </button>
-                </li>
-              </ul>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
+          <!-- image post -->
+          <div
+            class="w-full p-4 m-auto"
+            v-for="postImage in post.postImage"
+            :key="postImage.id"
+          >
+            <img
+              class="size-9/12 mt-3 sm:bg-cover md:bg-contain lg:bg-auto xl:bg-cover"
+              :src="'data:image/png/jpg;base64,' + postImage.imageData"
+              alt="Sunset in the mountains"
+            />
+          </div>
         </div>
-        <p
-          class="flex justify-center"
-          v-for="postImage in post.postImage"
-          :key="postImage.id"
-        >
-          <img
-            class="size-9/12 mt-3 sm:bg-cover md:bg-contain lg:bg-auto xl:bg-cover"
-            :src="'data:image/png/jpg;base64,' + postImage.imageData"
-            alt="Sunset in the mountains"
-          />
-        </p>
+
+        <!-- body content post -->
         <div class="px-6 py-4">
           <p
             class="text-gray-700 text-base post-content"
@@ -230,19 +243,45 @@ onMounted(async () => {
             </div>
           </div>
         </div>
+
+        <!-- footer post user image and pop like -->
         <div class="grid grid-cols-2 p-3">
-          <div class="px-6 pt-4 pb-2">
-            <label
-              v-for="(profileImage, index) in authStore.storeUser.user_login
-                .userProfileImage"
-              :key="index"
+          <div>
+            <figure
+              class="flex flex-col items-center justify-center p-8 text-center bg-white border-b border-gray-200 md:rounded-es-lg md:border-b-0 md:border-e dark:bg-gray-800 dark:border-gray-700"
             >
-              <img
-                :src="profileImage.imageData"
-                class="size-12 rounded-full"
-                alt=""
-              />
-            </label>
+              <!-- <blockquote
+                class="max-w-2xl mx-auto mb-4 text-gray-500 lg:mb-8 dark:text-gray-400"
+              >
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                  Mindblowing workflow
+                </h3>
+                <p class="my-4">
+                  Aesthetically, the well designed components are beautiful and
+                  will undoubtedly level up your next application."
+                </p>
+              </blockquote> -->
+              <figcaption class="flex items-center justify-center">
+                <div v-for="(userImage, index) in post.userImage" :key="index">
+                  <img
+                    class="rounded-full w-9 h-9"
+                    :src="
+                      'data:image/png;base64,' + userImage.imageData ||
+                      +'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png'
+                    "
+                    alt="profile picture"
+                  />
+                </div>
+                <div
+                  class="space-y-0.5 font-medium dark:text-white text-left rtl:text-right ms-3"
+                >
+                  <div>Jese Leos</div>
+                  <div class="text-sm text-gray-500 dark:text-gray-400">
+                    Software Engineer at Facebook
+                  </div>
+                </div>
+              </figcaption>
+            </figure>
           </div>
           <div class="grid grid-cols-2">
             <div class="grid grid-rows-2">

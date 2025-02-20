@@ -9,21 +9,17 @@ const { apiRecoverGetPost, apiRecoverPost, apiConfirmDelete } = usePostStore();
 const recoverPosts = ref(null);
 
 onMounted(async () => {
-
   recoverPosts.value = await apiRecoverGetPost(route.params.userID);
-
-  console.log("view recover post ", recoverPosts.value);
-  // ถ้าต้องการเรียงโพสต์ตามวันที่ (ตาม created_at)
-  // recoverPosts.value = recoverPosts.value.sort(
-  //   (a, b) => new Date(b.created_at) - new Date(a.created_at)
-  // );
-
+  recoverPosts.value = recoverPosts.value.sort(
+    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+  );
 });
 
-// function formatDate(date) {
-//   if (!date) return "";
-//   return format(new Date(date), "yyyy-MM-dd HH:mm:ss");
-// }
+function formatDate(date) {
+  if (!date) return "";
+  return format(new Date(date), "yyyy-MM-dd HH:mm:ss");
+}
+
 </script>
 
 <template>
@@ -50,6 +46,7 @@ onMounted(async () => {
           <tr class="w-full">
             <td scope="col" class="w-2 p-2 text-center font-semibold">id</td>
             <td scope="col" class="w-2 p-2 text-center font-semibold">title</td>
+            <td scope="col" class="w-2 p-2 text-center font-semibold">date time recover</td>
             <td scope="col" class="w-2 p-2 text-center font-semibold">recover</td>
             <td scope="col" class="w-2 p-2 text-center font-semibold">delete</td>
           </tr>
@@ -67,6 +64,9 @@ onMounted(async () => {
               {{ post.post_title }}
             </td>
             <td class="w-2 py-2 text-center">
+              {{ post.date_time_delete }}
+            </td>
+            <td class="w-2 py-2 text-center">
               <form @submit.prevent="apiRecoverPost(post.id)">
                 <button type="submit" class="btn btn-sm btn-success m-auto">
                   <span class="text-sm"> Recover </span>
@@ -74,14 +74,13 @@ onMounted(async () => {
               </form>
             </td>
             <td class="w-2 py-2 text-center">
-              <form @submit.prevent="apiConfirmDelete(post.id)">
                 <button
-                type="submit"
+                @click="btnOnDelete(post.id)"
+                type="button"
                 class="btn btn-sm btn-danger"
               >
                 Delete
               </button>
-              </form>
             </td>
           </tr>
         </tbody>

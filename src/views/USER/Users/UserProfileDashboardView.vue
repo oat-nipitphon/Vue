@@ -2,7 +2,6 @@
 import { reactive, ref, onMounted, computed, defineAsyncComponent } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStoreUserProfile } from '@/stores/user.profile'
-import FileImageModal from '@/components/FileImageModal.vue'
 import ModalUploadImageUserProfile from '@/components/ModalUploadImageUserProfile.vue'
 import CardFollowers from '@/components/CardFollowers.vue'
 const defaultProfileImage =
@@ -119,7 +118,7 @@ const btnUpdateProfile = async () => {
               <div class="space-y-4">
                 <div v-for="(image, index) in userProfile.userImage" :key="index">
                   <img
-                    class="w-auto rounded-full" 
+                    class="ibox-image-profile rounded-full" 
                     :src="'data:image/png;base64,' + image.imageData || 'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png'" 
                     alt="User-Image"
                   >

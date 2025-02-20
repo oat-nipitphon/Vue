@@ -35,11 +35,14 @@
           <div class="modal-body">
             <div class="flex justify-center m-auto">
               <div>
-                <img v-show="imageUrl" :src="
+                <img
+                  v-show="imageUrl"
+                  :src="
                     imageUrl ||
                     'https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg'
                   "
-                   alt="ShowImageProfileUpload">
+                  alt="ShowImageProfileUpload"
+                />
               </div>
               <div>
                 <input
@@ -66,13 +69,6 @@
     </div>
   </div>
 </template>
-<style>
-.ibox-image-profile {
-  width: 50%;
-  height: auto;
-  margin: auto;
-}
-</style>
 <script setup>
 import axiosAPI from '@/services/axiosAPI'
 import Swal from 'sweetalert2'
@@ -85,8 +81,8 @@ const imageFile = ref(null)
 const imageUrl = ref(null)
 
 const onSelectImageFile = event => {
-  imageFile.value = event.target.files[0];
-  const file = event.target.files[0];
+  imageFile.value = event.target.files[0]
+  const file = event.target.files[0]
   imageUrl.value = URL.createObjectURL(file)
   userID.value = authStore.storeUser.user_login.id
 }
@@ -99,27 +95,19 @@ const onUploadFile = async () => {
   }
 
   try {
-    // const res = await axiosAPI.post('/api/uploadImageUserProfile', formData, {
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data',
-    //     authorization: `Bearer ${localStorage.getItem('token')}`,
-    //   },
-    // })
-
     const response = await axiosAPI.post('/api/user/upload/image', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         authorization: `Bearer ${localStorage.getItem('token')}`,
       },
-    });
-
-    console.log('res upload image profile', response)
+    })
 
     Swal.fire({
-      title: "Success",
-      text: "upload image profile successfully",
-      icon: "success",
+      title: "",
+      text: "",
+      icon: "",
       timer: 1500,
+      timerProgressBar: 1500,
     }).then(() => {
       window.location.reload();
     });
@@ -129,3 +117,10 @@ const onUploadFile = async () => {
   }
 }
 </script>
+<style>
+.ibox-image-profile {
+  width: 50%;
+  height: auto;
+  margin: auto;
+}
+</style>
