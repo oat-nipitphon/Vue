@@ -176,8 +176,12 @@ export const usePostStore = defineStore('postStore', {
                         Swal.fire({
                             title: "Confirm",
                             text: "delete post successfully.",
-                            icon: "success"
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 1200,
+                            timerProgressBar: 1200,
                         }).then(() => {
+                            console.log("store delete post data", data);
                             window.location.reload();
                         });
                     }

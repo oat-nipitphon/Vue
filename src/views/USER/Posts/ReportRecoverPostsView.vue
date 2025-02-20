@@ -4,7 +4,7 @@ import { RouterLink, useRoute } from "vue-router";
 import { usePostStore } from "@/stores/post";
 
 const route = useRoute();
-const { apiRecoverGetPost, apiRecoverPost, apiConfirmDelete } = usePostStore();
+const { apiRecoverGetPost, apiRecoverPost, apiDeletePost } = usePostStore();
 
 const recoverPosts = ref(null);
 
@@ -19,6 +19,10 @@ function formatDate(date) {
   if (!date) return "";
   return format(new Date(date), "yyyy-MM-dd HH:mm:ss");
 }
+
+const btnOnDelete = async (id) => {
+  await apiDeletePost(id);
+};
 
 </script>
 
@@ -36,7 +40,7 @@ function formatDate(date) {
         Back DashboardView
       </RouterLink>
     </div>
-    <div class="relative overflow-x-auto">
+    <div class="overflow-x-auto">
       <table
         class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
       >
