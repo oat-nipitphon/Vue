@@ -166,26 +166,32 @@ const onLogout = async () => {
                     aria-expanded="false"
                     aria-haspopup="true"
                   >
-                    <p
-                      v-for="(image, index) in storeUser.user_login
-                        .userProfileImage"
-                      :key="index"
-                    >
-                      <!-- <img
-                        class="size-10 rounded-full"
-                        alt="Profile-Image"
-                        :src="image.imageData"
-                      /> -->
-                      <img
-                        class="size-10 rounded-full"
-                        alt="ImageUserProfile"
-                        :src="
-                          image.imageData
-                            ? image.imageData
-                            : 'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png'
-                        "
-                      />
-                    </p>
+                    <div v-if="storeUser.user_login.userProfileImage !== null">
+                      <div
+                        v-for="(image, index) in storeUser.user_login
+                          .userProfileImage"
+                        :key="index"
+                      >
+                        <p class="text-sm text-gray-50" v-if="image.imageData">
+                          <!-- {{ image.imageData }} -->
+                          <img
+                            :src="image.imageData"
+                            class="size-8 rounded-full"
+                            alt=""
+                          />
+                        </p>
+                        <p v-else>
+                          <label class="text-sm text-gray-50">
+                             image null {{ image.imageData }}
+                          </label>
+                          <img
+                            src="../assets/icon/laravel.png"
+                            class="size-8 rounded-full"
+                            alt=""
+                          />
+                        </p>
+                      </div>
+                    </div>
                   </button>
                 </div>
 

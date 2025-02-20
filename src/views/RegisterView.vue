@@ -1,48 +1,47 @@
 <script setup>
-import axios from "axios";
-import { ref, reactive, onMounted, computed } from "vue";
-import { useAuthStore } from "@/stores/auth";
-import { storeToRefs } from "pinia";
+import axios from 'axios'
+import { ref, reactive, onMounted, computed } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+import { storeToRefs } from 'pinia'
 
-const { errors } = storeToRefs(useAuthStore());
-const { apiStoreRegister } = useAuthStore();
-const userStatus = ref([]);
+const { errors } = storeToRefs(useAuthStore())
+const { apiStoreRegister } = useAuthStore()
+const userStatus = ref([])
 
 const getStatusUser = async () => {
   try {
     const res = await fetch(`/api/status_user`, {
-      method: "GET",
-    });
+      method: 'GET',
+    })
 
-    const data = await res.json();
+    const data = await res.json()
     if (res.ok) {
-      userStatus.value = data.userStatus;
-      console.log(userStatus.value);
+      userStatus.value = data.userStatus
+      console.log(userStatus.value)
     }
-
   } catch (error) {
-    console.error("register view get status user error", error);
+    console.error('register view get status user error', error)
   }
-};
+}
 
-const formData = reactive({
+const form = reactive({
   email: "",
   username: "",
   password: "",
   confirmPassword: "",
   statusID: "",
-});
+})
 
 const passwordConfirmErrorMessage = computed(() => {
-  if (!formData.confirmPassword) return "Please input confirm password.";
-  if (formData.password !== formData.confirmPassword)
-    return "Passwords do not match.";
-  return "";
-});
+  if (!form.confirmPassword) return 'Please input confirm password.'
+  if (form.password !== form.confirmPassword)
+    return 'Passwords do not match.'
+  return ''
+})
 
 onMounted(async () => {
-  getStatusUser();
-});
+  getStatusUser()
+})
 </script>
 
 <template>
@@ -55,44 +54,21 @@ onMounted(async () => {
       </h1>
       <form
         class="space-y-4"
-        @submit.prevent="apiStoreRegister(`register`, formData)"
+        @submit.prevent="apiStoreRegister(`register`, form)"
       >
-        <!-- Status Dropdown -->
-        <div>
-          <label for="User-Status" class="block text-sm font-medium text-gray-900">
-            Status
-          </label>
-          <select
-            id="status"
-            v-model="formData.statusID"
-            class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
-            placeholder="selete user status"
-          >
-            <option value="null" disabled>Select your status</option>
-            <option
-              v-for="status in userStatus" :key="status.id" :value="status.id"
-            >
-              {{ status.status_name }}
-            </option>
-          </select>
-          <p v-if="!formData.statusID" class="text-red-600 text-sm mt-2">
-            Please select a status before proceeding.
-          </p>
-        </div>
-
         <!-- Email Field -->
         <div>
           <label for="email" class="block text-sm font-medium text-gray-900">
             Email
           </label>
           <input
-            v-model="formData.email"
+            v-model="form.email"
             type="email"
             id="email"
             class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
             placeholder="name@flowbite.com"
           />
-          <p v-if="!formData.email" class="text-red-600 text-sm mt-2">
+          <p v-if="!form.email" class="text-red-600 text-sm mt-2">
             Please input your email.
           </p>
         </div>
@@ -103,13 +79,13 @@ onMounted(async () => {
             Username
           </label>
           <input
-            v-model="formData.username"
+            v-model="form.username"
             type="text"
             id="username"
             class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
             placeholder="Your username"
           />
-          <p v-if="!formData.username" class="text-red-600 text-sm mt-2">
+          <p v-if="!form.username" class="text-red-600 text-sm mt-2">
             Please input your username.
           </p>
         </div>
@@ -120,12 +96,12 @@ onMounted(async () => {
             Password
           </label>
           <input
-            v-model="formData.password"
+            v-model="form.password"
             type="password"
             id="password"
             class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
           />
-          <p v-if="!formData.password" class="text-red-600 text-sm mt-2">
+          <p v-if="!form.password" class="text-red-600 text-sm mt-2">
             Please input your password.
           </p>
         </div>
@@ -139,7 +115,7 @@ onMounted(async () => {
             Confirm Password
           </label>
           <input
-            v-model="formData.confirmPassword"
+            v-model="form.confirmPassword"
             type="password"
             id="confirm-password"
             class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
@@ -151,7 +127,28 @@ onMounted(async () => {
             {{ passwordConfirmErrorMessage }}
           </p>
         </div>
-
+        <!-- Status Dropdown -->
+        <div class="inline-block relative w-full">
+          <label
+            for="User-Status"
+            class="block text-sm font-medium text-gray-900"
+          >
+            Status
+          </label>
+          <select
+            v-model="form.statusID"
+            class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+          >
+            <option value="">Select status account</option>
+            <option 
+              v-for="status in userStatus"
+              :key="status.id"
+              :value="status.id"
+            >
+              {{ status.name }} {{ status.id }}
+            </option>
+          </select>
+        </div>
         <!-- Submit Button -->
         <button
           type="submit"

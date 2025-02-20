@@ -63,11 +63,7 @@ onMounted(async () => {
       <table class="w-full text-sm text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700">
           <tr>
-            <th scope="col" class="p-2 text-center">Status</th>
-            <th scope="col" class="p-3 text-center">Image</th>
-            <th scope="col" class="p-3 text-center">Name</th>
-            <th scope="col" class="p-3 text-center">Birth Date</th>
-            <th scope="col" class="p-3 text-center">Events</th>
+            <th scope="col" class="p-2 text-center">ID</th>
           </tr>
         </thead>
 
@@ -75,52 +71,7 @@ onMounted(async () => {
           <tr v-for="(userProfile, index) in paginateduserProfiles" :key="index"
             class="bg-white border-b dark:bg-gray-800">
             <td class="py-2 text-center">
-              <p v-if="userProfile.userLogin?.status_login === 'online'"
-                class="text-green-500 text-sm">Online</p>
-              <p v-else class="text-red-600 text-sm">Offline</p>
-            </td>
-
-            <td class="p-3 text-center">
-              <img v-if="userProfile.userProfileImage?.length"
-                :src="userProfile.userProfileImage[0].image_data"
-                alt="Profile Image" class="size-8 rounded-full m-auto" />
-            </td>
-
-            <td class="p-3 text-center">
-              <label v-if="userProfile.userProfile?.length"
-                class="text-sm text-gray-900">
-                {{ userProfile.userProfile[0].full_name }}
-              </label>
-            </td>
-
-            <td class="p-3 text-center">
-              <label v-if="userProfile.userProfile?.length"
-                class="text-sm text-gray-900">
-                {{ formatDate(userProfile.userProfile[0].birth_day) }}
-              </label>
-            </td>
-
-            <td class="p-3 text-center">
-              <div class="dropdown">
-                <button class="btn btn-sm btn-primary" type="button"
-                  data-bs-toggle="dropdown">
-                  Event
-                </button>
-                <ul class="dropdown-menu">
-                  <li>
-                    <RouterLink class="dropdown-item m-2 btn btn-delete"
-                      :to="{ name: 'AdminGetUserProfileEdit', params: { userProfileID: userProfile.userProfile[0]?.id } }">
-                      Edit
-                    </RouterLink>
-                  </li>
-                  <li>
-                    <button type="button" @click="btnEventDelete(userProfile.userProfile[0]?.id)"
-                      class="dropdown-item m-2 btn btn-delete">
-                      Delete
-                    </button>
-                  </li>
-                </ul>
-              </div>
+              {{ userProfile.id }}
             </td>
           </tr>
         </tbody>

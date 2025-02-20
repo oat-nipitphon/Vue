@@ -3,6 +3,7 @@ import { reactive, ref, onMounted, computed, defineAsyncComponent } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStoreUserProfile } from '@/stores/user.profile'
 import FileImageModal from '@/components/FileImageModal.vue'
+import ModalUploadImageUserProfile from '@/components/ModalUploadImageUserProfile.vue'
 import CardFollowers from '@/components/CardFollowers.vue'
 const defaultProfileImage =
   'https://scontent.fkkc3-1.fna.fbcdn.net/v/t39.30808-6/461897536_3707658799483986_794048670785055411_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeHVG0UH5FgwbVkdtl70b39it0I862Qbciu3QjzrZBtyK4PmJExwkjQwGNMpc0Sbm9HeXRE2Yi7Fvc_GrvrUrXJN&_nc_ohc=_8IVpzSUJz8Q7kNvgH981ad&_nc_oc=AdjwNRCxXwtMr0TUQFjkBXTSR68KItzLfOXsS06bglRQ93A4l_N8TKdv4UJtxEVVgHa4BQVpEdDKu6htxiHQdrbk&_nc_zt=23&_nc_ht=scontent.fkkc3-1.fna&_nc_gid=AhlEAgeCssMinnIwKJwfgMQ&oh=00_AYBEFNyZ8w4XoptZM9dz2smOltNWG3lclgbLROlVgZYUVg&oe=67B024F1'
@@ -87,7 +88,13 @@ onMounted(async () => {
     formData.nickName = userProfile.value.userProfile.nick_name || ''
     formData.telPhone = userProfile.value.userProfile.tel_phone || ''
     formData.birthDay = userProfile.value.userProfile.birth_day || ''
-    imageFile.value = userProfile.value.userProfileImage.imageData || ''
+    if (userProfile.value.userProfileImage) {
+      imageFile.value =
+        userProfile.value.userProfileImage?.map(imageProfile => ({
+          id: imageProfile.id,
+          imageData: imageProfile.imageData,
+        })) || []
+    }
   }
   statusUser.value = await apiGetStatusUser()
 })
@@ -109,25 +116,15 @@ const btnUpdateProfile = async () => {
               Dashboard Profile overview.
             </h2>
             <div class="mb-4 grid gap-4 sm:grid-cols-2 sm:gap-8 lg:gap-16">
-              <!-- Card Profile left -->
-              <!-- https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png -->
               <div class="space-y-4">
-                <div
-                  class="flex space-x-4"
-                  v-for="(image, index) in userProfile.userProfileImage"
-                  :key="index"
-                >
+                <div v-for="(image, index) in userProfile.userImage" :key="index">
                   <img
-                    class="ibox-image-profile w-full h-auto"
-                    alt="ImageUserProfile"
-                    :src="
-                      image.image_data
-                        ? image.image_data
-                        : 'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png'
-                    "
-                  />
+                    class="w-auto rounded-full" 
+                    :src="'data:image/png;base64,' + image.imageData || 'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png'" 
+                    alt="User-Image"
+                  >
                 </div>
-                <FileImageModal />
+                <ModalUploadImageUserProfile />
               </div>
 
               <!-- Start Card Show Detail Profile -->

@@ -39,6 +39,7 @@ export const usePostStore = defineStore('postStore', {
                 });
                 const data = await res.json();
                 if (res.ok) {
+                    console.log("store get posts", data.posts);
                     return data.posts;
                 } else {
                     console.log("store api get posts false", data.error);
