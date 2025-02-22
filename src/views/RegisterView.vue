@@ -45,64 +45,74 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="w-full flex items-center justify-center mt-12">
+  <div class="bg-white dark:bg-gray-900">
     <div
-      class="w-full bg-white rounded-lg shadow sm:max-w-md p-6 space-y-6 mt-12"
+      class="py-8 px-4 mx-auto max-w-2xl lg:py-16"
     >
-      <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900">
-        Create an account
-      </h1>
+      <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">
+        Register account
+      </h2>
       <form
-        class="space-y-4"
+        class=""
         @submit.prevent="apiStoreRegister(`register`, form)"
       >
         <!-- Email Field -->
         <div>
-          <label for="email" class="block text-sm font-medium text-gray-900">
+          <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
             Email
           </label>
-          <input
-            v-model="form.email"
+          <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
             type="email"
             id="email"
-            class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
-            placeholder="name@flowbite.com"
+            required=""
+            placeholder="email@gmail.com" 
+            v-model="form.email"
           />
           <p v-if="!form.email" class="text-red-600 text-sm mt-2">
             Please input your email.
+          </p>
+          <p v-else class="text-white text-sm mt-2">
+            Successfully.
           </p>
         </div>
 
         <!-- Username Field -->
         <div>
-          <label for="username" class="block text-sm font-medium text-gray-900">
+          <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
             Username
           </label>
-          <input
-            v-model="form.username"
-            type="text"
+          <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+            type="username"
             id="username"
-            class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
-            placeholder="Your username"
+            required=""
+            placeholder="username" 
+            v-model="form.username"
           />
           <p v-if="!form.username" class="text-red-600 text-sm mt-2">
             Please input your username.
+          </p>
+          <p v-else class="text-white text-sm mt-2">
+            Successfully.
           </p>
         </div>
 
         <!-- Password Field -->
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-900">
+          <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
             Password
           </label>
-          <input
-            v-model="form.password"
+          <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
             type="password"
             id="password"
-            class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
+            required=""
+            placeholder="********" 
+            v-model="form.password"
           />
           <p v-if="!form.password" class="text-red-600 text-sm mt-2">
             Please input your password.
+          </p>
+          <p v-else class="text-white text-sm mt-2">
+            Successfully.
           </p>
         </div>
 
@@ -110,15 +120,16 @@ onMounted(async () => {
         <div>
           <label
             for="confirm-password"
-            class="block text-sm font-medium text-gray-900"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
           >
             Confirm Password
           </label>
-          <input
-            v-model="form.confirmPassword"
+          <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
             type="password"
-            id="confirm-password"
-            class="bg-gray-50 border text-sm rounded-lg block w-full p-2.5"
+            id="confirmPassword"
+            required=""
+            placeholder="confirmPassword" 
+            v-model="form.confirmPassword"
           />
           <p
             v-if="passwordConfirmErrorMessage"
@@ -126,18 +137,21 @@ onMounted(async () => {
           >
             {{ passwordConfirmErrorMessage }}
           </p>
+          <p v-else class="text-white text-sm mt-2">
+            Successfully.
+          </p>
         </div>
         <!-- Status Dropdown -->
         <div class="inline-block relative w-full">
           <label
             for="User-Status"
-            class="block text-sm font-medium text-gray-900"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
           >
             Status
           </label>
           <select
             v-model="form.statusID"
-            class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
           >
             <option value="">Select status account</option>
             <option 
@@ -145,14 +159,20 @@ onMounted(async () => {
               :key="status.id"
               :value="status.id"
             >
-              {{ status.name }} {{ status.id }}
+              {{ status.status_name }}
             </option>
           </select>
+          <p v-if="!form.statusID" class="text-red-600 text-sm mt-2">
+            Please select your status.
+          </p>
+          <p v-else class="text-white text-sm mt-2">
+            Successfully.
+          </p>
         </div>
         <!-- Submit Button -->
         <button
           type="submit"
-          class="bg-blue-700 text-white rounded-lg px-4 py-2"
+          class="bg-blue-700 text-white rounded-lg px-4 py-2 mt-5"
         >
           Create account
         </button>

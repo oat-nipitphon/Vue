@@ -49,8 +49,8 @@ const btnEventDelete = async id => {
 }
 
 onMounted(async () => {
-  userProfiles.value = await adminAPIGETuserProfiles();
-  console.log("admin manager user profile", userProfiles.value);
+  userProfiles.value = await adminAPIGETuserProfiles()
+  console.log('admin manager user profile', userProfiles.value)
 })
 </script>
 
@@ -67,18 +67,117 @@ onMounted(async () => {
               class="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700"
             >
               <tr>
-                <th scope="col" class="p-2 text-center">ID</th>
+                <th scope="col" class="p-2 text-center">Status</th>
+                <th scope="col" class="p-2 text-center">Profile</th>
+                <th scope="col" class="p-2 text-center">Contact</th>
+                <th scope="col" class="p-2 text-center">List Post</th>
+                <th scope="col" class="p-2 text-center">Event</th>
               </tr>
             </thead>
 
             <tbody v-if="paginateduserProfiles.length">
               <tr
-                v-for="(userProfile, index) in paginateduserProfiles"
+                v-for="(user, index) in paginateduserProfiles"
                 :key="index"
                 class="bg-white border-b dark:bg-gray-800"
               >
-                <td class="py-2 text-center">
-                  {{ userProfile.id }}
+                <td class="py-2 text-sm">
+                  <div class="grid grid-rows-3">
+                    <div class="text-center">
+                      {{ user.userLogin?.status_login }}
+                    </div>
+                    <div v-if="user.userImage">
+                      <p
+                        class="flex justify-items-center"
+                        v-for="(image, index) in user.userImage"
+                        :key="index"
+                      >
+                        <img
+                          class="size-8 rounded-full m-auto"
+                          :src="'data:image/png;base64,' + image?.imageData"
+                          alt="UserImage"
+                        />
+                      </p>
+                    </div>
+                    <div class="text-center">
+                      {{ user.userStatus?.status_name }}
+                    </div>
+                  </div>
+                </td>
+                <td class="py-2 text-sm">
+                  <div class="grid grid-rows-3">
+                    <div class="p-2">
+                      <div class="grid grid-cols-[10%_auto]">
+                        <label class="m-auto">
+                          {{ user.userProfiles?.title_name }}
+                        </label>
+                        <label class="m-auto">
+                          {{ user.userProfiles?.full_name }}
+                        </label>
+                      </div>
+                    </div>
+                    <div class="p-2">
+                      {{ user.userProfiles?.nick_name }}
+                    </div>
+                    <div class="p-2">
+                      {{ user.userProfiles?.birth }}
+                    </div>
+                  </div>
+                </td>
+                <td class="py-2 text-sm">
+                  <div
+                    v-for="(contact, index) in user?.userProfileContact"
+                    :key="index"
+                  >
+                    <label class="m-auto">{{ contact }}</label>
+                  </div>
+                </td>
+                <td class="py-2 text-sm">
+                  <div>sum post all where user id</div>
+                </td>
+                <td class="flex text-center">
+                  <div class="dropdown m-auto">
+                    <button
+                      class="dropdown-toggle btn btn-sm btn-event mt-2"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      Event
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li>block</li>
+                      <li>un block</li>
+                      <li>
+                        <button
+                          class="dropdown-toggle btn btn-sm btn-event mt-2"
+                          type="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          Edit
+                        </button>
+                        <ul>
+                          <li>user</li>
+                          <li>profile</li>
+                        </ul>
+                      </li>
+                      <li>
+                        <button
+                          class="dropdown-toggle btn btn-sm btn-event mt-2"
+                          type="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          Delete
+                        </button>
+                        <ul>
+                          <li>user</li>
+                          <li>profile</li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -107,3 +206,36 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+<style>
+.btn-event {
+  background-color: #3498db; /* สีฟ้า */
+  color: white;
+  border-radius: 5px;
+}
+
+.dropdown-menu {
+  background-color: #f8f9fa; /* สีพื้นหลังเทาอ่อน */
+  border-radius: 8px;
+  padding: 8px 0;
+}
+
+.dropdown-item {
+  padding: 5px 5px;
+  border-radius: 5px;
+}
+
+.btn-block {
+  background-color: #f31212; /* สีส้ม */
+  color: white;
+}
+
+.btn-unblock {
+  background-color: #27ae60; /* สีเขียว */
+  color: white;
+}
+
+.btn-delete {
+  background-color: #ffffff; /* สีแดง */
+  color: black;
+}
+</style>

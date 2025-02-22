@@ -79,8 +79,8 @@ onMounted(async () => {
     formData.name = userProfile.value.name || ''
     formData.email = userProfile.value.email || ''
     formData.userName = userProfile.value.username || ''
-    formData.statusID = userProfile.value.statusUser.id || ''
-    formData.statusName = userProfile.value.statusUser.status_name || ''
+    formData.statusID = userProfile.value.userStatus.id || ''
+    formData.statusName = userProfile.value.userStatus.status_name || ''
     formData.profileID = userProfile.value.userProfile.id || ''
     formData.titleName = userProfile.value.userProfile.title_name || ''
     formData.fullName = userProfile.value.userProfile.full_name || ''
@@ -133,7 +133,7 @@ const btnUpdateProfile = async () => {
                     Status account
                   </div>
                   <div class="text-gray-500 dark:text-gray-400">
-                    {{ userProfile.statusUser.status_name }}
+                    {{ userProfile.userStatus.status_name }}
                   </div>
                 </div>
                 <div class="font-semibold text-gray-500 dark:text-white">
@@ -196,7 +196,7 @@ const btnUpdateProfile = async () => {
 
                 <div class="font-semibold text-gray-500 dark:text-white">
                   <!-- Status Dropdown -->
-                  <div v-if="userProfile.statusUser">
+                  <div v-if="userProfile.userStatus">
                     <label
                       for="status"
                       class="block text-sm font-medium text-gray-900"
@@ -211,7 +211,7 @@ const btnUpdateProfile = async () => {
                     >
                       <option value="null" disabled>select status</option>
                       <option
-                        v-for="status in userProfile.statusUser"
+                        v-for="status in userProfile.userStatus"
                         :key="status.id"
                         :value="status.id"
                       >
@@ -220,7 +220,7 @@ const btnUpdateProfile = async () => {
                       </option>
                     </select>
                     <label v-else class="text-gray-500 dark:text-gray-400">
-                      {{ userProfile.statusUser.status_name }}
+                      {{ userProfile.userStatus.status_name }}
                     </label>
                   </div>
                   <div v-else>

@@ -1,10 +1,8 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter, useRoute, routeLocationKey, RouterLink } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { routeLocationKey, RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-
 const route = useRoute()
 const router = useRouter()
 const { apiStoreLogout } = useAuthStore()
@@ -86,6 +84,8 @@ const onLogout = async () => {
   await apiStoreLogout()
   isMobileDropdownOpen.value = false
 }
+
+// console.log("Navbar", authStore.storeUser.user_login);
 </script>
 <template>
   <div class="header">
@@ -181,6 +181,22 @@ const onLogout = async () => {
                           alt="UserImage"
                         />
                       </div>
+                    </div>
+                    <div v-if="storeUser.user_login.userImage === null">
+                      <img
+                        class="size-8"
+                        v-if="
+                          storeUser.user_login.userStatus.status_code === 101
+                        "
+                        src="../assets/icon/admin-icon-profile.png"
+                        alt=""
+                      />
+                      <img
+                        class="size-8"
+                        v-else
+                        src="../assets/icon/admin-icon-profile.png"
+                        alt=""
+                      />
                     </div>
                   </button>
                 </div>

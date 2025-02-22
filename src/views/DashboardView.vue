@@ -1,11 +1,13 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, defineProps, defineEmits } from 'vue'
 import { RouterLink } from 'vue-router'
+import { storeToRefs } from 'pinia'
 import { useAuthStore } from '@/stores/auth'
 import { usePostStore } from '@/stores/post'
-
 const authStore = useAuthStore()
-const userID = ref(authStore.storeUser?.user_login?.id || null)
+const { storeUser } = storeToRefs(authStore)
+const props = defineProps(['title'])
+const emit = defineEmits(['update'])
 const {
   apiGetPosts,
   apiStorePost,
@@ -13,6 +15,7 @@ const {
   apiPostPopLike,
   apiPostPopDisLike,
 } = usePostStore()
+const userID = ref(authStore.storeUser?.user_login?.id || null)
 const posts = ref([])
 const selectedPostContent = ref([])
 const selectedUserProfile = ref([])
@@ -369,24 +372,27 @@ onMounted(async () => {
   width: 200px;
   height: 120px;
 }
-/* ตัดข้อความเกิน 5 บรรทัด */
+
 .post-content {
   overflow: hidden;
   display: -webkit-box;
-  display: box; /* เพิ่ม line-clamp แบบมาตรฐาน */
+  display: box; 
   -webkit-line-clamp: 5;
-  line-clamp: 5; /* เพิ่ม line-clamp แบบมาตรฐาน */
   -webkit-box-orient: vertical;
-  box-orient: vertical; /* อาจไม่มีผลในบางเบราว์เซอร์ */
+
+
+  line-clamp: 5; 
+  box-orient: vertical;
   word-break: break-word;
   max-height: 120px;
-  white-space: pre-wrap; /* รักษาช่องว่างและตัดบรรทัดอัตโนมัติ */
-  word-wrap: break-word; /* ให้คำที่ยาวเกินขนาดบรรทัดถูกตัด */
-  overflow-wrap: break-word; /* รองรับการตัดคำ */
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 .post-content-modal {
-  white-space: pre-wrap; /* รักษาช่องว่างและตัดบรรทัดอัตโนมัติ */
-  word-wrap: break-word; /* ให้คำที่ยาวเกินขนาดบรรทัดถูกตัด */
-  overflow-wrap: break-word; /* รองรับการตัดคำ */
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
+
 </style>

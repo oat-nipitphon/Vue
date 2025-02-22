@@ -67,7 +67,7 @@ export const useAuthStore = defineStore('authStore', {
                 });
 
                 const data = await res.json();
-                // console.log("auth login ", data.status);
+                console.log("auth login ", data.status);
                 if (data.status === 200) {
 
                     localStorage.setItem('token', data.token);
