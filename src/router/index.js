@@ -12,11 +12,12 @@ import DashboardView from '@/views/DashboardView.vue'
 import AdminDashboardView from '@/views/ADMIN/AdminDashboardView.vue'
 import AdminManagerPostView from '@/views/ADMIN/Posts/AdminManagerPostView.vue'
 import AdminManagerUserProfileView from '@/views/ADMIN/USER/AdminManagerUserProfileView.vue'
+import AdminGetUserProfileEdit from '@/views/ADMIN/USER/AdminGetUserProfileEdit.vue'
 
 // --------------------------------- Zone USER -------------------------------------------------
 // ******** User Profiles **********
+import DashboardProfile from '@/views/USER/Users/DashboardProfile.vue'
 import UserProfileDashboardView from '@/views/USER/Users/UserProfileDashboardView.vue'
-import AdminGetUserProfileEdit from '@/views/ADMIN/USER/AdminGetUserProfileEdit.vue'
 
 // ******** Posts *************
 import DetailPostView from '@/views/USER/Posts/DetailPostView.vue'
@@ -68,6 +69,12 @@ const router = createRouter({
     //  ----------------------------- Zone USER Views  ---------------------------------------------
     
     // ******* User Profiles **********
+    {
+      path: '/user_profiles/show/:id',
+      name: 'DashboardProfile',
+      component: DashboardProfile,
+      meta: { auth: true }
+    },
     {
       path: '/user_profiles/show/:id',
       name: 'UserProfileDashboardView',

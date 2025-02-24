@@ -54,6 +54,25 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
             }
         },
 
+        async apiGetDashboardProfile (userProfile) {
+            try {
+                const res = await fetch(`/api/user_profiles/${userProfile}`, {
+                    method: "GET",
+                    headers: {
+                        authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                const data = await res.json();
+                if (res.ok) {
+                    return data.userProfiles;
+                } else {
+                    console.log("store user profile res false.", res);
+                }
+            } catch (error) {
+                console.error("store user profile error api get all :: ", error);
+            }
+        },
+
         // get user profile where profile id
         async apiGETUserProfile(userProfile) {
             try {
@@ -79,13 +98,13 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
         // Update user profile detail
         async apiUpdateDetailUserProfile(formData) {
             const result = await Swal.fire({
-                title: "Confirm Delete!",
-                text: "Are you sure you want to delete this post?",
+                title: "Confirm update profile!",
+                text: "Are you sure you want to update this profile ?",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
-                confirmButtonText: "Confirm delete",
+                confirmButtonText: "Confirm",
                 cancelButtonText: "Cancel",
             });
 
@@ -106,7 +125,7 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
 
                         Swal.fire({
                             title: "Success",
-                            content: "update successfully.",
+                            content: "update profile successfully.",
                             icon: "success",
                             timer: 1500,
                             timerProgressBar: true,

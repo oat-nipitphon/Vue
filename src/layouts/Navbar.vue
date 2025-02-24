@@ -11,8 +11,7 @@ const { storeUser } = storeToRefs(authStore)
 
 const isAdmin = computed(() => {
   return (
-    authStore.storeUser.user_login.status_id === 1 ||
-    authStore.storeUser.user_login.status_id === 2
+    authStore.storeUser.user_login.status_id === 1
   )
 })
 
@@ -66,7 +65,7 @@ const onAdminManager = () => {
 
 const onUserProfile = async () => {
   router.push({
-    name: 'UserProfileDashboardView',
+    name: 'DashboardProfile',
     params: { id: authStore.storeUser.user_login.id },
   })
   isMobileDropdownOpen.value = false
@@ -223,13 +222,13 @@ const onLogout = async () => {
                   <RouterLink
                     class="block px-4 py-2 text-sm text-gray-700"
                     :to="{
-                      name: 'UserProfileDashboardView',
+                      name: 'DashboardProfile',
                       params: {
                         id: authStore.storeUser.user_login.id,
                       },
                     }"
                   >
-                    User Profile
+                    Profile
                   </RouterLink>
                   <RouterLink
                     class="block px-4 py-2 text-sm text-gray-700"
@@ -382,7 +381,7 @@ const onLogout = async () => {
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                   @click="onUserProfile"
-                  >User Profile</span
+                  >Profile</span
                 >
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"

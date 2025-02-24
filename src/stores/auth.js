@@ -161,31 +161,6 @@ export const useAuthStore = defineStore('authStore', {
             }
         },
 
-        // get all user data
-        async apiStoreUsers() {
-            try {
-                const res = await fetch(`/api/users_test_api`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                        authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                })
-                if (res.ok) {
-                    const data = await res.json()
-                    this.storeUser = data.users
-                } else {
-                    console.log("api store users res false ", res)
-                }
-            } catch (error) {
-                Swal.fire({
-                    title: "Error",
-                    text: error,
-                    icon: "error",
-                });
-            }
-        },
-
         // forget your password
         async apiStoreResetPassword(formData) {
             try {

@@ -3,8 +3,8 @@ import axiosAPI from '@/services/axiosAPI'
 import Swal from 'sweetalert2'
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
-const authStore = useAuthStore()
 
+const authStore = useAuthStore()
 const userID = ref(null)
 const imageFile = ref(null)
 const imageUrl = ref(null)
@@ -46,11 +46,11 @@ const onUploadFile = async () => {
 }
 </script>
 <template>
-  <div class="container">
+  <div class="flex shadow-full p-4">
     <!-- Button trigger modal -->
     <button
       type="button"
-      class="btn btn-sm btn-outline-primary"
+      class="btn btn-sm btn-primary"
       data-bs-toggle="modal"
       data-bs-target="#exampleModal"
     >
@@ -80,7 +80,7 @@ const onUploadFile = async () => {
                 <img
                   class="ibox-image-profile shadow-lg rounded-lg"
                   v-show="imageUrl"
-                  :src="imageUrl || defaultImage"
+                  :src="imageUrl || '../assets/icon/icon-user-default.png'"
                   alt="Profile Image"
                 />
               </div>

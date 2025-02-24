@@ -251,7 +251,7 @@ onMounted(async () => {
                       @click="adminAPIPostBlockOrUnBlock(post.id, 'Block')"
                       class="btn btn-block dropdown-item m-2"
                     >
-                      Block
+                    🔒 Block
                     </button>
                     <button
                       v-if="post.block_status === 'true'"
@@ -259,7 +259,7 @@ onMounted(async () => {
                       @click="adminAPIPostBlockOrUnBlock(post.id, 'Unblock')"
                       class="btn btn-unblock dropdown-item m-2"
                     >
-                      Unblock
+                    ✅ Unblock
                     </button>
                   </li>
                   <li>
