@@ -13,21 +13,37 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
                 const res = await fetch(`/api/status_user`, {
                     method: "GET",
                 });
-                if (!res.ok) {
-                    statusUser.value = null;
-                }
                 const data = await res.json();
-                return data.status_user;
+                if (res.ok) {
+                    return data.userStatus;
+                }
+  
+                
+                
             } catch (error) {
                 console.error("function status user error", error);
             }
         },
 
         // Update user
-        async apiUpdateUser(userID) {
+        async apiUpdateUser(formData) {
             try {
 
-                return userID;
+                const res = await fetch('/api/update/user', {
+                    method: "POST",
+                    headers: {
+                        authorization: `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: formData,
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    console.log("store update user false", res);
+                }
+
+                console.log("store update user success", res);
 
             } catch (error) {
                 console.error("store update user function error", error);
