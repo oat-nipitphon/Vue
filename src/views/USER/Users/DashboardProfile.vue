@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router'
 import { useStoreUserProfile } from '@/stores/user.profile'
 import { useAuthStore } from '@/stores/auth'
 import ModalUploadImageUserProfile from '@/components/ModalUploadImageUserProfile.vue'
+import CardAddForm from '@/components/CardAddFrom.vue'
 
 const isShowDetailUser = ref(true)
 const isShowDetailProfile = ref(true)
@@ -350,6 +351,14 @@ const onUpdateProfile = async () => {
         <input type="checkbox" class="toggle-checkbox" />
       </div>
     </div>
+
+        <!-- Card add profile contacts -->
+    <div class="mt-6 flex justify-center shadow-lg">
+      <div class="m-auto w-max-lg p-5">
+        <CardAddForm />
+      </div>
+    </div>
+
   </div>
 </template>
 
