@@ -67,275 +67,270 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <div class="w-full">
-    <div class="grid grid-cols-2">
-      <div class="flex justify-start">
-        <h2 for="AdminManagerPost" class="text-gray-900 mt-4 mb-4 p-2">
-          Admin Manager posts.
-        </h2>
+  <div>
+    <div class="w-full">
+      <div class="grid grid-cols-2 mb-4">
+        <div class="flex justify-start">
+          <h2 class="text-gray-900 mt-4 mb-4 p-2">Admin Manager Posts</h2>
+        </div>
+        <div class="flex justify-end">
+          <!-- Event buttons or filters could be added here -->
+        </div>
       </div>
-      <div class="flex">
-        <!-- Event -->
+
+      <div class="overflow-x-auto shadow-md sm:rounded-lg">
+        <table
+          class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+        >
+          <thead
+            class="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400"
+          >
+            <tr>
+              <th class="w-2 p-3 text-center font-semibold">Post ID</th>
+              <th class="w-4 p-3 text-center font-semibold">Detail Post</th>
+              <th class="w-3 p-3 text-center font-semibold">Status Post</th>
+              <th class="w-4 p-3 text-center font-semibold">
+                User Create Post
+              </th>
+              <th class="w-5 p-3 text-center font-semibold">Events</th>
+            </tr>
+          </thead>
+          <tbody v-if="paginatedPosts.length > 0">
+            <tr
+              v-for="(post, index) in paginatedPosts"
+              :key="index"
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+            >
+              <td class="py-2 text-center">{{ post.id }}</td>
+              <td class="p-3">
+                <button
+                  @click="modalValuePostContent(post)"
+                  type="button"
+                  class="text-blue-500 hover:text-blue-700"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModalDetailPost"
+                >
+                  {{ post.post_title }}
+                </button>
+              </td>
+              <td class="text-center">
+                <p
+                  v-if="
+                    post.deletetion_status === 'false' &&
+                    post.block_status === 'false'
+                  "
+                  class="text-green-500 text-sm"
+                >
+                  Normal
+                </p>
+                <p
+                  v-if="post.deletetion_status === 'true'"
+                  class="text-red-600 text-sm"
+                >
+                  Deletetion
+                </p>
+                <p
+                  v-if="post.block_status === 'true'"
+                  class="text-red-600 text-sm"
+                >
+                  ** Block Post **
+                </p>
+              </td>
+              <td class="text-center">
+                <button
+                  @click="modalValueUserProfile(post.user.user_profile)"
+                  type="button"
+                  class="text-blue-500 hover:text-blue-700"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModalUserProfile"
+                >
+                  {{ post.user.user_profile.full_name }}
+                </button>
+              </td>
+              <td class="text-center">
+                <div class="dropdown m-auto">
+                  <button
+                    class="dropdown-toggle btn btn-sm btn-event mt-2"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    Event
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <button
+                        v-if="post.block_status === 'false'"
+                        @click="adminAPIPostBlockOrUnBlock(post.id, 'Block')"
+                        class="btn btn-block dropdown-item m-2"
+                      >
+                        🔒 Block
+                      </button>
+                      <button
+                        v-if="post.block_status === 'true'"
+                        @click="adminAPIPostBlockOrUnBlock(post.id, 'Unblock')"
+                        class="btn btn-unblock dropdown-item m-2"
+                      >
+                        ✅ Unblock
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        @click="adminAPIPostDelete(post.id)"
+                        class="btn btn-delete dropdown-item m-2"
+                      >
+                        Delete
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+
+          <tbody v-else>
+            <tr>
+              <td colspan="5" class="text-center text-lg text-red-600 py-4">
+                Data posts not available.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <div class="flex justify-between items-center mt-4">
+          <button
+            @click="prevPage"
+            :disabled="currentPage === 1"
+            class="btn btn-primary"
+          >
+            Previous
+          </button>
+          <span class="text-lg"
+            >Page {{ currentPage }} of {{ totalPages }}</span
+          >
+          <button
+            @click="nextPage"
+            :disabled="currentPage === totalPages"
+            class="btn btn-primary"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
-    <div class="overflow-x-auto">
-      <table
-        class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-      >
-        <thead
-          class="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400"
-        >
-          <tr class="w-full">
-            <!-- <th
-              scope="col"
-              class="w-2 p-3 text-center font-semibold text-gray-900"
-            >
-              No.
-            </th> -->
-            <th scope="col" class="w-2 p-2 text-center font-semibold">
-              Post ID
-            </th>
-            <th scope="col" class="w-4 p-3 text-center font-semibold">
-              Detail Post
-            </th>
-            <th scope="col" class="w-3 p-3 text-center font-semibold">
-              Status Post
-            </th>
-            <th scope="col" class="w-4 p-3 text-center font-semibold">
-              User Create Post
-            </th>
-            <th scope="col" class="w-5 p-3 text-center font-semibold">
-              Events
-            </th>
-          </tr>
-        </thead>
-        <tbody v-if="paginatedPosts.length > 0">
-          <tr
-            v-for="(post, index) in paginatedPosts"
-            :key="index"
-            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-          >
-            <td class="w-2 py-2 text-center">
-              {{ post.id }}
-            </td>
-            <td class="w-5 p-3 text-start m-1">
-              <!-- Button Open modal show post content -->
-              <button
-                @click="modalValuePostContent(post)"
-                type="button"
-                class="m-1 text-md"
-                for="TitlePost"
-                data-bs-toggle="modal"
-                data-bs-target="#exampleModalDetailPost"
-              >
-                {{ post.post_title }}
-              </button>
-              <!-- Modal post content -->
-              <div
-                class="modal fade"
-                id="exampleModalDetailPost"
-                tabindex="-1"
-                aria-labelledby="exampleModalLabel"
-                aria-hidden="true"
-              >
-                <div class="modal-dialog modal-dialog modal-xl">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalDetailPost">
-                        Detail Post ID {{ modalPostID }}
-                      </h5>
-                      <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                      ></button>
-                    </div>
-                    <div class="modal-body">
-                      {{ modalPostContent }}
-                    </div>
-                    <div class="modal-footer"></div>
-                  </div>
-                </div>
-              </div>
-            </td>
-            <td class="w-4 p-3 text-center m-1">
-              <p
-                v-if="
-                  post.deletetion_status === 'false' &&
-                  post.block_status === 'false'
-                "
-                class="text-green-500 text-sm text-center"
-              >
-                Normal
-              </p>
-              <p
-                v-if="post.deletetion_status === 'true'"
-                class="text-red-600 text-sm text-center"
-              >
-                Deletetion
-              </p>
-              <p
-                v-if="post.block_status === 'true'"
-                class="text-red-600 text-sm text-center"
-              >
-                ** Block Post **
-              </p>
-            </td>
-            <td class="w-4 p-3 text-center m-1">
-              <!-- Button show modal user profile -->
-              <button
-                @click="modalValueUserProfile(post.user.user_profile)"
-                type="button"
-                for="UserProfileName"
-                data-bs-toggle="modal"
-                data-bs-target="#exampleModalUserProfile"
-              >
-                {{ post.user.user_profile.full_name }}
-              </button>
-              <!-- Modal show user profile-->
-              <div
-                class="modal fade"
-                id="exampleModalUserProfile"
-                tabindex="-1"
-                aria-labelledby="exampleModalLabel"
-                aria-hidden="true"
-              >
-                <div class="modal-dialog modal-dialog modal-xl">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLabel">
-                        User Profile ID {{ modalUserProfileID }}
-                      </h5>
-                      <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                      ></button>
-                    </div>
-                    <div class="modal-body">
-                      {{ modalUserProfileFullName }}
-                    </div>
-                    <div class="modal-footer">
-                      <button
-                        type="button"
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                      >
-                        Close
-                      </button>
-                      <!-- <button type="button" class="btn btn-primary">
-                        Save changes
-                      </button> -->
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </td>
-            <td class="flex text-center">
-              <div class="dropdown m-auto">
-                <button
-                  class="dropdown-toggle btn btn-sm btn-event mt-2"
-                  type="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Event
-                </button>
-                <ul class="dropdown-menu">
-                  <li>
-                    <button
-                      v-if="post.block_status === 'false'"
-                      type="button"
-                      @click="adminAPIPostBlockOrUnBlock(post.id, 'Block')"
-                      class="btn btn-block dropdown-item m-2"
-                    >
-                    🔒 Block
-                    </button>
-                    <button
-                      v-if="post.block_status === 'true'"
-                      type="button"
-                      @click="adminAPIPostBlockOrUnBlock(post.id, 'Unblock')"
-                      class="btn btn-unblock dropdown-item m-2"
-                    >
-                    ✅ Unblock
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      type="button"
-                      @click="adminAPIPostDelete(post.id)"
-                      class="btn btn-delete dropdown-item m-2"
-                    >
-                      Delete
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-        </tbody>
 
-        <tbody v-else>
-          <tr>
-            <td class="flex justify-center text-lg m-5 text-red-600">
-              Data posts false.
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <!-- Pagination -->
-      <div class="flex justify-between items-center mt-4">
-        <button
-          @click="prevPage"
-          :disabled="currentPage === 1"
-          class="btn btn-primary"
-        >
-          Previous
-        </button>
-        <span>Page {{ currentPage }} of {{ totalPages }}</span>
-        <button
-          @click="nextPage"
-          :disabled="currentPage === totalPages"
-          class="btn btn-primary"
-        >
-          Next
-        </button>
+    <!-- Modal for post content -->
+    <div
+      class="modal fade"
+      id="exampleModalDetailPost"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Detail Post ID {{ modalPostID }}</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            {{ modalPostContent }}
+          </div>
+          <div class="modal-footer"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for user profile -->
+    <div
+      class="modal fade"
+      id="exampleModalUserProfile"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              User Profile ID {{ modalUserProfileID }}
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            {{ modalUserProfileFullName }}
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
+
 <style>
+/* Button Styles */
 .btn-event {
-  background-color: #3498db; /* สีฟ้า */
+  background-color: #3498db; /* Blue */
   color: white;
   border-radius: 5px;
 }
 
 .dropdown-menu {
-  background-color: #f8f9fa; /* สีพื้นหลังเทาอ่อน */
+  background-color: #f8f9fa; /* Light gray */
   border-radius: 8px;
   padding: 8px 0;
 }
 
 .dropdown-item {
-  padding: 5px 5px;
+  padding: 8px 12px;
   border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f1f1f1;
 }
 
 .btn-block {
-  background-color: #f31212; /* สีส้ม */
+  background-color: #e74c3c; /* Red */
   color: white;
 }
 
 .btn-unblock {
-  background-color: #27ae60; /* สีเขียว */
+  background-color: #27ae60; /* Green */
   color: white;
 }
 
 .btn-delete {
-  background-color: #ffffff; /* สีแดง */
-  color: black;
+  background-color: #e74c3c; /* Red */
+  color: white;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.text-blue-500 {
+  color: #3498db;
 }
 </style>

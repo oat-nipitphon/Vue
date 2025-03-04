@@ -177,139 +177,144 @@ const onUpdateProfile = async () => {
 <template>
   <div class="max-w-4xl mx-auto p-6">
     <div class="bg-white shadow-md rounded-lg">
-      <div class="grid grid-cols-[40%_auto]">
-        <div class="grid grid-rows-2 p-5">
-          <div class="">
+      <div class="grid grid-cols-1 md:grid-cols-[40%_1fr] gap-6">
+        <!-- Left Column: Profile Image and Info -->
+        <div class="grid grid-rows-2 gap-4 p-5">
+          <!-- Profile Image -->
+          <div class="flex flex-col items-center">
             <img
               :src="'data:image/png;base64,' + profile.profileImage"
               alt="Profile"
-              class="w-24 h-24 rounded-full"
+              class="w-24 h-24 rounded-full object-cover mb-4"
             />
             <ModalUploadImageUserProfile />
           </div>
+          <!-- Profile Info / Edit Form -->
           <div>
             <div v-if="isShowDetailUser" class="p-auto">
-              <h2 class="text-xl font-semibold">{{ profile.username }}</h2>
+              <h2 class="text-2xl font-semibold text-gray-800">{{ profile.username }}</h2>
               <p class="text-gray-500">{{ profile.email }}</p>
               <p class="text-gray-500">{{ profile.statusName }}</p>
-              <button @click="toggleEditDetailUser" type="submit">edit</button>
+              <button @click="toggleEditDetailUser" type="button" class="mt-4 text-sm text-blue-600">Edit</button>
             </div>
-            <div v-if="isEditDetailUser">
-              <h2 class="text-xl font-semibold">
+            <div v-if="isEditDetailUser" class="space-y-4">
+              <h2 class="text-2xl font-semibold text-gray-800">
                 <input
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  type="username"
+                  class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900"
+                  type="text"
                   id="username"
                   v-model="form.username"
+                  placeholder="Enter username"
                 />
               </h2>
-              <p class="text-gray-500">
+              <p>
                 <input
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900"
                   type="email"
                   id="email"
-
                   v-model="form.email"
+                  placeholder="Enter email"
                 />
               </p>
-              <p class="text-gray-500">
+              <p>
                 <select
                   v-model="form.statusID"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900"
                 >
-                  <option value="null" disabled>select status</option>
-                  <option
-                    v-for="status in userStatus"
-                    :key="status.id"
-                    :value="status.id"
-                  >
+                  <option value="null" disabled>Select Status</option>
+                  <option v-for="status in userStatus" :key="status.id" :value="status.id">
                     {{ status.status_name }}
                   </option>
                 </select>
               </p>
-              <button
-                class="btn btn-sm btn-primary"
-                type="submit"
-                @click="onUpdateUser()"
-              >
-                update
-              </button>
-              <button @click="toggleShowDetailUser" type="submit">
-                cancel
-              </button>
+              <div class="flex gap-3">
+                <button
+                  class="btn btn-sm btn-primary w-full"
+                  type="submit"
+                  @click="onUpdateUser()"
+                >
+                  Update
+                </button>
+                <button
+                  @click="toggleShowDetailUser"
+                  type="button"
+                  class="w-full text-red-500 border border-red-500 p-2 rounded-lg"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
         </div>
-        <div class="grid">
-          <div class="p-5">
-            <div v-if="isShowDetailProfile">
-              <p>{{ profile.titleName }}</p>
-              <h3>{{ profile.fullName }}</h3>
-              <p>{{ profile.nickName }}</p>
-              <p>{{ profile.telPhone }}</p>
-              <p>{{ profile.birthDay }}</p>
-              <p>Age{{ age }}</p>
-              <button @click="toggleEditDetailProfile" type="submit">
-                edit
-              </button>
-            </div>
-            <div v-if="isEditDetailProfile">
-              <h3>Update profile</h3>
-              <p>
-                <select
-                  class="form-control"
 
-                  v-model="form.titleName"
-                >
-                  <option value="mr">Mr.</option>
-                  <option value="miss">Miss.</option>
-                  <option value="mrs">Mrs.</option>
-                </select>
-              </p>
-              <p>
-                <input
-                  class="form-control"
-                  type="text"
-                  placeholder="full name"
-
-                  v-model="form.fullName"
-                />
-              </p>
-              <p>
-                <input
-                  class="form-control"
-                  type="text"
-                  placeholder="nick name"
-
-                  v-model="form.nickName"
-                />
-              </p>
-              <p>
-                <input
-                  class="form-control"
-                  type="text"
-                  placeholder="tel phone"
-
-                  v-model="form.telPhone"
-                />
-              </p>
-              <p>
-                <input
-
-                  v-model="form.birthDay"
-                  class="form-control"
-                  type="date"
-                />
-              </p>
+        <!-- Right Column: Additional Profile Info -->
+        <div class="p-5">
+          <div v-if="isShowDetailProfile">
+            <p>{{ profile.titleName }}</p>
+            <h3 class="text-2xl font-semibold text-gray-800">{{ profile.fullName }}</h3>
+            <p class="text-gray-500">{{ profile.nickName }}</p>
+            <p class="text-gray-500">{{ profile.telPhone }}</p>
+            <p class="text-gray-500">{{ profile.birthDay }}</p>
+            <p class="text-gray-500">Age: {{ age }}</p>
+            <button @click="toggleEditDetailProfile" type="button" class="mt-4 text-sm text-blue-600">Edit</button>
+          </div>
+          <div v-if="isEditDetailProfile" class="space-y-4">
+            <h3 class="text-2xl font-semibold text-gray-800">Update Profile</h3>
+            <p>
+              <select
+                v-model="form.titleName"
+                class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900"
+              >
+                <option value="mr">Mr.</option>
+                <option value="miss">Miss.</option>
+                <option value="mrs">Mrs.</option>
+              </select>
+            </p>
+            <p>
+              <input
+                v-model="form.fullName"
+                class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900"
+                type="text"
+                placeholder="Full Name"
+              />
+            </p>
+            <p>
+              <input
+                v-model="form.nickName"
+                class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900"
+                type="text"
+                placeholder="Nick Name"
+              />
+            </p>
+            <p>
+              <input
+                v-model="form.telPhone"
+                class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900"
+                type="text"
+                placeholder="Tel Phone"
+              />
+            </p>
+            <p>
+              <input
+                v-model="form.birthDay"
+                class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-gray-900"
+                type="date"
+              />
+            </p>
+            <div class="flex gap-3">
               <button
-                class="btn btn-sm btn-primary"
+                class="btn btn-sm btn-primary w-full"
                 type="submit"
                 @click="onUpdateProfile()"
               >
-                update
+                Update
               </button>
-              <button @click="toggleShowDetailProfile" type="submit">
-                cancel
+              <button
+                @click="toggleShowDetailProfile"
+                type="button"
+                class="w-full text-red-500 border border-red-500 p-2 rounded-lg"
+              >
+                Cancel
               </button>
             </div>
           </div>
@@ -318,29 +323,29 @@ const onUpdateProfile = async () => {
     </div>
 
     <!-- Statistics Section -->
-    <div class="mt-6 grid grid-cols-3 gap-4 text-center">
-      <div class="p-4 bg-gray-100 rounded-lg">
+    <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+      <div class="p-4 bg-gray-100 rounded-lg shadow-md">
         <h3 class="text-lg font-semibold">99 +</h3>
         <p class="text-gray-500 text-sm">Followers</p>
       </div>
-      <div class="p-4 bg-gray-100 rounded-lg">
+      <div class="p-4 bg-gray-100 rounded-lg shadow-md">
         <h3 class="text-lg font-semibold">99 +</h3>
         <p class="text-gray-500 text-sm">Following</p>
       </div>
-      <div class="p-4 bg-gray-100 rounded-lg">
+      <div class="p-4 bg-gray-100 rounded-lg shadow-md">
         <h3 class="text-lg font-semibold">99 +</h3>
         <p class="text-gray-500 text-sm">Posts</p>
       </div>
     </div>
 
-    <!-- Settings & Actions -->
+    <!-- Settings & Actions Section -->
     <div class="mt-6 bg-white shadow-md rounded-lg p-6">
       <h3 class="text-lg font-semibold mb-3">Settings</h3>
-      <div class="flex justify-between items-center">
+      <div class="flex justify-between items-center mb-3">
         <p class="text-gray-600">Enable Notifications</p>
         <input type="checkbox" class="toggle-checkbox" />
       </div>
-      <div class="flex justify-between items-center mt-3">
+      <div class="flex justify-between items-center">
         <p class="text-gray-600">Dark Mode</p>
         <input type="checkbox" class="toggle-checkbox" />
       </div>
@@ -348,7 +353,7 @@ const onUpdateProfile = async () => {
   </div>
 </template>
 
-<style>
+<style scoped>
 .toggle-checkbox {
   width: 40px;
   height: 20px;
@@ -378,3 +383,4 @@ const onUpdateProfile = async () => {
   left: 20px;
 }
 </style>
+

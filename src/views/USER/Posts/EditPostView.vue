@@ -139,86 +139,86 @@ const onCancel = () => {
 }
 </script>
 <template>
-  <div
-    v-if="posts"
-    class="bg-white rounded-x1 shadow-lg mt-5 max-w-5xl m-auto p-10"
-  >
-    <label
-      for="title-edit-text"
-      class="block mb-2 text-4xl font-medium text-gray-900 dark:text-white"
-    >
+  <div v-if="posts" class="bg-white rounded-xl shadow-lg mt-5 max-w-5xl m-auto p-10">
+    <label for="title-edit-text" class="block mb-2 text-4xl font-medium text-gray-900 dark:text-white">
       Edit Post ID: {{ form.postID }}
     </label>
+
+    <!-- Post Type Selection -->
     <div class="grid mt-5" v-if="isSelectType">
-      <label
-        for="countries"
-        class="block mb-2 text-1xl font-medium text-gray-900 dark:text-white"
-        >Select type post</label
-      >
+      <label for="countries" class="block mb-2 text-xl font-medium text-gray-900 dark:text-white">
+        Select Post Type
+      </label>
       <select
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         v-model="form.typeID"
         @change="onSelectType"
       >
-        <!-- <option v-if="form.typeName !== ''" :value="form.typeID">{{ form.typeName }}</option> -->
         <option v-for="type in postTypes" :key="type.id" :value="type.id">
           {{ type.post_type_name }}
         </option>
-        <option value="new">add +</option>
+        <option value="new">Add New Type +</option>
       </select>
     </div>
 
+    <!-- New Post Type Entry -->
     <div class="grid grid-rows-2 mt-5" v-if="isNewType">
       <div class="grid grid-cols-2">
         <div>
-          <label
-            for="countries"
-            class="block mb-2 text-text-1x1 font-medium text-gray-900 dark:text-white"
-            >New type post</label
-          >
+          <label for="newTypePost" class="block mb-2 text-xl font-medium text-gray-900 dark:text-white">
+            New Type Post
+          </label>
         </div>
-        <div
-          v-if="isButtonSelect"
-          class="flex justify-end mr-3 mt-auto mb-auto"
-        >
+        <div v-if="isButtonSelect" class="flex justify-end mt-auto mb-auto">
           <button @click="onSelectAgain" class="btn btn-sm btn-outline-primary">
-            <label>Select type post</label>
+            Select Post Type
           </button>
         </div>
       </div>
-      <input type="text" class="form-control" v-model="form.newType" />
+      <input id="newTypePost" type="text" v-model="form.newType" class="form-control mt-2" />
     </div>
 
+    <!-- Post Title -->
     <div class="mt-3">
-      <label
-        for="countries"
-        class="block text-1x1 font-medium text-gray-900 dark:text-white"
-        >Title</label
-      >
-      <input type="text" class="form-control" v-model="form.title" />
+      <label for="postTitle" class="block text-xl font-medium text-gray-900 dark:text-white">
+        Title
+      </label>
+      <input
+        id="postTitle"
+        v-model="form.title"
+        type="text"
+        class="form-control mt-2"
+        placeholder="Enter Post Title"
+      />
     </div>
+
+    <!-- Post Content (Editor) -->
     <div class="mt-3">
-      <label
-        for="countries"
-        class="block text-1x1 font-medium text-gray-900 dark:text-white"
-        >Content</label
-      >
-      <EditorTipTap v-model="form.content" :v-html="form.content" />
+      <label for="postContent" class="block text-xl font-medium text-gray-900 dark:text-white">
+        Content
+      </label>
+      <EditorTipTap v-model="form.content" id="postContent" />
     </div>
+
+    <!-- Post Reference -->
     <div class="mt-2">
-      <label
-        for="countries"
-        class="block mb-2 text-1x1 font-medium text-gray-900 dark:text-white"
-        >Refer</label
-      >
-      <input v-model="form.refer" type="text" class="form-control" />
+      <label for="postRefer" class="block text-xl font-medium text-gray-900 dark:text-white">
+        Reference
+      </label>
+      <input
+        id="postRefer"
+        v-model="form.refer"
+        type="text"
+        class="form-control mt-2"
+        placeholder="Enter Reference URL"
+      />
     </div>
-    <div class="grid grid-rows-1 mt-2">
-      <label
-        class="block mb-2 text-1x1 font-medium text-gray-900 dark:text-white"
-        for="user_avatar"
-        >Upload file</label
-      >
+
+    <!-- Image Upload -->
+    <div class="mt-3">
+      <label for="fileImage" class="block text-xl font-medium text-gray-900 dark:text-white">
+        Upload Image
+      </label>
       <div class="bg-white">
         <input
           id="fileImage"
@@ -227,34 +227,27 @@ const onCancel = () => {
           class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
           @change="onSelectImageFile"
         />
-        <div 
-          v-for="(image, index) in posts.postImage"
-          :key="index"
-          class="w-full"
-        >
-          <img v-if="imageUrl === null" class="w-full max-h-80" alt="PostImage"
+        <div v-for="(image, index) in posts.postImage" :key="index" class="w-full mt-2">
+          <img
+            v-if="imageUrl === null"
             v-show="imageFile"
-            :v-model="imageFile"
             :src="'data:image/png;base64,' + image.imageData || imageUrl"
+            class="w-full max-h-80 object-cover"
+            alt="Post Image"
           />
           <img
-          v-else
-          :src="
-            imageUrl ||
-            'https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg'
-          "
-          alt="Image Preview"
-          class="w-full max-h-80"
-        />
+            v-else
+            :src="imageUrl || 'https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg'"
+            alt="Image Preview"
+            class="w-full max-h-80 object-cover"
+          />
         </div>
       </div>
     </div>
-    <div class="flex justify-end mr-2 mt-auto mb-auto">
-      <button
-        @click="onUpdatePost"
-        type="button"
-        class="btn btn-primary btn-sm m-3"
-      >
+
+    <!-- Action Buttons -->
+    <div class="flex justify-end mt-5">
+      <button @click="onUpdatePost" type="button" class="btn btn-primary btn-sm m-3">
         Update
       </button>
       <button @click="onCancel" type="button" class="btn btn-danger btn-sm m-3">
@@ -263,3 +256,46 @@ const onCancel = () => {
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Image Preview */
+.ibox-image-post {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/* Button Styling */
+.btn-outline-primary {
+  border-color: #3498db;
+  color: #3498db;
+}
+
+.btn-outline-primary:hover {
+  background-color: #3498db;
+  color: white;
+}
+
+.btn-primary {
+  background-color: #3498db;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #2980b9;
+}
+
+.btn-danger {
+  background-color: #e74c3c;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.btn-danger:hover {
+  background-color: #c0392b;
+}
+</style>
+

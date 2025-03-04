@@ -88,7 +88,7 @@ const redo = () => {
         :class="{ 'bg-gray-400 text-white': editor.isActive('italic') }"
         class="toolbar-btn"
       >
-        <img src="../assets/icon/editor-post/type-italic.svg" alt="" />
+        <img src="../assets/icon/type-italic.svg" alt="" />
       </button>
 
       <!-- ขีดเส้นใต้ -->
@@ -97,7 +97,7 @@ const redo = () => {
         :class="{ 'bg-gray-400 text-white': editor.isActive('underline') }"
         class="toolbar-btn"
       >
-        <img src="../assets/icon/editor-post/type-underline.svg" alt="" />
+        <img src="../assets/icon/type-underline.svg" alt="" />
       </button>
 
       <!-- Heading -->
@@ -108,7 +108,7 @@ const redo = () => {
         }"
         class="toolbar-btn"
       >
-        <img src="../assets/icon/editor-post/type-h1.svg" alt="" />
+        <img src="../assets/icon/type-h1.svg" alt="" />
       </button>
       <button
         @click="toggleHeading(2)"
@@ -117,7 +117,7 @@ const redo = () => {
         }"
         class="toolbar-btn"
       >
-        <img src="../assets/icon/editor-post/type-h2.svg" alt="" />
+        <img src="../assets/icon/type-h2.svg" alt="" />
       </button>
       <button
         @click="toggleHeading(3)"
@@ -126,7 +126,7 @@ const redo = () => {
         }"
         class="toolbar-btn"
       >
-        <img src="../assets/icon/editor-post/type-h3.svg" alt="" />
+        <img src="../assets/icon/type-h3.svg" alt="" />
       </button>
       <button
         @click="toggleHeading(4)"
@@ -135,7 +135,7 @@ const redo = () => {
         }"
         class="toolbar-btn"
       >
-        <img src="../assets/icon/editor-post/type-h4.svg" alt="" />
+        <img src="../assets/icon/type-h4.svg" alt="" />
       </button>
       <button
         @click="toggleHeading(5)"
@@ -144,7 +144,7 @@ const redo = () => {
         }"
         class="toolbar-btn"
       >
-        <img src="../assets/icon/editor-post/type-h5.svg" alt="" />
+        <img src="../assets/icon/type-h5.svg" alt="" />
       </button>
 
       <!-- รายการ -->
@@ -153,14 +153,14 @@ const redo = () => {
         :class="{ 'bg-gray-400 text-white': editor.isActive('bulletList') }"
         class="toolbar-btn"
       >
-        <img src="../assets/icon/editor-post/list-ul.svg" alt="" />
+        <img src="../assets/icon/list-ul.svg" alt="" />
       </button>
       <button
         @click="toggleList('toggleOrderedList')"
         :class="{ 'bg-gray-400 text-white': editor.isActive('orderedList') }"
         class="toolbar-btn"
       >
-        <img src="../assets/icon/editor-post/list-ol.svg" alt="" />
+        <img src="../assets/icon/list-ol.svg" alt="" />
       </button>
 
       <!-- โค้ดบล็อก -->
@@ -169,7 +169,7 @@ const redo = () => {
         :class="{ 'bg-gray-400 text-white': editor.isActive('codeBlock') }"
         class="toolbar-btn"
       >
-        <img src="../assets/icon/editor-post/code.svg" alt="" />
+        <img src="../assets/icon/code.svg" alt="" />
       </button>
 
       <!-- Blockquote -->
@@ -178,7 +178,7 @@ const redo = () => {
         :class="{ 'bg-gray-400 text-white': editor.isActive('blockquote') }"
         class="toolbar-btn"
       >
-        <img src="../assets/icon/editor-post/dash-lg.svg" alt="" />
+        <img src="../assets/icon/dash-lg.svg" alt="" />
       </button>
 
       <!-- ย้อนกลับ / ไปข้างหน้า -->
@@ -187,7 +187,7 @@ const redo = () => {
         :disabled="!editor.can().chain().focus().undo().run()"
         class="toolbar-btn"
       >
-        <img src="../assets/icon/editor-post/reply-fill.svg" alt="" />
+        <img src="../assets/icon/reply-fill.svg" alt="" />
       </button>
       <button
         @click="redo"
@@ -195,7 +195,7 @@ const redo = () => {
         class="toolbar-btn"
       >
         <img
-          src="../assets/icon/editor-post/reply-fill.svg"
+          src="../assets/icon/reply-fill.svg"
           alt=""
           class="img-redo"
         />

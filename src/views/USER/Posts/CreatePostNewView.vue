@@ -3,14 +3,14 @@
     <label
       for="countries"
       class="block mb-2 text-4xl font-medium text-gray-900 dark:text-white"
-      >Create post new.</label
-    >
+      >Create New Post</label>
+      
+    <!-- Select Type Post -->
     <div class="grid mt-5" v-if="isSelectType">
       <label
         for="countries"
-        class="block mb-2 text-1xl font-medium text-gray-900 dark:text-white"
-        >Select type post</label
-      >
+        class="block mb-2 text-xl font-medium text-gray-900 dark:text-white"
+        >Select Post Type</label>
       <select
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         v-model="form.typeID"
@@ -19,60 +19,76 @@
         <option v-for="type in postTypes" :key="type.id" :value="type.id">
           {{ type.post_type_name }}
         </option>
-        <option value="new">add +</option>
+        <option value="new">Add New Type +</option>
       </select>
     </div>
 
+    <!-- New Type Post -->
     <div class="grid grid-rows-2 mt-5" v-if="isNewType">
       <div class="grid grid-cols-2">
         <div>
           <label
-            for="countries"
-            class="block mb-2 text-text-1x1 font-medium text-gray-900 dark:text-white"
-            >New type post</label
-          >
+            for="newTypePost"
+            class="block mb-2 text-xl font-medium text-gray-900 dark:text-white"
+            >New Post Type</label>
         </div>
-        <div
-          v-if="isButtonSelect"
-          class="flex justify-end mr-3 mt-auto mb-auto"
-        >
+        <div v-if="isButtonSelect" class="flex justify-end mt-auto mb-auto">
           <button @click="onSelectAgain" class="btn btn-sm btn-outline-primary">
-            <label>Select type post</label>
+            <label>Select Post Type</label>
           </button>
         </div>
       </div>
-      <input type="text" class="form-control" v-model="form.newType" />
+      <input
+        id="newTypePost"
+        type="text"
+        v-model="form.newType"
+        class="form-control mt-3"
+      />
     </div>
+
+    <!-- Post Title -->
     <div class="mt-3">
       <label
-        for="countries"
-        class="block text-1x1 font-medium text-gray-900 dark:text-white"
-        >Title</label
-      >
-      <input v-model="form.title" type="text" class="form-control" />
+        for="postTitle"
+        class="block text-xl font-medium text-gray-900 dark:text-white"
+        >Title</label>
+      <input
+        id="postTitle"
+        v-model="form.title"
+        type="text"
+        class="form-control mt-2"
+      />
     </div>
+
+    <!-- Post Content -->
     <div class="mt-3">
       <label
-        for="countries"
-        class="block text-1x1 font-medium text-gray-900 dark:text-white"
-        >Content</label
-      >
-      <EditorTipTap v-model="form.content" />
+        for="postContent"
+        class="block text-xl font-medium text-gray-900 dark:text-white"
+        >Content</label>
+      <EditorTipTap v-model="form.content" id="postContent" />
     </div>
-    <div class="mt-2">
+
+    <!-- Post Refer -->
+    <div class="mt-3">
       <label
-        for="countries"
-        class="block mb-2 text-1x1 font-medium text-gray-900 dark:text-white"
-        >Refer</label
-      >
-      <input v-model="form.refer" type="text" class="form-control" />
+        for="postRefer"
+        class="block text-xl font-medium text-gray-900 dark:text-white"
+        >Refer</label>
+      <input
+        id="postRefer"
+        v-model="form.refer"
+        type="text"
+        class="form-control mt-2"
+      />
     </div>
-    <div class="grid grid-rows-1 mt-2">
+
+    <!-- Upload File Section -->
+    <div class="mt-3">
       <label
-        class="block mb-2 text-1x1 font-medium text-gray-900 dark:text-white"
-        for="user_avatar"
-        >Upload file</label
-      >
+        for="fileImage"
+        class="block text-xl font-medium text-gray-900 dark:text-white"
+        >Upload Image</label>
       <div class="bg-white">
         <input
           id="fileImage"
@@ -82,16 +98,15 @@
           @change="handleImageSelected"
         />
         <img
-          :src="
-            imageUrl ||
-            'https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg'
-          "
+          :src="imageUrl || 'https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg'"
           alt="Image Preview"
-          class="ibox-image-post"
+          class="ibox-image-post mt-3"
         />
       </div>
     </div>
-    <div class="flex justify-end mr-2 mt-auto mb-auto">
+
+    <!-- Buttons: Save and Cancel -->
+    <div class="flex justify-end mt-5">
       <button
         @click="onCreatePost"
         type="button"
@@ -99,21 +114,60 @@
       >
         Save
       </button>
-      <button @click="onCancel" type="button" class="btn btn-danger btn-sm m-3">
+      <button
+        @click="onCancel"
+        type="button"
+        class="btn btn-danger btn-sm m-3"
+      >
         Cancel
       </button>
     </div>
   </div>
 </template>
-<style>
+
+<style scoped>
+/* Image Preview Styles */
 .ibox-image-post {
   margin: auto;
   margin-top: 30px;
   margin-bottom: 30px;
   width: 90%;
   height: 350px;
+  object-fit: cover;
+}
+
+/* Button Styles */
+.btn-outline-primary {
+  border-color: #3498db;
+  color: #3498db;
+}
+
+.btn-outline-primary:hover {
+  background-color: #3498db;
+  color: white;
+}
+
+.btn-primary {
+  background-color: #3498db;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #2980b9;
+}
+
+.btn-danger {
+  background-color: #e74c3c;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.btn-danger:hover {
+  background-color: #c0392b;
 }
 </style>
+
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'

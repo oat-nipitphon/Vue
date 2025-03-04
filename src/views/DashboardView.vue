@@ -1,13 +1,17 @@
 <script setup>
-import { ref, onMounted, computed, defineProps, defineEmits } from 'vue'
+import { ref, onMounted, computed, defineProps } from 'vue'
 import { RouterLink } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '@/stores/auth'
 import { usePostStore } from '@/stores/post'
+import defaultImage from "@/assets/icon/icon-user-default.png";
 const authStore = useAuthStore()
 const { storeUser } = storeToRefs(authStore)
-const props = defineProps(['title'])
-const emit = defineEmits(['update'])
+const props = defineProps({
+  title: String,
+  content: String,
+})
+
 const {
   apiGetPosts,
   apiStorePost,
@@ -109,15 +113,19 @@ onMounted(async () => {
             >
               <figcaption class="flex items-start justify-start ml-5 mt-3">
                 <div v-for="(userImage, index) in post.userImage" :key="index">
-                  <img
-                    class="rounded-full w-9 h-9"
-                    :src="
-                      'data:image/png;base64,' + userImage.imageData ||
-                      +'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png'
-                    "
-                    alt="profile picture"
-                  />
+                  <p>
+                    <img
+                      :src="
+                        userImage.imageData
+                          ? 'data:image/png;base64,' + userImage.imageData
+                          : userImage.imageName || defaultImage
+                      "
+                      alt="profile picture"
+                      class="rounded-full w-9 h-9"
+                    />
+                  </p>
                 </div>
+
                 <div
                   class="space-y-0.5 font-medium dark:text-white text-left rtl:text-right ms-3"
                 >
@@ -133,9 +141,7 @@ onMounted(async () => {
             </label>
           </div>
           <div class="grid grid-cols-2">
-            <div class="grid grid-cols-2">
-
-            </div>
+            <div class="grid grid-cols-2"></div>
             <div
               class="flex justify-end"
               v-if="post.userID === authStore.storeUser.user_login.id"
@@ -143,7 +149,7 @@ onMounted(async () => {
               <div class="dropdown mr-5 mt-3">
                 <img
                   class="size-6 mr-5 mt-3"
-                  src="../assets/icon/editor-post/sliders.svg"
+                  src="../assets/icon/sliders.svg"
                   alt="SettingPost"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
@@ -233,7 +239,7 @@ onMounted(async () => {
               aria-labelledby="exampleModalLabel"
               aria-hidden="true"
             >
-              <div class="modal-dialog modal-lg post-content-modal">
+              <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                   <div class="modal-header">
                     <h5 class="modal-title">เนื้อหาทั้งหมด</h5>
@@ -281,19 +287,13 @@ onMounted(async () => {
 .post-content {
   overflow: hidden;
   display: -webkit-box;
-  display: box;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
+  /* -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical; */
 
   line-clamp: 5;
   box-orient: vertical;
   word-break: break-word;
   max-height: 120px;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
-.post-content-modal {
   white-space: pre-wrap;
   word-wrap: break-word;
   overflow-wrap: break-word;

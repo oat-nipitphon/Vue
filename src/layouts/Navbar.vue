@@ -122,6 +122,20 @@ const onLogout = async () => {
                   Home
                 </RouterLink>
                 <RouterLink
+                  :aria-current="isActive('ReportRecoverPostsView')"
+                  :class="navClass('ReportRecoverPostsView')"
+                  :to="{ name: 'ReportRecoverPostsView', params: { userID: authStore.storeUser.user_login.id } }"
+                >
+                  Recover posts
+                </RouterLink>
+                <RouterLink
+                  :aria-current="isActive('DashboardProfile')"
+                  :class="navClass('DashboardProfile')"
+                  :to="{ name: 'DashboardProfile' , params: { id: authStore.storeUser.user_login.id } }"
+                >
+                  Dashboard profile
+                </RouterLink>
+                <RouterLink
                   :aria-current="isActive('AdminDashboardView')"
                   :class="navClass('AdminDashboardView')"
                   :to="{ name: 'AdminDashboardView' }"
