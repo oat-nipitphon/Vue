@@ -17,36 +17,11 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
                 if (res.ok) {
                     return data.userStatus;
                 }
-  
-                
-                
+
+
+
             } catch (error) {
                 console.error("function status user error", error);
-            }
-        },
-
-        // Update user
-        async apiUpdateUser(formData) {
-            try {
-
-                const res = await fetch('/api/update/user', {
-                    method: "POST",
-                    headers: {
-                        authorization: `Bearer ${localStorage.getItem('token')}`
-                    },
-                    body: formData,
-                });
-
-                const data = await res.json();
-
-                if (!res.ok) {
-                    console.log("store update user false", res);
-                }
-
-                console.log("store update user success", res);
-
-            } catch (error) {
-                console.error("store update user function error", error);
             }
         },
 
@@ -70,7 +45,7 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
             }
         },
 
-        async apiGetDashboardProfile (userProfile) {
+        async apiGetDashboardProfile(userProfile) {
             try {
                 const res = await fetch(`/api/user_profiles/${userProfile}`, {
                     method: "GET",
@@ -80,7 +55,7 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
                 })
                 const data = await res.json();
                 if (res.ok) {
-                    return data.userProfiles;
+                    return data.userProfile;
                 } else {
                     console.log("store user profile res false.", res);
                 }
@@ -111,50 +86,95 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
             }
         },
 
-        // Update user profile detail
-        async apiUpdateDetailUserProfile(formData) {
-            const result = await Swal.fire({
-                title: "Confirm update profile!",
-                text: "Are you sure you want to update this profile ?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Confirm",
-                cancelButtonText: "Cancel",
-            });
+        // Update user
+        async apiUpdateUser(form) {
+            try {
 
-            if (result.isConfirmed) {
-                try {
-                    const res = await fetch(`/api/user_profiles`, {
-                        method: "POST",
-                        headers: {
-                            authorization: `Bearer ${localStorage.getItem('token')}`,
-                        },
-                        body: JSON.stringify(formData)
-                    })
+                const result = await Swal.fire({
+                    title: "Confirm Update",
+                    text: "Are you sure you want to update ?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "yes",
+                    cancelButtonText: "no",
+                });
 
-                    if (res.ok) {
-
-                        const data = await res.json()
-
-
-                        Swal.fire({
-                            title: "Success",
-                            content: "update profile successfully.",
-                            icon: "success",
-                            timer: 1500,
-                            timerProgressBar: true,
-                        }).then(() => {
-                            this.userProfile = data.user;
-                            window.location.reload();
-                        })
-                    }
-                } catch (error) {
-                    console.error("store function apiUpdateDetailUserProfile", error)
+                if (!result.isConfirmed) {
+                    result.close()
                 }
-            } else if (result.dismiss === Swal.DismissReason.cancel) {
-                Swal.close();
+
+                const res = await fetch('/api/update/user', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        authorization: `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify(form),
+                });
+
+                const data = await res.json();
+                console.log("store update user", data.user);
+                if (res.ok) {
+                    Swal.fire({
+                        title: "Success",
+                        text: "update profile successfully",
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 1200,
+                        timerProgressBar: 1200,
+                    }).then(() => {
+                        window.location.reload();
+                    })
+                }
+
+            } catch (error) {
+                console.error("store update user function error", error);
+            }
+        },
+
+        // Update Profile
+        async apiUpdateProfile(formData) {
+            try {
+                const result = await Swal.fire({
+                    title: "Confirm Update",
+                    text: "Are you sure you want to update ?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "yes",
+                    cancelButtonText: "no",
+                });
+    
+                if (!result.isConfirmed) {
+                    result.close()
+                }
+    
+                const res = await fetch(`/api/update/profile`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                    body: formData
+                })
+                const data = await res.json();
+                if (res.ok) {
+                    Swal.fire({
+                        title: "Success",
+                        text: "update profile successfully.",
+                        icon: "success",
+                        // timer: 1200,
+                        // timerProgressBar: true,
+                    }).then(() => {
+                        console.log("store update profile", data.profile);
+                        // window.location.reload();
+                    })
+                }
+            } catch (error) {
+                console.error("store function update profile error", error)
             }
         },
 

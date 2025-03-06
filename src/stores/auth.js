@@ -9,6 +9,21 @@ export const useAuthStore = defineStore('authStore', {
     }),
     actions: {
 
+        async apiGetUserStatus () {
+            try {
+                const res = await fetch(`/api/status_user`, {
+                  method: 'GET',
+                })
+            
+                const data = await res.json()
+                if (res.ok) {
+                  return data.userStatus
+                }
+              } catch (error) {
+                console.error('register view get status user error', error)
+              }
+        },
+
         async apiAuthStore() {
             try {
                 const token = localStorage.getItem('token');
@@ -34,50 +49,81 @@ export const useAuthStore = defineStore('authStore', {
         },
 
         async apiStoreRegister(apiRouter, formData) {
-            const res = await fetch(`/api/${apiRouter}`, {
+
+            const result = await Swal.fire({
+                title: "ยืนยันข้อมูล",
+                text: "คุณต้องการลงทะเบียนใช่หรือไม่?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Confirm",
+            });
+
+            if (!result.isConfirmed) {
+                console.log('!isConfirmd');
+                result.dismiss === Swal.DismissReason.cancel
+            }
+
+            const response = await fetch(`/api/${apiRouter}`, {
                 method: "POST",
                 body: JSON.stringify(formData),
             });
 
-            const data = await res.json();
+            const data = await response.json();
 
-            if (res.ok) {
+            if (response.status === 201) {
                 Swal.fire({
-                    title: "Success",
-                    text: "Register account successfully.",
+                    title: "ลงทะเบียนสำเร็จ",
                     icon: "success",
-                    timer: 1200,
+                    timer: 1500,
+                    timerProgressBar: true,
                 }).then(() => {
-                    localStorage.setItem('token', data.token);
-                    this.storeUser = data.user;
-                    this.router.push({ name: 'DashboardView' });
+                    // localStorage.setItem('token', data.token);
+                    // this.storeUser = data.user;
+                    // this.router.push({ name: 'DashboardView' });
+                    // const router = useRouter();
+                    this.router.push({
+                        name: 'HomeView'
+                    });
+                });
+            } else if (response.status === 500) {
+                Swal.fire({
+                    title: "ข้อมูลผิดพลาด",
+                    text: `สถานะ 500 <br>` + data,
+                });
+            } else {
+                Swal.fire({
+                    title: "ข้อมูลผิดพลาด",
+                    text: data,
                 });
             }
         },
 
         // login
-        async apiStoreLogin(apiRouter, formData) {
+        async apiStoreLogin(apiRouter, form) {
             try {
                 const res = await fetch(`/api/${apiRouter}`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify(formData)
+                    body: JSON.stringify(form)
                 });
 
                 const data = await res.json();
-                console.log("auth login ", data.status);
+
                 if (data.status === 200) {
 
                     localStorage.setItem('token', data.token);
 
                     Swal.fire({
-                        title: "Login success.",
-                        text: "You login successfully, welcome to my world!",
+                        title: "สำเร็จ",
+                        text: "ลงชื่อเข้าใช้งานระบบสำเร็จ",
                         icon: "success",
                         showConfirmButton: false,
-                        timer: 1500,
+                        timer: 1200,
+                        timerProgressBar: true,
                     }).then(() => {
                         if (data.user.status_id === 1) {
                             this.router.push({ name: 'AdminDashboardView' });

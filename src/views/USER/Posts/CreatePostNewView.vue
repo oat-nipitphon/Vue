@@ -3,18 +3,21 @@
     <label
       for="countries"
       class="block mb-2 text-4xl font-medium text-gray-900 dark:text-white"
-      >Create New Post</label>
-      
+      >Create New Post</label
+    >
+
     <!-- Select Type Post -->
     <div class="grid mt-5" v-if="isSelectType">
       <label
         for="countries"
         class="block mb-2 text-xl font-medium text-gray-900 dark:text-white"
-        >Select Post Type</label>
+        >Select Post Type</label
+      >
       <select
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         v-model="form.typeID"
         @change="onSelectType"
+        required
       >
         <option v-for="type in postTypes" :key="type.id" :value="type.id">
           {{ type.post_type_name }}
@@ -30,7 +33,8 @@
           <label
             for="newTypePost"
             class="block mb-2 text-xl font-medium text-gray-900 dark:text-white"
-            >New Post Type</label>
+            >New Post Type</label
+          >
         </div>
         <div v-if="isButtonSelect" class="flex justify-end mt-auto mb-auto">
           <button @click="onSelectAgain" class="btn btn-sm btn-outline-primary">
@@ -51,13 +55,16 @@
       <label
         for="postTitle"
         class="block text-xl font-medium text-gray-900 dark:text-white"
-        >Title</label>
+        >Title</label
+      >
       <input
+        required=""
         id="postTitle"
         v-model="form.title"
         type="text"
         class="form-control mt-2"
       />
+      <p v-if="!form.title">sssssssss</p>
     </div>
 
     <!-- Post Content -->
@@ -65,8 +72,9 @@
       <label
         for="postContent"
         class="block text-xl font-medium text-gray-900 dark:text-white"
-        >Content</label>
-      <EditorTipTap v-model="form.content" id="postContent" />
+        >Content</label
+      >
+      <EditorTipTap required v-model="form.content" id="postContent" />
     </div>
 
     <!-- Post Refer -->
@@ -74,7 +82,8 @@
       <label
         for="postRefer"
         class="block text-xl font-medium text-gray-900 dark:text-white"
-        >Refer</label>
+        >Refer</label
+      >
       <input
         id="postRefer"
         v-model="form.refer"
@@ -88,7 +97,8 @@
       <label
         for="fileImage"
         class="block text-xl font-medium text-gray-900 dark:text-white"
-        >Upload Image</label>
+        >Upload Image</label
+      >
       <div class="bg-white">
         <input
           id="fileImage"
@@ -98,7 +108,10 @@
           @change="handleImageSelected"
         />
         <img
-          :src="imageUrl || 'https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg'"
+          :src="
+            imageUrl ||
+            'https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg'
+          "
           alt="Image Preview"
           class="ibox-image-post mt-3"
         />
@@ -114,11 +127,7 @@
       >
         Save
       </button>
-      <button
-        @click="onCancel"
-        type="button"
-        class="btn btn-danger btn-sm m-3"
-      >
+      <button @click="onCancel" type="button" class="btn btn-danger btn-sm m-3">
         Cancel
       </button>
     </div>

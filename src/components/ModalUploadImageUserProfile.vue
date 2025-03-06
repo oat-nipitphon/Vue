@@ -46,8 +46,9 @@ const onUploadFile = async () => {
 }
 </script>
 <template>
-  <!-- Button trigger modal -->
-  <button
+<div>
+    <!-- Button trigger modal -->
+    <button
     type="button"
     class="btn btn-sm"
     data-bs-toggle="modal"
@@ -117,6 +118,7 @@ const onUploadFile = async () => {
       </div>
     </div>
   </div>
+</div>
 </template>
 <style>
 .ibox-image-profile {

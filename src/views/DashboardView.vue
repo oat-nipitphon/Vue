@@ -4,7 +4,7 @@ import { RouterLink } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '@/stores/auth'
 import { usePostStore } from '@/stores/post'
-import defaultImage from "@/assets/icon/icon-user-default.png";
+import defaultImage from '@/assets/icon/icon-user-default.png'
 const authStore = useAuthStore()
 const { storeUser } = storeToRefs(authStore)
 const props = defineProps({
@@ -112,18 +112,21 @@ onMounted(async () => {
               class="flex flex-col items-start justify-start p-2 m-auto text-start bg-white border-gray-200 md:rounded-es-lg dark:bg-gray-800 dark:border-gray-700"
             >
               <figcaption class="flex items-start justify-start ml-5 mt-3">
-                <div v-for="(userImage, index) in post.userImage" :key="index">
-                  <p>
+                <div v-for="(image, index) in post.userImage" :key="index">
+                  <div v-if="image.imageData !== null">
                     <img
-                      :src="
-                        userImage.imageData
-                          ? 'data:image/png;base64,' + userImage.imageData
-                          : userImage.imageName || defaultImage
-                      "
-                      alt="profile picture"
-                      class="rounded-full w-9 h-9"
+                      class="size-8 rounded-full"
+                      :src="'data:image/png;base64,' + image.imageData"
+                      alt=""
                     />
-                  </p>
+                  </div>
+                  <div v-else>
+                    <img
+                        class="size-8 rounded-full"
+                        src="../assets/icon/icon-user-default.png"
+                        alt=""
+                      />
+                  </div>
                 </div>
 
                 <div
@@ -287,8 +290,8 @@ onMounted(async () => {
 .post-content {
   overflow: hidden;
   display: -webkit-box;
-  /* -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical; */
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
 
   line-clamp: 5;
   box-orient: vertical;

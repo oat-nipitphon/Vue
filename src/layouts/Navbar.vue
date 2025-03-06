@@ -10,9 +10,7 @@ const authStore = useAuthStore()
 const { storeUser } = storeToRefs(authStore)
 
 const isAdmin = computed(() => {
-  return (
-    authStore.storeUser.user_login.status_id === 1
-  )
+  return authStore.storeUser.user_login.status_id === 1
 })
 
 const isActive = name => (route.name === name ? 'page' : null)
@@ -83,17 +81,16 @@ const onLogout = async () => {
   await apiStoreLogout()
   isMobileDropdownOpen.value = false
 }
-
-// console.log("Navbar", authStore.storeUser.user_login);
 </script>
 <template>
-  <div class="header">
+  <div>
     <nav class="bg-gray-800">
       <div
         v-if="authStore.storeUser"
         class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
       >
         <div class="flex h-16 items-center justify-between">
+          <!-- Navbar Left -->
           <div class="flex items-center">
             <!-- Image icon tailwind -->
             <div class="shrink-0">
@@ -104,7 +101,7 @@ const onLogout = async () => {
               />
             </div>
 
-            <!-- Main Menu -->
+            <!-- Navbar Main Left -->
             <div class="hidden md:block">
               <div
                 class="ml-10 flex items-baseline space-x-4 text-gray-300 hover:bg-gray-700 hover:text-white"
@@ -119,101 +116,116 @@ const onLogout = async () => {
                   :class="navClass('DashboardView')"
                   :to="{ name: 'DashboardView' }"
                 >
-                  Home
+                  หน้าหลัก
                 </RouterLink>
-                <RouterLink
-                  :aria-current="isActive('ReportRecoverPostsView')"
-                  :class="navClass('ReportRecoverPostsView')"
-                  :to="{ name: 'ReportRecoverPostsView', params: { userID: authStore.storeUser.user_login.id } }"
-                >
-                  Recover posts
-                </RouterLink>
+
                 <RouterLink
                   :aria-current="isActive('DashboardProfile')"
                   :class="navClass('DashboardProfile')"
-                  :to="{ name: 'DashboardProfile' , params: { id: authStore.storeUser.user_login.id } }"
+                  :to="{
+                    name: 'DashboardProfile',
+                    params: { id: authStore.storeUser.user_login.id },
+                  }"
                 >
-                  Dashboard profile
+                  โปรไฟล์
                 </RouterLink>
+
+                <RouterLink
+                  :aria-current="isActive('ReportRecoverPostsView')"
+                  :class="navClass('ReportRecoverPostsView')"
+                  :to="{
+                    name: 'ReportRecoverPostsView',
+                    params: { userID: authStore.storeUser.user_login.id },
+                  }"
+                >
+                  กู้คืนโพสจัดเก็บ
+                </RouterLink>
+
                 <RouterLink
                   :aria-current="isActive('AdminDashboardView')"
                   :class="navClass('AdminDashboardView')"
                   :to="{ name: 'AdminDashboardView' }"
                   v-if="isAdmin"
                 >
-                  AdminDashboardView
-                </RouterLink>
-                <RouterLink
-                  :aria-current="isActive('AdminManagerUserProfileView')"
-                  :class="navClass('AdminManagerUserProfileView')"
-                  :to="{ name: 'AdminManagerUserProfileView' }"
-                  v-if="isAdmin"
-                >
-                  AdminManagerUserProfileView
-                </RouterLink>
-                <RouterLink
-                  :aria-current="isActive('AdminManagerPostView')"
-                  :class="navClass('AdminManagerPostView')"
-                  :to="{ name: 'AdminManagerPostView' }"
-                  v-if="isAdmin"
-                >
-                  AdminManagerPostView
+                  แผงควบคุมผู้ดูแล
                 </RouterLink>
               </div>
             </div>
           </div>
 
-          <!-- View notifications hidden -->
           <div class="hidden md:block">
             <div class="ml-4 flex items-center md:ml-6">
               <!-- Notifications -->
+              <button
+                type="button"
+                class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+              >
+                <span class="absolute -inset-1.5"></span>
+                <span class="sr-only">View notifications</span>
+                <svg
+                  class="size-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                  data-slot="icon"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
+                  />
+                </svg>
+              </button>
 
               <!-- Profile dropdown -->
-              <div class="relative mt-4 ml-4">
+              <div class="relative ml-3">
                 <!-- Button image profile dropdown -->
-                <div v-if="authStore.storeUser.user_login.userImage">
-                  <button
-                    type="button"
-                    @click="toggleMainDropdown"
-                    id="navbar-main-menu"
-                    aria-expanded="false"
-                    aria-haspopup="true"
-                  >
-                    <div
-                      v-if="authStore.storeUser.user_login.userImage !== null"
+                
+                <div
+                  class="text-white text-center"
+                  v-for="(image, index) in authStore.storeUser.user_login
+                    .userImage"
+                  :key="index"
+                >
+                  <div v-if="image.imageData !== null">
+                    <button
+                      type="button"
+                      @click="toggleMainDropdown"
+                      class="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                      id="navbar-main-menu"
+                      aria-expanded="false"
+                      aria-haspopup="true"
                     >
-                      <div
-                        class="flex justify-between"
-                        v-for="(image, index) in authStore.storeUser.user_login
-                          .userImage"
-                        :key="index"
-                      >
-                        <img
-                          :src="'data:image/png;base64,' + image.imageData"
-                          class="size-8 rounded-full"
-                          alt="UserImage"
-                        />
-                      </div>
-                    </div>
-                    <div v-if="storeUser.user_login.userImage === null">
+                      <span class="absolute -inset-1.5"></span>
+                      <span class="sr-only">Open user menu</span>
                       <img
-                        class="size-8"
-                        v-if="
-                          storeUser.user_login.userStatus.status_code === 101
-                        "
-                        src="../assets/icon/admin-icon-profile.png"
+                        class="size-8 rounded-full"
+                        :src="'data:image/png;base64,'+image.imageData"
                         alt=""
                       />
+                    </button>
+                  </div>
+                  <div v-else>
+                    <button
+                      type="button"
+                      @click="toggleMainDropdown"
+                      class="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                      id="navbar-main-menu"
+                      aria-expanded="false"
+                      aria-haspopup="true"
+                    >
+                      <span class="absolute -inset-1.5"></span>
+                      <span class="sr-only">Open user menu</span>
                       <img
-                        class="size-8"
-                        v-else
-                        src="../assets/icon/admin-icon-profile.png"
+                        class="size-8 rounded-full"
+                        src="../assets/icon/icon-user-default.png"
                         alt=""
                       />
-                    </div>
-                  </button>
+                    </button>
+                  </div>
                 </div>
-
                 <!-- Menu image profile dropdown -->
                 <div
                   v-if="isMainDropdownOpen"
@@ -236,13 +248,13 @@ const onLogout = async () => {
                   <RouterLink
                     class="block px-4 py-2 text-sm text-gray-700"
                     :to="{
-                      name: 'DashboardProfile',
+                      name: 'UserProfileDashboardView',
                       params: {
                         id: authStore.storeUser.user_login.id,
                       },
                     }"
                   >
-                    Profile
+                    User Profile
                   </RouterLink>
                   <RouterLink
                     class="block px-4 py-2 text-sm text-gray-700"
@@ -272,30 +284,10 @@ const onLogout = async () => {
                   </button>
                 </div>
               </div>
-              <button
-                type="button"
-                class="relative rounded-full ml-3 bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-              >
-                <svg
-                  class="size-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                  data-slot="icon"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
-                  />
-                </svg>
-              </button>
             </div>
           </div>
 
-          <!-- Mobile Menu Button -->
+          <!-- Navbar Mobile Button Menu -->
           <div class="-mr-2 flex md:hidden">
             <button
               id="mobile-menu-button"
@@ -333,8 +325,7 @@ const onLogout = async () => {
               </svg>
             </button>
           </div>
-
-          <!-- Mobile Menu -->
+          <!-- Navbar Mobile Dropdown Menu -->
           <div
             v-if="isMobileDropdownOpen"
             id="navbar-mobile-menu"
@@ -356,17 +347,21 @@ const onLogout = async () => {
             </div> -->
             <div class="border-t border-gray-700 pb-3 pt-4">
               <div class="flex items-center px-5">
-                <div v-if="authStore.storeUser.user_login.userImage !== null">
+                <div>
                   <div
                     v-for="(image, index) in authStore.storeUser.user_login
                       .userImage"
                     :key="index"
                   >
-                    <img
-                      :src="'data:image/png;base64,' + image.imageData"
-                      class="size-8 rounded-full"
-                      alt="UserImage"
-                    />
+                    111
+                    <p v-if="image.imageData">
+                      <img
+                        :src="'data:image/png;base64,' + image.imageData"
+                        class="size-8 rounded-full"
+                        alt="UserImage"
+                      />
+                    </p>
+                    <p v-else>image null</p>
                   </div>
                 </div>
                 <div class="ml-3">
@@ -384,29 +379,29 @@ const onLogout = async () => {
                   @click="onAdminManager"
                   v-if="isAdmin"
                 >
-                  Admin Manager
+                  แผงควบคุมผู้ดูแล
                 </span>
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                   @click="onHome"
-                  >Home</span
+                  >หน้าหลัก</span
                 >
 
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                   @click="onUserProfile"
-                  >Profile</span
+                  >โปรไฟล์</span
                 >
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                   @click="onRecoverPost"
-                  >Recover post</span
+                  >กู้คืนโพสจัดเก็บ</span
                 >
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                   @click="onLogout"
                 >
-                  Logout
+                  ออกจากระบบ
                 </span>
               </div>
             </div>
@@ -422,12 +417,12 @@ const onLogout = async () => {
           <RouterLink
             class="text-white m-auto p-3 btn btn-md"
             :to="{ name: 'LoginView' }"
-            >Login</RouterLink
+            >เข้าใช้งาน</RouterLink
           >
           <RouterLink
             class="text-white m-auto p-3 btn btn-md"
             :to="{ name: 'RegisterView' }"
-            >Register</RouterLink
+            >ลงทะเบียน</RouterLink
           >
         </div>
       </div>
