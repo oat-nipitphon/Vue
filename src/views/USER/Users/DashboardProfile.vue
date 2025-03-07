@@ -62,7 +62,7 @@
       <div class="bg-gray-100 p-2 rounded-lg">
         <h3 class="text-lg font-semibold text-gray-700 p-2">Contact</h3>
         <div>
-          <CardContactProfile :contact="profile.profileContact" />
+          <CardContactProfile :profileID="profile.userProfile.id" :contact="profile.profileContact" />
         </div>
       </div>
     </div>
