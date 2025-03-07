@@ -7,10 +7,9 @@ const route = useRoute()
 const router = useRouter()
 const { apiStoreLogout } = useAuthStore()
 const authStore = useAuthStore()
-const { storeUser } = storeToRefs(authStore)
-
+// console.log("navbar", authStore.storeUser.user_login.userStatus.status_name);
 const isAdmin = computed(() => {
-  return authStore.storeUser.user_login.status_id === 1
+  return authStore.storeUser.user_login.userStatus.status_name === "admin"
 })
 
 const isActive = name => (route.name === name ? 'page' : null)
@@ -366,10 +365,10 @@ const onLogout = async () => {
                 </div>
                 <div class="ml-3">
                   <div class="text-base font-medium text-white">
-                    {{ storeUser.user_login.username }}
+                    {{ authStore.storeUser.user_login.username }}
                   </div>
                   <div class="text-sm font-medium text-gray-400">
-                    {{ storeUser.user_login.email }}
+                    {{ authStore.storeUser.user_login.email }}
                   </div>
                 </div>
               </div>
@@ -379,29 +378,29 @@ const onLogout = async () => {
                   @click="onAdminManager"
                   v-if="isAdmin"
                 >
-                  แผงควบคุมผู้ดูแล
+                  admin manager
                 </span>
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                   @click="onHome"
-                  >หน้าหลัก</span
+                  >home</span
                 >
 
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                   @click="onUserProfile"
-                  >โปรไฟล์</span
+                  >profile</span
                 >
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                   @click="onRecoverPost"
-                  >กู้คืนโพสจัดเก็บ</span
+                  >recover post</span
                 >
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                   @click="onLogout"
                 >
-                  ออกจากระบบ
+                  logout
                 </span>
               </div>
             </div>
@@ -417,12 +416,12 @@ const onLogout = async () => {
           <RouterLink
             class="text-white m-auto p-3 btn btn-md"
             :to="{ name: 'LoginView' }"
-            >เข้าใช้งาน</RouterLink
+            >login</RouterLink
           >
           <RouterLink
             class="text-white m-auto p-3 btn btn-md"
             :to="{ name: 'RegisterView' }"
-            >ลงทะเบียน</RouterLink
+            >register</RouterLink
           >
         </div>
       </div>

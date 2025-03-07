@@ -17,32 +17,15 @@ const form = reactive({
 
 watch(() => props.profile, (row) => {
   if (row) {
-    Object.assign(form, {
-      profileID: row?.id || "",
-      fullName: row?.fullName || "",
-      nickName: row?.nickName || "",
-      telPhone: row?.telPhone || "",
-      birthDay: row?.birthDay || ""
-    })
+    form.profileID = row.id || "";
+    form.fullName = row.fullName || "";
+    form.nickName = row.nickName || "";
+    form.telPhone = row.telPhone || "";
+    form.birthDay = row.birthDay || "";
   }
 }, { immediate: true });
 
-const onUpdate = async () => {
-  try {
-    const formData = new FormData();
-    Object.entries(form).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
 
-    const response = await apiUpdateProfile(formData);
-    
-    alert("อัปเดตข้อมูลสำเร็จ! ✅"); // แจ้งเตือนเมื่ออัปเดตสำเร็จ
-    console.log(response);
-  } catch (error) {
-    console.error("Error updating profile:", error);
-    alert("เกิดข้อผิดพลาดในการอัปเดต ❌");
-  }
-}
 
 </script>
 <template>
@@ -68,7 +51,7 @@ const onUpdate = async () => {
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">Update Profile Name {{ profile.nickName }}</h1>
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Update Profile ID : {{ profile.id }}</h1>
             <button
               type="button"
               class="btn-close"
@@ -76,9 +59,9 @@ const onUpdate = async () => {
               aria-label="Close"
             ></button>
           </div>
-          <!-- <form @submit.prevent="apiUpdateProfile(form)"> -->
+          <form @submit.prevent="apiUpdateProfile(form)">
             <div class="modal-body">
-              <input type="text" v-model="profile.id" class="form-control">
+              <input type="hidden" v-model="profile.id" class="form-control">
             <div>
               <label class="font-bold mb-2">full name</label>
               <input v-model="form.fullName" type="text" class="form-control">
@@ -97,10 +80,10 @@ const onUpdate = async () => {
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-sm btn-primary" @click="onUpdate">update</button>
-            <!-- <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button> -->
+            <!-- <button type="submit" class="btn btn-sm btn-primary" @click="onUpdate">update</button> -->
+            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">update</button>
           </div>
-          <!-- </form> -->
+          </form>
         </div>
       </div>
     </div>

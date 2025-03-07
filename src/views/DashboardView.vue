@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed, defineProps } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '@/stores/auth'

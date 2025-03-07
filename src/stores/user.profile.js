@@ -3,6 +3,7 @@ import Swal from 'sweetalert2'
 export const useStoreUserProfile = defineStore('storeUserProfile', {
     state: () => ({
         userProfile: null,
+        storeContactProfiles: null,
         errors: {},
     }),
     actions: {
@@ -135,7 +136,7 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
         },
 
         // Update Profile
-        async apiUpdateProfile(formData) {
+        async apiUpdateProfile(form) {
             try {
                 const result = await Swal.fire({
                     title: "Confirm Update",
@@ -158,19 +159,18 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
                         "Content-Type": "multipart/form-data",
                         authorization: `Bearer ${localStorage.getItem('token')}`,
                     },
-                    body: formData
+                    body: JSON.stringify(form)
                 })
-                const data = await res.json();
+
                 if (res.ok) {
                     Swal.fire({
                         title: "Success",
                         text: "update profile successfully.",
                         icon: "success",
-                        // timer: 1200,
-                        // timerProgressBar: true,
+                        timer: 1200,
+                        timerProgressBar: true,
                     }).then(() => {
-                        console.log("store update profile", data.profile);
-                        // window.location.reload();
+                        window.location.reload();
                     })
                 }
             } catch (error) {
@@ -211,6 +211,29 @@ export const useStoreUserProfile = defineStore('storeUserProfile', {
 
             } catch (error) {
                 console.error("store user profile upload image profile error :: ");
+            }
+        },
+
+        // Get Contact Profile
+        async apiGetContactProfile (profileID) {
+            try {
+                const response = await fetch(`api/profile/contacts/${profileID}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "munltipart/form-data",
+                        authorization: `Bearer ${localStorage.getItem('token')}`
+                    },
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    console.log("store get contact profile false", response);
+                }
+
+                console.log("store get contact profile success", data.contactProfiles);
+                return this.storeContactProfiles = data.contactProfiles;
+
+            } catch (error) {
+                console.error("store api get contact profile", error);
             }
         },
 
