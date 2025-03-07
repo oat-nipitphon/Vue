@@ -17,7 +17,6 @@
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         v-model="form.typeID"
         @change="onSelectType"
-        required
       >
         <option v-for="type in postTypes" :key="type.id" :value="type.id">
           {{ type.post_type_name }}
@@ -58,13 +57,11 @@
         >Title</label
       >
       <input
-        required=""
         id="postTitle"
         v-model="form.title"
         type="text"
         class="form-control mt-2"
       />
-      <p v-if="!form.title">sssssssss</p>
     </div>
 
     <!-- Post Content -->

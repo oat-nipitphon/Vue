@@ -96,7 +96,7 @@ const onSaveContactProfile = async (event) => {
       >
         <div class="grid grid-cols-3">
           <a :href="contact.url">
-            <div>{{ contact.icon_data }}</div>
+            <div><img :src="'data:image/png;base64,' + contact.icon" class="size-8 rounded-lg" alt=""></div>
             <div>{{ contact.name }}</div>
           </a>
         </div>

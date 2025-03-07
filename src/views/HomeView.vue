@@ -15,8 +15,10 @@
     <div class="row mt-10">
       <div class="flex justify-center">
         <article class="prose mt-10">
-        <h1>Tailwind Typography Test</h1>
-        <p>This is a paragraph to check if typography is working.</p>
+        <h1>เก็บรายละเอียด</h1>
+        <h3>view dashboard profile</h3>
+        <p>- ปรับแต่ง contact profile </p>
+        <p>- remove contact profile</p>
       </article>
       </div>
     </div>

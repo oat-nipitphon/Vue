@@ -197,6 +197,23 @@ export const usePostStore = defineStore('postStore', {
             }
         },
 
+        async apiRecoverPostDelete(id) {
+            try {
+                const response = await fetch(`/api/posts/delectSelected`, {
+                    method: "DELETE",
+                    headers: {
+                        authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                console.log("response store", response);
+                const data = await response.json();
+                return data;
+
+            } catch (error) {
+                console.error("store apiDeletePost error", error);
+            }
+        },
+
         async apiStorePost(postID) {
             try {
 
