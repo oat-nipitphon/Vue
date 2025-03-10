@@ -59,10 +59,10 @@
       </div>
 
       <!-- Profile Contact -->
-      <div class="bg-gray-100 p-2 rounded-lg">
+      <div class="bg-white mt-3 p-2 rounded-lg">
         <h3 class="text-lg font-semibold text-gray-700 p-2">Contact</h3>
         <div>
-          <CardContactProfile :profileID="profile.userProfile.id" :contact="profile.profileContact" />
+          <CardContactProfile :profileID="profile.userProfile.id" :contact="profile.profileContact"/>
         </div>
       </div>
     </div>
@@ -74,6 +74,9 @@
         User profile information is empty.
       </label>
     </div>
+    <div class="max-w-md m-auto p-4">
+      <Modal />
+    </div>
   </div>
 </template>
 <script setup>
@@ -84,7 +87,9 @@ import { useAuthStore } from '@/stores/auth'
 import ModalUploadImageUserProfile from '@/components/ModalUploadImageUserProfile.vue'
 import ModalEditUser from '@/components/Modal/EditUser.vue'
 import ModalEditProfile from '@/components/Modal/EditProfile.vue'
+import Modal from '@/components/Tailwind/Modal.vue'
 import CardContactProfile from '@/components/CardContactProfile.vue'
+
 
 const route = useRoute()
 const profile = ref(null)
@@ -94,8 +99,6 @@ const { apiGetDashboardProfile } = useStoreUserProfile()
 
 onMounted(async () => {
   profile.value = await apiGetDashboardProfile(route.params.id)
-
-  console.log('dashboard profile', profile.value)
   userStatus.value = await apiGetUserStatus()
 })
 

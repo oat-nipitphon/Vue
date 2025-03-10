@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia'
 import { useAuthStore } from '@/stores/auth'
 import { usePostStore } from '@/stores/post'
 import defaultImage from '@/assets/icon/icon-user-default.png'
+import QuickViewProfileCard from '@/components/QuickViewProfileCard.vue';
 const authStore = useAuthStore()
 const { storeUser } = storeToRefs(authStore)
 const props = defineProps({
@@ -114,11 +115,12 @@ onMounted(async () => {
               <figcaption class="flex items-start justify-start ml-5 mt-3">
                 <div v-for="(image, index) in post.userImage" :key="index">
                   <div v-if="image.imageData !== null">
-                    <img
+                    <!-- <img
                       class="size-8 rounded-full"
                       :src="'data:image/png;base64,' + image.imageData"
                       alt=""
-                    />
+                    /> -->
+                    <QuickViewProfileCard :imageProfile="'data:image/png;base64,' + image.imageData" />
                   </div>
                   <div v-else>
                     <img

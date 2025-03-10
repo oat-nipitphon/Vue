@@ -25,6 +25,8 @@ import CreatePostNewView from '@/views/USER/Posts/CreatePostNewView.vue'
 import EditPostView from '@/views/USER/Posts/EditPostView.vue'
 import ReportRecoverPostsView from '@/views/USER/Posts/ReportRecoverPostsView.vue';
 
+// *********** Reward **************
+import DashboardRewardView from '@/views/Reward/DashboardRewardView.vue'
 
 
 const router = createRouter({
@@ -108,6 +110,16 @@ const router = createRouter({
       component: ReportRecoverPostsView,
       meta: { auth: true }
     },
+
+    
+    // ************ Reward *****************
+    {
+      path: '/reward/DashboardRewardView',
+      name: 'DashboardRewardView',
+      component: DashboardRewardView,
+      meta: { auth: true }
+    },
+
 
 
     //  ------------------------------ Zone ADMIN Views ---------------------------------------------

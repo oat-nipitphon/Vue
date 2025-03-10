@@ -9,7 +9,7 @@ const { apiStoreLogout } = useAuthStore()
 const authStore = useAuthStore()
 // console.log("navbar", authStore.storeUser.user_login.userStatus.status_name);
 const isAdmin = computed(() => {
-  return authStore.storeUser.user_login.userStatus.status_name === "admin"
+  return authStore.storeUser.user_login.userStatus.status_name === 'admin'
 })
 
 const isActive = name => (route.name === name ? 'page' : null)
@@ -60,7 +60,7 @@ const onAdminManager = () => {
   isMobileDropdownOpen.value = false
 }
 
-const onUserProfile = async () => {
+const onDashboardProfile = async () => {
   router.push({
     name: 'DashboardProfile',
     params: { id: authStore.storeUser.user_login.id },
@@ -72,6 +72,13 @@ const onRecoverPost = async () => {
   router.push({
     name: 'ReportRecoverPostsView',
     params: { userID: authStore.storeUser.user_login.id },
+  })
+  isMobileDropdownOpen.value = false
+}
+
+const onReward = async () => {
+  router.push({
+    name: 'DashboardRewardView',
   })
   isMobileDropdownOpen.value = false
 }
@@ -94,6 +101,7 @@ const onLogout = async () => {
             <!-- Image icon tailwind -->
             <div class="shrink-0">
               <img
+                @click="onHome"
                 class="size-8"
                 src="../assets/icon/tailwind.png"
                 alt="Your Company"
@@ -110,12 +118,23 @@ const onLogout = async () => {
                 Default:   "text-gray-300 hover:bg-gray-700 hover:text-white"
                             "ml-10 flex items-baseline space-x-4"
                  -->
-                <RouterLink
+                <!-- <RouterLink
                   :aria-current="isActive('DashboardView')"
                   :class="navClass('DashboardView')"
                   :to="{ name: 'DashboardView' }"
                 >
-                  หน้าหลัก
+                  Home
+                </RouterLink> -->
+
+                <RouterLink
+                  :aria-current="isActive('ReportRecoverPostsView')"
+                  :class="navClass('ReportRecoverPostsView')"
+                  :to="{
+                    name: 'ReportRecoverPostsView',
+                    params: { userID: authStore.storeUser.user_login.id },
+                  }"
+                >
+                  Recover Post
                 </RouterLink>
 
                 <RouterLink
@@ -126,18 +145,17 @@ const onLogout = async () => {
                     params: { id: authStore.storeUser.user_login.id },
                   }"
                 >
-                  โปรไฟล์
+                  Dashboard Profile
                 </RouterLink>
 
                 <RouterLink
-                  :aria-current="isActive('ReportRecoverPostsView')"
-                  :class="navClass('ReportRecoverPostsView')"
+                  :aria-current="isActive('DashboardRewardView')"
+                  :class="navClass('DashboardRewardView')"
                   :to="{
-                    name: 'ReportRecoverPostsView',
-                    params: { userID: authStore.storeUser.user_login.id },
+                    name: 'DashboardRewardView',
                   }"
                 >
-                  กู้คืนโพสจัดเก็บ
+                  Dashboard Reward
                 </RouterLink>
 
                 <RouterLink
@@ -146,7 +164,7 @@ const onLogout = async () => {
                   :to="{ name: 'AdminDashboardView' }"
                   v-if="isAdmin"
                 >
-                  แผงควบคุมผู้ดูแล
+                  Dashboard Admin
                 </RouterLink>
               </div>
             </div>
@@ -181,7 +199,7 @@ const onLogout = async () => {
               <!-- Profile dropdown -->
               <div class="relative ml-3">
                 <!-- Button image profile dropdown -->
-                
+
                 <div
                   class="text-white text-center"
                   v-for="(image, index) in authStore.storeUser.user_login
@@ -201,7 +219,7 @@ const onLogout = async () => {
                       <span class="sr-only">Open user menu</span>
                       <img
                         class="size-8 rounded-full"
-                        :src="'data:image/png;base64,'+image.imageData"
+                        :src="'data:image/png;base64,' + image.imageData"
                         alt=""
                       />
                     </button>
@@ -244,43 +262,52 @@ const onLogout = async () => {
                 -->
 
                   <!-- Active: "bg-gray-100 outline-none", Not Active: "" -->
-                  <RouterLink
-                    class="block px-4 py-2 text-sm text-gray-700"
-                    :to="{
-                      name: 'UserProfileDashboardView',
-                      params: {
-                        id: authStore.storeUser.user_login.id,
-                      },
-                    }"
+                  <!-- <span
+                    class="block px-4 py-2 text-sm text-gray-700 btn btn-sm"
+                    @click="onHome"
+                    >Home</span
+                  > -->
+                  <span
+                    class="block px-4 py-2 text-sm text-gray-700 btn btn-sm"
+                    @click="onAdminManager"
+                    v-if="isAdmin"
                   >
-                    User Profile
-                  </RouterLink>
-                  <RouterLink
-                    class="block px-4 py-2 text-sm text-gray-700"
-                    :to="{
-                      name: 'ReportRecoverPostsView',
-                      params: {
-                        userID: authStore.storeUser.user_login.id,
-                      },
-                    }"
+                    Dashboard Admin
+                  </span>
+                  <span
+                    class="block px-4 py-2 text-sm text-gray-700 btn btn-sm"
+                    @click="onDashboardProfile"
+                    >Dashboard Profile</span
                   >
-                    Recover post
-                  </RouterLink>
-                  <a
+
+                  <span
+                    class="block px-4 py-2 text-sm text-gray-700 btn btn-sm"
+                    @click="onReward"
+                  >
+                    Dashboard Reward
+                  </span>
+
+                  <span
+                    class="block px-4 py-2 text-sm text-gray-700 btn btn-sm"
+                    @click="onRecoverPost"
+                    >Recover Post</span
+                  >
+
+                  <span
+                    class="block px-4 py-2 text-sm text-gray-700 btn btn-sm"
+                    @click="onLogout"
+                  >
+                    Logout
+                  </span>
+
+                  <!-- <a
                     href="#"
                     class="block px-4 py-2 text-sm text-gray-700"
                     role="menuitem"
                     tabindex="-1"
                     id="user-menu-item-1"
                     >Settings</a
-                  >
-                  <button
-                    type="submit"
-                    class="block px-4 py-2 text-sm text-gray-700 btn btn-sm"
-                    @click="onLogout"
-                  >
-                    Logout
-                  </button>
+                  > -->
                 </div>
               </div>
             </div>
@@ -352,7 +379,6 @@ const onLogout = async () => {
                       .userImage"
                     :key="index"
                   >
-                    111
                     <p v-if="image.imageData">
                       <img
                         :src="'data:image/png;base64,' + image.imageData"
@@ -373,34 +399,33 @@ const onLogout = async () => {
                 </div>
               </div>
               <div class="mt-3 space-y-1 px-2">
+                <!-- <span
+                  class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                  @click="onHome"
+                  >Home</span
+                > -->
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                   @click="onAdminManager"
                   v-if="isAdmin"
                 >
-                  admin manager
+                  Dashboard Admin
                 </span>
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                  @click="onHome"
-                  >home</span
-                >
-
-                <span
-                  class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                  @click="onUserProfile"
-                  >profile</span
+                  @click="onDashboardProfile"
+                  >Dashboard Profile</span
                 >
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                   @click="onRecoverPost"
-                  >recover post</span
+                  >Recover Post</span
                 >
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                   @click="onLogout"
                 >
-                  logout
+                  Logout
                 </span>
               </div>
             </div>
