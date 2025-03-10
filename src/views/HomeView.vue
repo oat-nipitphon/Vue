@@ -15,7 +15,7 @@
     <div class="row mt-10">
       <div class="flex justify-center">
         <article class="prose mt-10">
-        <h1>เก็บรายละเอียด</h1>
+        <h1>เก็บรายละเอียด *** ยังไม่ merge ไปเก็บไว้ master นะ</h1>
         <h3>view dashboard profile</h3>
         <p>- ปรับแต่ง contact profile </p>
         <p>- remove contact profile</p>
