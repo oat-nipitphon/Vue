@@ -4,10 +4,78 @@ import { RouterLink } from 'vue-router'
 import { useRewardStore } from '@/stores/reward'
 import { storeToRefs } from 'pinia'
 import { ToggleButton } from 'vue-js-toggle-button'
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
+import ShoppingCard from '@/components/Reward/ShoppingCard.vue'
+import RewardStore from '@/components/Reward/RewardStore.vue'
+const items = [
+  {
+    id: 1,
+    title: 'Back End Developer',
+    department: 'Engineering',
+    type: 'Full-time',
+    location: 'Remote',
+  },
+  {
+    id: 2,
+    title: 'Front End Developer',
+    department: 'Engineering',
+    type: 'Full-time',
+    location: 'Remote',
+  },
+  {
+    id: 3,
+    title: 'User Interface Designer',
+    department: 'Design',
+    type: 'Full-time',
+    location: 'Remote',
+  },
+]
 
 import EditRewardView from '@/views/Reward/EditRewardView.vue'
 import ModalShowRewardDetail from '@/components/Tailwind/ModalShowRewardDetail.vue'
-
+const products = [
+  {
+    id: 1,
+    name: 'Earthen Bottle',
+    href: '#',
+    price: '$48',
+    imageSrc:
+      'https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-01.jpg',
+    imageAlt:
+      'Tall slender porcelain bottle with natural clay textured body and cork stopper.',
+  },
+  {
+    id: 2,
+    name: 'Nomad Tumbler',
+    href: '#',
+    price: '$35',
+    imageSrc:
+      'https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-02.jpg',
+    imageAlt:
+      'Olive drab green insulated bottle with flared screw lid and flat top.',
+  },
+  {
+    id: 3,
+    name: 'Focus Paper Refill',
+    href: '#',
+    price: '$89',
+    imageSrc:
+      'https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-03.jpg',
+    imageAlt:
+      'Person using a pen to cross a task off a productivity paper card.',
+  },
+  {
+    id: 4,
+    name: 'Machined Mechanical Pencil',
+    href: '#',
+    price: '$35',
+    imageSrc:
+      'https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-04.jpg',
+    imageAlt:
+      'Hand holding black machined steel mechanical pencil with brass tip and top.',
+  },
+  // More products...
+]
 const rewardStore = useRewardStore()
 const { rewards } = storeToRefs(rewardStore)
 const { deleteReward } = useRewardStore()
@@ -19,143 +87,135 @@ onMounted(async () => {
 const toggleStatus = reward => {
   reward.status = reward.status === 'true' ? 'false' : 'Active'
 }
-
 </script>
 
 <template>
   <div class="container mx-auto p-6">
-    <div class="flex justify-between items-center mb-4">
-      <h1 class="text-2xl font-semibold text-gray-800">Rewards List</h1>
-      <RouterLink
-        :to="{ name: 'NewRewardView' }"
-        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-      >
-        + New Reward
-      </RouterLink>
+    <div>
+      <RewardStore />
     </div>
+    <div>
+      <ShoppingCard />
+    </div>
+    <div class="bg-white">
+      <div
+        class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8"
+      >
+        <h2 class="sr-only">Products</h2>
 
-    <div class="bg-white shadow-lg rounded-lg p-4">
-      <table class="w-full border-collapse">
-        <thead>
-          <tr class="bg-gray-200 text-gray-700 uppercase text-sm font-semibold">
-            <th class="py-3 px-4 text-center font-bold">ID</th>
-            <th class="py-3 px-4 text-center font-bold">Image</th>
-            <th class="py-3 px-4 text-center font-bold">Name</th>
-            <th class="py-3 px-4 text-center font-bold">Point</th>
-            <th class="py-3 px-4 text-center font-bold">Status</th>
-            <th class="py-3 px-4 text-center font-bold">Quantity</th>
-            <th class="py-3 px-4 text-center font-bold">Event</th>
-          </tr>
-        </thead>
-        <tbody v-if="Array.isArray(rewards) && rewards.length > 0">
-          <tr
-            v-for="(reward, index) in rewards"
-            :key="reward.id"
-            class="border-b hover:bg-gray-100"
+        <div
+          class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8"
+        >
+          <a
+            v-for="product in products"
+            :key="product.id"
+            :href="product.href"
+            class="group"
           >
-            <td class="py-3 px-4">{{ index }}</td>
-            <td class="py-3 px-4">
-              <p v-for="image in reward.rewardImage" :key="image.id">
-                <img
-                  v-if="image.image_data"
-                  :src="image.image_data"
-                  class="size-10 rounded-lg m-auto"
-                  alt="ImageReward"
-                />
-                <img
-                  v-else
-                  src="https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg"
-                  alt="ImageReward"
-                />
-              </p>
-            </td>
-            <td class="py-3 px-4">{{ reward.name }}</td>
-            <td class="py-3 px-4">{{ reward.point }}</td>
-            <td class="py-3 px-4">
-              <button
-                @click="toggleStatus(reward)"
-                class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
-                :class="
-                  reward.status === 'true' ? 'text-green-600' : 'text-red-600'
-                "
-              >
-                Swit
-                {{ reward.status === 'true' ? 'true' : 'false' }}
-              </button>
-            </td>
-            <td class="py-3 px-4">{{ reward.quantity }}</td>
-            <td class="py-3 px-4 text-center">
-              <div class="dropdown">
-                <button
-                  class="btn btn-sm btn-secondary dropdown-toggle w-full"
-                  type="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Event
-                </button>
-                <ul class="dropdown-menu w-full">
-                  <!-- <li class="dropdown-item">
-                    <toggle-button @change="onChangeEventHandler" />
-
-                    <toggle-button v-model="myDataVariable" />
-
-                    <toggle-button
-                      :value="false"
-                      color="#82C7EB"
-                      :sync="true"
-                      :labels="true"
-                    />
-
-                    <toggle-button
-                      :value="true"
-                      :labels="{ checked: 'Foo', unchecked: 'Bar' }"
-                    />
-                  </li> -->
-                  <li class="dropdown-item">
-                    <button
-                      @click="toggleStatus(reward)"
-                      class="block w-full text-center px-4 py-2 text-sm hover:bg-gray-200"
-                      :class="
-                        reward.status === 'true'
-                          ? 'text-green-600'
-                          : 'text-red-600'
-                      "
-                    >
-                      Switch {{ reward.status === 'true' ? 'true' : 'false' }}
-                    </button>
-                  </li>
-                  <li class="dropdown-item">
-                    <button class="btn btn-primary w-full text-center">
-                      Show
-                    </button>
-                  </li>
-                  <li class="dropdown-item">
-                    <button class="btn btn-warning w-full text-center">
-                      Edit
-                    </button>
-                  </li>
-                  <li class="dropdown-item">
-                    <button class="btn btn-danger w-full text-center" type="submit" @click="deleteReward(reward.id)">
-                      Delete
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-        <tbody v-else>
-          <tr>
-            <td
-              colspan="7"
-              class="py-4 text-center text-lg text-red-500 font-bold"
+            <img
+              :src="product.imageSrc"
+              :alt="product.imageAlt"
+              class="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75 xl:aspect-7/8"
+            />
+            <h3 class="mt-4 text-sm text-gray-700">{{ product.name }}</h3>
+            <p class="mt-1 text-lg font-medium text-gray-900">
+              {{ product.price }}
+            </p>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div
+      class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
+    >
+      <div class="flex flex-1 justify-between sm:hidden">
+        <a
+          href="#"
+          class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          >Previous</a
+        >
+        <a
+          href="#"
+          class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          >Next</a
+        >
+      </div>
+      <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+        <div>
+          <p class="text-sm text-gray-700">
+            Showing
+            {{ ' ' }}
+            <span class="font-medium">1</span>
+            {{ ' ' }}
+            to
+            {{ ' ' }}
+            <span class="font-medium">10</span>
+            {{ ' ' }}
+            of
+            {{ ' ' }}
+            <span class="font-medium">97</span>
+            {{ ' ' }}
+            results
+          </p>
+        </div>
+        <div>
+          <nav
+            class="isolate inline-flex -space-x-px rounded-md shadow-xs"
+            aria-label="Pagination"
+          >
+            <a
+              href="#"
+              class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
             >
-              No rewards available
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              <span class="sr-only">Previous</span>
+              <ChevronLeftIcon class="size-5" aria-hidden="true" />
+            </a>
+            <!-- Current: "z-10 bg-indigo-600 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" -->
+            <a
+              href="#"
+              aria-current="page"
+              class="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >1</a
+            >
+            <a
+              href="#"
+              class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+              >2</a
+            >
+            <a
+              href="#"
+              class="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex"
+              >3</a
+            >
+            <span
+              class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-gray-300 ring-inset focus:outline-offset-0"
+              >...</span
+            >
+            <a
+              href="#"
+              class="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex"
+              >8</a
+            >
+            <a
+              href="#"
+              class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+              >9</a
+            >
+            <a
+              href="#"
+              class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+              >10</a
+            >
+            <a
+              href="#"
+              class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+            >
+              <span class="sr-only">Next</span>
+              <ChevronRightIcon class="size-5" aria-hidden="true" />
+            </a>
+          </nav>
+        </div>
+      </div>
     </div>
   </div>
 </template>

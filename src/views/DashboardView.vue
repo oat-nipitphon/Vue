@@ -6,6 +6,8 @@ import { useAuthStore } from '@/stores/auth'
 import { usePostStore } from '@/stores/post'
 import defaultImage from '@/assets/icon/icon-user-default.png'
 import QuickViewProfileCard from '@/components/QuickViewProfileCard.vue';
+
+
 const authStore = useAuthStore()
 const { storeUser } = storeToRefs(authStore)
 const props = defineProps({

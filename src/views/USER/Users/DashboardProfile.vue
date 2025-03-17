@@ -5,26 +5,42 @@
       v-if="profile"
     >
       <!-- Profile Image -->
-      <div class="flex flex-col items-center">
-        <div v-if="profile?.userImage.length" class="mb-4">
-          <img
-            :src="'data:image/png;base64,' + profile.userImage[0].imageData"
-            class="w-40 h-40 md:w-48 md:h-48 rounded-full border-4 border-gray-400 shadow-lg object-cover"
-            alt="User Profile"
-          />
+      <div class="bg-green-100">
+        <div class="flex justify-center">
+          <div v-if="profile?.userImage.length" class="mb-4 mt-4">
+            <img
+              :src="'data:image/png;base64,' + profile.userImage[0].imageData"
+              class="w-40 h-40 md:w-48 md:h-48 rounded-full border-4 border-gray-400 shadow-lg object-cover"
+              alt="User Profile"
+            />
+            <div class="flex justify-end">
+              <ModalUploadImageUserProfile />
+            </div>
+          </div>
         </div>
-        <ModalUploadImageUserProfile />
       </div>
 
-      <!-- User Info -->
-      <div class="mt-4 text-center">
-        <h2 class="text-xl font-semibold">{{ profile.username }}</h2>
-        <p class="text-gray-600">{{ profile.email }}</p>
-        <div class="flex justify-center items-center gap-2 mt-2">
-          <span class="font-semibold">Status:</span>
-          <span class="text-blue-500">{{ profile.userStatus.statusName }}</span>
-        </div>
-        <div class="mt-2 flex justify-end mr-5">
+      <!-- User Point -->
+      <div class="bg-white mt-3 p-2 rounded-lg">
+        <CardUserPoint :profile="profile" />
+      </div>
+
+      <!-- User Detail -->
+      <div class="mt-6 bg-gray-100 p-2 rounded-lg">
+        <div class="p-3">
+          <h2 class="text-xl font-semibold">{{ profile.username }}</h2>
+
+          <div class="grid grid-cols-2">
+            <div>
+              <p class="font-semibold">Status:</p>
+              <p class="text-blue-500">{{
+                profile.userStatus.statusName
+              }}</p>
+            </div>
+            <div>
+              <p class="text-gray-600">{{ profile.email }}</p>
+            </div>
+          </div>
           <ModalEditUser :user="profile" :userStatus="userStatus" />
         </div>
       </div>
@@ -34,27 +50,33 @@
         <h3 class="text-lg font-semibold text-gray-700 p-2">
           Personal Information
         </h3>
-        <div class="grid grid-cols-2 gap-2 mt-3">
-          <div class="text-gray-500 text-center">Full Name:</div>
-          <div class="text-gray-700">
-            {{ profile.userProfile.titleName }}
-            {{ profile.userProfile.fullName }}
+        <div>
+          <div class="grid grid-cols-[30%_auto] gap-2 mt-3">
+            <div class="text-gray-500 text-right">Full Name:</div>
+            <div class="text-gray-700">
+              {{ profile.userProfile.titleName }}
+              {{ profile.userProfile.fullName }}
+            </div>
+
+            <div class="text-gray-500 text-right">Nickname:</div>
+            <div class="text-gray-700">
+              {{ profile.userProfile.nickName }}
+            </div>
+
+            <div class="text-gray-500 text-right">Phone:</div>
+            <div class="text-gray-700">
+              {{ profile.userProfile.telPhone }}
+            </div>
+
+            <div class="text-gray-500 text-right">Birthday:</div>
+            <div class="text-gray-700">{{ formatBirthDay }}</div>
+
+            <div class="text-gray-500 text-right">Age:</div>
+            <div class="text-gray-700">{{ formatAge }}</div>
           </div>
-
-          <div class="text-gray-500 text-center">Nickname:</div>
-          <div class="text-gray-700">{{ profile.userProfile.nickName }}</div>
-
-          <div class="text-gray-500 text-center">Phone:</div>
-          <div class="text-gray-700">{{ profile.userProfile.telPhone }}</div>
-
-          <div class="text-gray-500 text-center">Birthday:</div>
-          <div class="text-gray-700">{{ formatBirthDay }}</div>
-
-          <div class="text-gray-500 text-center">Age:</div>
-          <div class="text-gray-700">{{ formatAge }}</div>
-        </div>
-        <div class="flex justify-end mt-3">
-          <ModalEditProfile :profile="profile.userProfile" />
+          <div class="flex justify-end mt-3">
+            <ModalEditProfile :profile="profile.userProfile" />
+          </div>
         </div>
       </div>
 
@@ -62,18 +84,21 @@
       <div class="bg-white mt-3 p-2 rounded-lg">
         <h3 class="text-lg font-semibold text-gray-700 p-2">Contact</h3>
         <div>
-          <CardContactProfile :profileID="profile.userProfile.id" :contact="profile.profileContact"/>
+          <CardContactProfile
+            :profileID="profile.userProfile.id"
+            :contact="profile.profileContact"
+          />
         </div>
       </div>
     </div>
-    <div
+    <!-- <div
       class="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-5"
       v-else
     >
       <label class="m-auto font-bold text-5xl text-red-500">
         User profile information is empty.
       </label>
-    </div>
+    </div> -->
   </div>
 </template>
 <script setup>
@@ -84,9 +109,8 @@ import { useAuthStore } from '@/stores/auth'
 import ModalUploadImageUserProfile from '@/components/ModalUploadImageUserProfile.vue'
 import ModalEditUser from '@/components/Modal/EditUser.vue'
 import ModalEditProfile from '@/components/Modal/EditProfile.vue'
-import Modal from '@/components/Tailwind/Modal.vue'
 import CardContactProfile from '@/components/CardContactProfile.vue'
-
+import CardUserPoint from '@/components/UserPoint/CardUserPoint.vue'
 
 const route = useRoute()
 const profile = ref(null)

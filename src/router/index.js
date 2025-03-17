@@ -13,6 +13,7 @@ import AdminDashboardView from '@/views/ADMIN/AdminDashboardView.vue'
 import AdminManagerPostView from '@/views/ADMIN/Posts/AdminManagerPostView.vue'
 import AdminManagerUserProfileView from '@/views/ADMIN/USER/AdminManagerUserProfileView.vue'
 import AdminGetUserProfileEdit from '@/views/ADMIN/USER/AdminGetUserProfileEdit.vue'
+import AdminManagerReward from '@/views/ADMIN/Reward/AdminManagerReward.vue'
 
 // --------------------------------- Zone USER -------------------------------------------------
 // ******** User Profiles **********
@@ -136,6 +137,7 @@ const router = createRouter({
     },
 
 
+
     //  ------------------------------ Zone ADMIN Views ---------------------------------------------
  
     {
@@ -160,6 +162,13 @@ const router = createRouter({
       path: '/admin/userProfiles/manager/:userProfileID',
       name: 'AdminGetUserProfileEdit',
       component: AdminGetUserProfileEdit,
+      meta: { auth: true }
+    },
+
+    {
+      path: '/reward/AdminManagerReward',
+      name: 'AdminManagerReward',
+      component: AdminManagerReward,
       meta: { auth: true }
     },
 
