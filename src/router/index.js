@@ -27,7 +27,8 @@ import ReportRecoverPostsView from '@/views/USER/Posts/ReportRecoverPostsView.vu
 
 // *********** Reward **************
 import DashboardRewardView from '@/views/Reward/DashboardRewardView.vue'
-
+import EditRewardView from '@/views/Reward/EditRewardView.vue'
+import NewRewardView from '@/views/Reward/NewRewardView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -120,6 +121,19 @@ const router = createRouter({
       meta: { auth: true }
     },
 
+    {
+      path: '/new/reward',
+      name: 'NewRewardView',
+      component: NewRewardView,
+      meta: { auth: true }
+    },
+
+    {
+      path: '/reward/update/:id',
+      name: 'EditRewardView',
+      component: EditRewardView,
+      meta: { auth: true }
+    },
 
 
     //  ------------------------------ Zone ADMIN Views ---------------------------------------------

@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="row mt-10">
-      <div class="col-md-6 flex justify-center">
+      <!-- <div class="col-md-6 flex justify-center">
         <img
           class="icon-laravel"
           src="../assets/icon/laravel.png"
@@ -10,21 +10,19 @@
       </div>
       <div class="col-md-6 flex justify-center">
         <img class="icon-vue" src="../assets/icon/vue.png" alt="icon-vue" />
-      </div>
+      </div> -->
     </div>
-    <div class="row mt-10">
-      <div class="flex justify-center">
-        <article class="prose mt-10">
-        <h1>เก็บรายละเอียด *** ยังไม่ merge ไปเก็บไว้ master นะ</h1>
-        <h3>view dashboard profile</h3>
-        <p>- ปรับแต่ง contact profile </p>
-        <p>- remove contact profile</p>
-      </article>
-      </div>
+    <div class="m-auto">
+      <FormLogin />
     </div>
   </div>
 </template>
+<script setup>
+import FormLogin from '@/components/auth/FormLogin.vue';
 
+
+
+</script>
 <style scoped>
 .icon-laravel {
   width: 250px;

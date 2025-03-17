@@ -74,9 +74,6 @@
         User profile information is empty.
       </label>
     </div>
-    <div class="max-w-md m-auto p-4">
-      <Modal />
-    </div>
   </div>
 </template>
 <script setup>
