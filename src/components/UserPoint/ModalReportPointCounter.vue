@@ -12,7 +12,7 @@ const props = defineProps({
       data-bs-toggle="modal"
       data-bs-target="#staticBackdrop"
     >
-      show
+      Show report point
     </button>
 
     <!-- Modal -->

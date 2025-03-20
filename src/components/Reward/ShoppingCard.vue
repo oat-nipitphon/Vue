@@ -1,13 +1,20 @@
 <template>
   <div>
-    <div class="flex justify-end">
-      <button
-        type="button"
-        class="btn btn-sm btn-outline-primary"
-        @click="toggleEvent"
-      >
-        show
-      </button>
+    <div class="">
+      <p @click="toggleEvent" class="group -m-2 flex items-center p-2 mr-12">
+        <ShoppingBagIcon
+          class="size-6 shrink-0 text-gray-400 group-hover:text-gray-500"
+          aria-hidden="true"
+        />
+        <span
+          class="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800 font-blod"
+        >
+          <!-- Number counter rewards -->
+          99+
+        </span>
+
+        <span class="sr-only">items in cart, view bag</span>
+      </p>
     </div>
     <TransitionRoot as="template" :show="open">
       <Dialog class="relative z-10" @close="open = open">
@@ -201,6 +208,10 @@ const products = [
   },
   // More products...
 ]
+
+const props = defineProps({
+  isEventOpen: String,
+})
 
 const open = ref(false)
 const toggleEvent = () => {

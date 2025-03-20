@@ -1,56 +1,37 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRewardStore } from '@/stores/reward'
 import axiosAPI from '@/services/axiosAPI'
 const router = useRouter()
-const { newReward } = useRewardStore()
+const { newReward, updateReward } = useRewardStore()
 
-const form = ref({
-  name: '',
-  point: '',
-  quantity: '',
-  type: 'reward',
-  status: 'true',
-})
+const props = defineProps({
+    rewards: Object
+});
+console.log("Edit reward ", props.rewards);
 
-const imageFile = ref(null)
-const imageUrl = ref(null)
+const form = reactive({
+    id: '',
+    name: '',
+    point: '',
+    amount: '',
+    type: '',
+    status: '',
+});
 
-const onSelectFileImage = event => {
-  imageFile.value = event.target.files[0]
-  imageUrl.value = URL.createObjectURL(imageFile.value)
-}
+const imageFile = ref(null);
+const imageUrl = ref(null);
 
-const onSave = async () => {
-  const formData = new FormData()
-  formData.append('name', form.value.name)
-  formData.append('point', form.value.point)
-  formData.append('quantity', form.value.quantity)
-  formData.append('type', form.value.type)
-  formData.append('status', form.value.status)
-  if (imageFile.value) {
-    formData.append('imageFile', imageFile.value)
-  }
-
-  const response = await axiosAPI.post(`/api/reward/newRewards`, formData, {
-    headers: {
-      'Content-Type': 'muitipart/form-data',
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-    },
-  })
-
-  router.push({ name: 'DashboardRewardView' })
-
-}
 </script>
 <template>
   <div>
     <div class="container"></div>
     <div class="w-full max-w-lg m-auto mt-10">
       <div class="bg-white mt-10 shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <div class="w-full">
+        <div class="w-full" v-for="reward in props.rewards" :key="reward.id">
           <!-- <form @submit.prevent="newReward(form)"> -->
+            <input type="text"  v-model="form.id">
             <div class="mt-5">
               <label
                 class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -60,6 +41,7 @@ const onSave = async () => {
               </label>
               <input
                 v-model="form.name"
+                
                 class="appearance-none block w-full text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                 id="grid-city"
                 type="text"
@@ -84,10 +66,10 @@ const onSave = async () => {
                 class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                 for="grid-city"
               >
-                Quantity:
+                Amount:
               </label>
               <input
-                v-model="form.quantity"
+                v-model="form.amount"
                 class="appearance-none block w-full text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                 id="grid-city"
                 type="text"
@@ -149,8 +131,8 @@ const onSave = async () => {
               </div>
             </div>
             <div class="mt-5">
-              <button @click="onSave" class="btn btn-sm btn-primary">
-                save
+              <button @click="onUpdate" class="btn btn-sm btn-primary">
+                update
               </button>
             </div>
           <!-- </form> -->

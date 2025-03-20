@@ -5,31 +5,43 @@ import HomeView from '../views/HomeView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import LoginView from '@/views/LoginView.vue'
 import ForgetYourPasswordView from '@/views/ForgetYourPasswordView.vue'
-
 import DashboardView from '@/views/DashboardView.vue'
 
 // --------------------------------- Zone ADMIN ------------------------------------------------
+
+//  User Profiles 
 import AdminDashboardView from '@/views/ADMIN/AdminDashboardView.vue'
-import AdminManagerPostView from '@/views/ADMIN/Posts/AdminManagerPostView.vue'
 import AdminManagerUserProfileView from '@/views/ADMIN/USER/AdminManagerUserProfileView.vue'
+
+
+//  Posts 
 import AdminGetUserProfileEdit from '@/views/ADMIN/USER/AdminGetUserProfileEdit.vue'
+import AdminManagerPostView from '@/views/ADMIN/Posts/AdminManagerPostView.vue'
+
+
+//  Reward 
 import AdminManagerReward from '@/views/ADMIN/Reward/AdminManagerReward.vue'
+import AdminEditRewardView from '@/views/ADMIN/Reward/AdminEditRewardView.vue'
+import AdminNewRewardView from '@/views/ADMIN/Reward/AdminNewRewardView.vue'
+
 
 // --------------------------------- Zone USER -------------------------------------------------
-// ******** User Profiles **********
-import DashboardProfile from '@/views/USER/Users/DashboardProfile.vue'
-import UserProfileDashboardView from '@/views/USER/Users/UserProfileDashboardView.vue'
 
-// ******** Posts *************
-import DetailPostView from '@/views/USER/Posts/DetailPostView.vue'
+
+//  User Profiles 
+import DashboardProfile from '@/views/USER/Users/DashboardProfile.vue'
+
+//  Posts 
 import CreatePostNewView from '@/views/USER/Posts/CreatePostNewView.vue'
 import EditPostView from '@/views/USER/Posts/EditPostView.vue'
+import DetailPostView from '@/views/USER/Posts/DetailPostView.vue'
 import ReportRecoverPostsView from '@/views/USER/Posts/ReportRecoverPostsView.vue';
 
-// *********** Reward **************
+
+//  Reward 
 import DashboardRewardView from '@/views/Reward/DashboardRewardView.vue'
-import EditRewardView from '@/views/Reward/EditRewardView.vue'
-import NewRewardView from '@/views/Reward/NewRewardView.vue'
+
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -62,7 +74,6 @@ const router = createRouter({
       component: ForgetYourPasswordView,
       meta: { guest: true }
     },
-
     {
       path: '/DashboardView',
       name: 'DashboardView',
@@ -70,30 +81,17 @@ const router = createRouter({
       meta: { auth: true }
     },
 
-    //  ----------------------------- Zone USER Views  ---------------------------------------------
-    
-    // ******* User Profiles **********
+
+    // User Profile
     {
       path: '/user_profiles/show/:id',
       name: 'DashboardProfile',
       component: DashboardProfile,
       meta: { auth: true }
     },
-    {
-      path: '/user_profiles/show/:id',
-      name: 'UserProfileDashboardView',
-      component: UserProfileDashboardView,
-      meta: { auth: true }
-    },
 
-    // ******* Posts **************** 
 
-    {
-      path: '/DetailPostView',
-      name: 'DetailPostView',
-      component: DetailPostView,
-      meta: { auth: true }
-    },
+    // Post
     {
       path: '/CreatePostNewView',
       name: 'CreatePostNewView',
@@ -107,14 +105,20 @@ const router = createRouter({
       meta: { auth: true }
     },
     {
+      path: '/DetailPostView',
+      name: 'DetailPostView',
+      component: DetailPostView,
+      meta: { auth: true }
+    },
+    {
       path: '/posts/report_recover/:userID',
       name: 'ReportRecoverPostsView',
       component: ReportRecoverPostsView,
       meta: { auth: true }
     },
 
-    
-    // ************ Reward *****************
+
+    // Reward
     {
       path: '/reward/DashboardRewardView',
       name: 'DashboardRewardView',
@@ -122,36 +126,16 @@ const router = createRouter({
       meta: { auth: true }
     },
 
-    {
-      path: '/new/reward',
-      name: 'NewRewardView',
-      component: NewRewardView,
-      meta: { auth: true }
-    },
 
-    {
-      path: '/reward/update/:id',
-      name: 'EditRewardView',
-      component: EditRewardView,
-      meta: { auth: true }
-    },
-
-
-
-    //  ------------------------------ Zone ADMIN Views ---------------------------------------------
- 
+    // Admin Manager
     {
       path: '/AdminDashboardView',
       name: 'AdminDashboardView',
       component: AdminDashboardView,
       meta: { auth: true } 
     },
-    {
-      path: '/AdminManagerPostView',
-      name: 'AdminManagerPostView',
-      component: AdminManagerPostView,
-      meta: { auth: true }
-    },
+
+    // User Profile
     {
       path: '/AdminManagerUserProfileView',
       name: 'AdminManagerUserProfileView',
@@ -165,10 +149,31 @@ const router = createRouter({
       meta: { auth: true }
     },
 
+    // Post
+    {
+      path: '/AdminManagerPostView',
+      name: 'AdminManagerPostView',
+      component: AdminManagerPostView,
+      meta: { auth: true }
+    },
+
+    // Reward
     {
       path: '/reward/AdminManagerReward',
       name: 'AdminManagerReward',
       component: AdminManagerReward,
+      meta: { auth: true }
+    },
+    {
+      path: '/new/reward',
+      name: ' AdminNewRewardView',
+      component:  AdminNewRewardView,
+      meta: { auth: true }
+    },
+    {
+      path: '/reward/update/:id',
+      name: ' AdminEditRewardView',
+      component:  AdminEditRewardView,
       meta: { auth: true }
     },
 
