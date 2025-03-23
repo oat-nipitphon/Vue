@@ -1,10 +1,8 @@
 <script setup>
-import {
-  MagnifyingGlassIcon,
-  ShoppingBagIcon,
-} from '@heroicons/vue/24/outline'
+import { MagnifyingGlassIcon, ShoppingBagIcon } from '@heroicons/vue/24/outline'
 import axiosAPI from '@/services/axiosAPI'
 import { reactive, ref, onMounted, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '@/stores/auth'
 import { useRewardStore } from '@/stores/reward'
@@ -12,16 +10,20 @@ import { useRewardCartStore } from '@/stores/reward.cart'
 import CardReward from '@/components/Reward/CardReward.vue'
 import ModalShowCounter from '@/views/Reward/ModalShowCounter.vue'
 
+const router = useRouter()
 const authStore = useAuthStore()
 const { storeUser } = storeToRefs(authStore)
 const rewardStore = useRewardStore()
 const { storeRewards } = storeToRefs(rewardStore)
 const rewardCartStore = useRewardCartStore()
-const { counterItems, cartItemCounters, totalPoint } = storeToRefs(rewardCartStore)
+const { counterItems, cartItemCounters, totalPoint } =
+  storeToRefs(rewardCartStore)
 
 // แสดงแต้มสมาชิก
 const userPoint = ref(storeUser.value?.user_login?.userPoint?.point || 0)
-const userPointCounters = ref(storeUser.value?.user_login?.userPointCounters || [])
+const userPointCounters = ref(
+  storeUser.value?.user_login?.userPointCounters || []
+)
 
 // คำนวณจำนวนแต้มคงเหลือ
 const onUserAmount = computed(() => {
@@ -37,35 +39,42 @@ const mainForm = reactive({
 
 const submitReward = async () => {
   try {
+    const formData = new FormData()
+    formData.append('userID', mainForm.userID)
+    formData.append('totalPoint', mainForm.totalPoint)
+    formData.append('counterItems', JSON.stringify(mainForm.counterItems))
 
-    const formData = new FormData();
-    formData.append('userID', mainForm.userID);
-    formData.append('totalPoint', mainForm.totalPoint);
-    formData.append('counterItems', JSON.stringify(mainForm.counterItems));
+    // const res = await fetch('/api/cartItems/userConfirmSelectReward', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'multipart/form-data',
+    //     authorization: `Bearer ${localStorage.getItem('token')}`
+    //   },
+    //   body: formData
+    // });
 
-    const res = await fetch('/api/cartItems/userConfirmSelectReward', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        authorization: `Bearer ${localStorage.getItem('token')}`
-      },
-      body: formData,
-    });
+    const res = await axiosAPI.post(
+      `/api/cartItems/userConfirmSelectReward`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }
+    )
+    
+      const data = await res.json();
 
-    // const res = await axiosAPI.post(`/api/cartItems/userConfirmSelectReward`, form);
+      if (!res.ok) {
+        console.log('res data false',res );
+      }
 
-    const data = await res.json();
-
-    if (res.ok) {
-      console.log('insert cart items success.', data.counterItems);
-    } else {
-      console.log('insert cart items  false' , res.data);
-    }
-
+      console.log('res data true', data);
 
   } catch (error) {
     console.error('Error inserting reward:', error)
-    alert('Insert failed!')
+    // alert('Insert failed!')
   }
 }
 
@@ -84,8 +93,11 @@ onMounted(async () => {
         </a>
       </div>
       <div class="flex justify-end items-center">
-        <ShoppingBagIcon class="size-8 text-gray-400 group-hover:text-gray-500" aria-hidden="true" />
-        <span class="ml-3 text-2xl text-gray-900">{{ cartItemCouters }}</span>
+        <ShoppingBagIcon
+          class="size-8 text-gray-400 group-hover:text-gray-500"
+          aria-hidden="true"
+        />
+        <span class="ml-3 text-2xl text-gray-900">{{ cartItemCounters }}</span>
         <span class="ml-3 text-2xl text-gray-900">{{ totalPoint }}</span>
       </div>
     </div>
@@ -116,7 +128,11 @@ onMounted(async () => {
 
     <div class="flex justify-end">
       <div class="w-50 mr-5">
-        <button type="button" @click="submitReward" class="btn btn-md btn-outline-primary">
+        <button
+          type="button"
+          @click="submitReward"
+          class="btn btn-md btn-outline-primary"
+        >
           Confirm
         </button>
       </div>
