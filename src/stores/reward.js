@@ -3,7 +3,7 @@ import { useRouter } from 'vue-router'
 
 export const useRewardStore = defineStore('rewardStore', {
     state: () => ({
-        rewards: null,
+        storeRewards: null,
         errors: []
     }),
     actions: {
@@ -19,8 +19,7 @@ export const useRewardStore = defineStore('rewardStore', {
                 });
                 const data = await res.json();
                 if (res.ok) {
-                    this.rewards = data.rewards;
-                    console.log("store get reward res true", this.rewards);
+                    this.storeRewards = data.rewards;
                 } else {
                     console.log("store get reward res false", res);
                 }

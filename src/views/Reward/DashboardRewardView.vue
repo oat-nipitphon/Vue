@@ -1,78 +1,119 @@
 <script setup>
 import {
-  Dialog,
-  DialogPanel,
-  Popover,
-  PopoverButton,
-  PopoverGroup,
-  PopoverPanel,
-  Tab,
-  TabGroup,
-  TabList,
-  TabPanel,
-  TabPanels,
-  TransitionChild,
-  TransitionRoot,
-} from '@headlessui/vue'
-import {
-  Bars3Icon,
   MagnifyingGlassIcon,
   ShoppingBagIcon,
-  XMarkIcon,
 } from '@heroicons/vue/24/outline'
-
-import { ref, onMounted } from 'vue'
-import { useRoute, RouterLink, useRouter } from 'vue-router'
+import axiosAPI from '@/services/axiosAPI'
+import { reactive, ref, onMounted, computed } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useAuthStore } from '@/stores/auth'
 import { useRewardStore } from '@/stores/reward'
 import { useRewardCartStore } from '@/stores/reward.cart'
 import CardReward from '@/components/Reward/CardReward.vue'
+import ModalShowCounter from '@/views/Reward/ModalShowCounter.vue'
 
+const authStore = useAuthStore()
+const { storeUser } = storeToRefs(authStore)
 const rewardStore = useRewardStore()
-const { rewards } = storeToRefs(rewardStore)
-
-
+const { storeRewards } = storeToRefs(rewardStore)
 const rewardCartStore = useRewardCartStore()
-const { cartItemCounter } = storeToRefs(rewardCartStore)
+const { counterItems, cartItemCounters, totalPoint } = storeToRefs(rewardCartStore)
+
+// แสดงแต้มสมาชิก
+const userPoint = ref(storeUser.value?.user_login?.userPoint?.point || 0)
+const userPointCounters = ref(storeUser.value?.user_login?.userPointCounters || [])
+
+// คำนวณจำนวนแต้มคงเหลือ
+const onUserAmount = computed(() => {
+  return userPoint.value - totalPoint.value
+})
+
+// ฟอร์มสำหรับส่งข้อมูลแลกรางวัล
+const mainForm = reactive({
+  userID: storeUser.value?.user_login?.id,
+  totalPoint: totalPoint,
+  counterItems: counterItems,
+})
+
+const submitReward = async () => {
+  try {
+
+    const formData = new FormData();
+    formData.append('userID', mainForm.userID);
+    formData.append('totalPoint', mainForm.totalPoint);
+    formData.append('counterItems', JSON.stringify(mainForm.counterItems));
+
+    const res = await fetch('/api/cartItems/userConfirmSelectReward', formData, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        authorization: `Bearer ${localStorage.getItem('token')}`
+      },
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      console.log('insert cart items success.', data.counterItems);
+    } else {
+      console.log('insert cart items  false' , res.data);
+    }
+
+
+  } catch (error) {
+    console.error('Error inserting reward:', error)
+    alert('Insert failed!')
+  }
+}
 
 onMounted(async () => {
   await rewardStore.getRewards()
 })
-
-
 </script>
+
 <template>
-  <div class="bg-white container rounded-lg shadow-lg">
-    <!-- navbar right -->
+  <div class="bg-white container rounded-lg shadow-lg p-5">
+    <!-- Navbar -->
     <div class="grid grid-cols-2 mt-5">
-      <!-- Search -->
       <div class="flex justify-center">
         <a href="#" class="p-2 text-gray-400 hover:text-gray-500">
-          <span class="sr-only">Search</span>
           <MagnifyingGlassIcon class="size-7" aria-hidden="true" />
         </a>
       </div>
-
-      <!-- Cart icon shopping -->
-      <div class="flex justify-end">
-        <a href="#" class="group -m-2 flex items-center p-2 mr-12">
-          <ShoppingBagIcon
-            class="size-6 shrink-0 text-gray-400 group-hover:text-gray-500"
-            aria-hidden="true"
-          />
-          <span
-            class="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800 font-blod"
-          >
-            <!-- Number counter rewards -->
-            {{ cartItemCounter }}
-          </span>
-
-          <span class="sr-only">items in cart, view bag</span>
-        </a>
+      <div class="flex justify-end items-center">
+        <ShoppingBagIcon class="size-8 text-gray-400 group-hover:text-gray-500" aria-hidden="true" />
+        <span class="ml-3 text-2xl text-gray-900">{{ cartItemCouters }}</span>
+        <span class="ml-3 text-2xl text-gray-900">{{ totalPoint }}</span>
       </div>
     </div>
-    <div class="w-full">
-      <CardReward :rewards="rewards" />
+
+    <!-- รายละเอียดแต้มและรางวัล -->
+    <div class="grid grid-cols-2 gap-5 mt-5 text-2xl text-gray-900">
+      <div class="grid grid-cols-3">
+        <p class="m-auto">แต้มสมาชิก</p>
+        <p class="m-auto">{{ userPoint }}</p>
+        <p class="m-auto">Point</p>
+      </div>
+      <div class="grid grid-cols-3">
+        <p class="m-auto">จำนวนรางวัล</p>
+        <p class="m-auto"><ModalShowCounter :counterItems="counterItems" /></p>
+        <p class="m-auto">รายการ</p>
+      </div>
+      <div class="grid grid-cols-3">
+        <p class="m-auto">จำนวนแต้ม</p>
+        <p class="m-auto">{{ totalPoint }}</p>
+        <p class="m-auto">Point</p>
+      </div>
+      <div class="grid grid-cols-3">
+        <p class="m-auto">จำนวนคงเหลือ</p>
+        <p class="m-auto">{{ onUserAmount }}</p>
+        <p class="m-auto">Point</p>
+      </div>
+    </div>
+
+    <!-- รายการรางวัล -->
+    <div class="w-full mt-5">
+      <CardReward :rewards="storeRewards" />
     </div>
   </div>
 </template>
