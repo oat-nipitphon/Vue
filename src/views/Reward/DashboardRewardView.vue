@@ -43,13 +43,16 @@ const submitReward = async () => {
     formData.append('totalPoint', mainForm.totalPoint);
     formData.append('counterItems', JSON.stringify(mainForm.counterItems));
 
-    const res = await fetch('/api/cartItems/userConfirmSelectReward', formData, {
+    const res = await fetch('/api/cartItems/userConfirmSelectReward', {
       method: 'POST',
       headers: {
         'Content-Type': 'multipart/form-data',
         authorization: `Bearer ${localStorage.getItem('token')}`
       },
+      body: formData,
     });
+
+    // const res = await axiosAPI.post(`/api/cartItems/userConfirmSelectReward`, form);
 
     const data = await res.json();
 
@@ -108,6 +111,14 @@ onMounted(async () => {
         <p class="m-auto">จำนวนคงเหลือ</p>
         <p class="m-auto">{{ onUserAmount }}</p>
         <p class="m-auto">Point</p>
+      </div>
+    </div>
+
+    <div class="flex justify-end">
+      <div class="w-50 mr-5">
+        <button type="button" @click="submitReward" class="btn btn-md btn-outline-primary">
+          Confirm
+        </button>
       </div>
     </div>
 

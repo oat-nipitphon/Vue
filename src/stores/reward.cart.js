@@ -42,11 +42,6 @@ export const useRewardCartStore = defineStore('rewardCart', () => {
     }
 
 
-    const userConfirmCartItems = async () => {
-        const res = await fetch()
-    }
-
-
     return {
 
         addToCart,
