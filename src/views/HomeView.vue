@@ -15,6 +15,9 @@
     <div class="m-auto">
       <FormLogin />
     </div>
+    <div class="mt-10 text-center">
+      <!-- <Toggle v-model="isOn" /> -->
+    </div>
   </div>
 </template>
 <script setup>

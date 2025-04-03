@@ -1,30 +1,12 @@
 <script setup>
-import axios from 'axios'
+import axiosAPI from '@/services/axiosAPI'
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
-import { storeToRefs } from 'pinia'
 
-const { errors } = storeToRefs(useAuthStore())
-const { apiStoreRegister } = useAuthStore()
+const { apiStoreRegister, apiGetUserStatus } = useAuthStore()
 const userStatus = ref([])
 
-const getStatusUser = async () => {
-  try {
-    const res = await fetch(`/api/status_user`, {
-      method: 'GET',
-    })
-
-    const data = await res.json()
-    if (res.ok) {
-      userStatus.value = data.userStatus
-      console.log(userStatus.value)
-    }
-  } catch (error) {
-    console.error('register view get status user error', error)
-  }
-}
-
-const form = reactive({
+const form = ref({
   email: '',
   username: '',
   password: '',
@@ -38,8 +20,22 @@ const passwordConfirmErrorMessage = computed(() => {
   return ''
 })
 
+const getUserStatus = async () => {
+  try {
+    const response = await axiosAPI.get('/api/status_user');
+
+    if (response.ok) {
+      console.log('response false', response)
+    } else {
+      return response.data.userStatus
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 onMounted(async () => {
-  getStatusUser()
+  userStatus.value = await getUserStatus()
 })
 </script>
 
@@ -52,22 +48,13 @@ onMounted(async () => {
       <form class="" @submit.prevent="apiStoreRegister(`register`, form)">
         <!-- Status Dropdown -->
         <div class="inline-block relative w-full">
-          <label
-            for="User-Status"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
+          <label for="User-Status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
             สถานะบัญชี
           </label>
-          <select
-            v-model="form.statusID"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-          >
+          <select v-model="form.statusID"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
             <option value="">เลือกสถานะ</option>
-            <option
-              v-for="status in userStatus"
-              :key="status.id"
-              :value="status.id"
-            >
+            <option v-for="status in userStatus || []" :key="status.id" :value="status.id">
               {{ status.status_name }}
             </option>
           </select>
@@ -78,24 +65,15 @@ onMounted(async () => {
             สถานะถูกต้อง สามารถใช้งานได้.
           </p>
         </div>
-
         <div class="grid grid-cols-2">
           <!-- Email Field -->
           <div class="p-2">
-            <label
-              for="email"
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
+            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
               อีเมล์
             </label>
             <input
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              type="email"
-              id="email"
-              required
-              placeholder="example@gmail.com"
-              v-model="form.email"
-            />
+              type="email" id="email" required placeholder="example@gmail.com" v-model="form.email" />
             <p v-if="!form.email" class="text-red-600 text-sm mt-2">
               โปรดกรอกอีเมล์ สำหรับลงทะเบียน.
             </p>
@@ -106,20 +84,12 @@ onMounted(async () => {
 
           <!-- Username Field -->
           <div class="p-2">
-            <label
-              for="username"
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
+            <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
               ชื่อผู้ใช้
             </label>
             <input
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              type="username"
-              id="username"
-              required
-              placeholder="example"
-              v-model="form.username"
-            />
+              type="username" id="username" required placeholder="example" v-model="form.username" />
             <p v-if="!form.username" class="text-red-600 text-sm mt-2">
               โปรดกรอกชื่อผู้ใช้ สำหรับลงทะเบียน.
             </p>
@@ -132,20 +102,12 @@ onMounted(async () => {
         <div class="grid grid-cols-2">
           <!-- Password Field -->
           <div class="p-2">
-            <label
-              for="password"
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
+            <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
               รหัสผ่าน
             </label>
             <input
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              type="password"
-              id="password"
-              required=""
-              placeholder="password"
-              v-model="form.password"
-            />
+              type="password" id="password" required="" placeholder="password" v-model="form.password" />
             <p v-if="!form.password" class="text-red-600 text-sm mt-2">
               โปรดกรอกรหัสผ่าน.
             </p>
@@ -156,24 +118,14 @@ onMounted(async () => {
 
           <!-- Confirm Password Field -->
           <div class="p-2">
-            <label
-              for="confirm-password"
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
+            <label for="confirm-password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
               ยืนยันรหัสผ่านอีกครั้ง
             </label>
             <input
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              type="password"
-              id="confirmPassword"
-              required=""
-              placeholder="confirm password"
-              v-model="form.confirmPassword"
-            />
-            <p
-              v-if="passwordConfirmErrorMessage"
-              class="text-red-600 text-sm mt-2"
-            >
+              type="password" id="confirmPassword" required="" placeholder="confirm password"
+              v-model="form.confirmPassword" />
+            <p v-if="passwordConfirmErrorMessage" class="text-red-600 text-sm mt-2">
               {{ passwordConfirmErrorMessage }}
             </p>
             <p v-else class="text-green-600 text-sm mt-2">
@@ -183,21 +135,13 @@ onMounted(async () => {
         </div>
 
         <!-- Submit Button -->
-        <button
-          type="submit"
-          class="bg-blue-700 text-white rounded-lg px-4 py-2 mt-5"
-        >
-        ลงทะเบียน
+        <button type="submit" class="bg-blue-700 text-white rounded-lg px-4 py-2 mt-5">
+          ลงทะเบียน
         </button>
       </form>
-      <div
-        class="mt-5 text-right text-sm font-medium text-gray-500 dark:text-gray-300"
-      >
-          มีบัญชีอยู่แล้ว?
-        <RouterLink
-          class="text-blue-700 hover:underline dark:text-blue-500"
-          :to="{ name: 'LoginView' }"
-        >
+      <div class="mt-5 text-right text-sm font-medium text-gray-500 dark:text-gray-300">
+        มีบัญชีอยู่แล้ว?
+        <RouterLink class="text-blue-700 hover:underline dark:text-blue-500" :to="{ name: 'LoginView' }">
           ล็อคอิน
         </RouterLink>
       </div>

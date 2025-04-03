@@ -17,6 +17,7 @@ export const useAuthStore = defineStore('authStore', {
             
                 const data = await res.json()
                 if (res.ok) {
+                    console.log('store auth get user status', data.userStatus);
                   return data.userStatus
                 }
               } catch (error) {

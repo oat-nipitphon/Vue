@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useRewardStore } from '@/stores/reward'
 import { storeToRefs } from 'pinia'
-import { ToggleButton } from 'vue-js-toggle-button'
+
 
 import EditRewardView from '@/views/ADMIN/Reward/AdminEditRewardView.vue'
 import ModalShowRewardDetail from '@/components/Tailwind/ModalShowRewardDetail.vue'

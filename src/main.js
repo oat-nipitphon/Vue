@@ -13,9 +13,11 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
+// import Toggle from 'vue3-toggle';
 
 const app = createApp(App)
 const pinia = createPinia()
+
 
 pinia.use(({store}) => {
     store.router = markRaw(router)
@@ -24,5 +26,5 @@ pinia.use(({store}) => {
 app.use(pinia)
 app.use(VueSweetalert2)
 app.use(router)
-
+// app.component('Toggle', Toggle);
 app.mount('#app')

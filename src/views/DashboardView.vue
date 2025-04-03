@@ -105,7 +105,7 @@ onMounted(async () => {
     </div>
     <div v-if="posts">
       <div
-        class="w-max-3xl shadow-lg mt-10 bg-white border-b border-gray-200 md:rounded-es-lg md:border-b-0 md:border-e dark:bg-gray-800 dark:border-gray-700"
+        class="max-w-sm rounded overflow-hidden shadow-lg"
         v-for="(post, index) in posts"
         :key="index"
       >
@@ -136,9 +136,9 @@ onMounted(async () => {
                 <div
                   class="space-y-0.5 font-medium dark:text-white text-left rtl:text-right ms-3"
                 >
-                  <div>{{ post.userProfile.fullName }}</div>
+                  <div>{{ post.userProfile?.fullName }}</div>
                   <div class="text-sm text-gray-500 dark:text-gray-400">
-                    {{ post.user.email }}
+                    {{ post.user?.email }}
                   </div>
                 </div>
               </figcaption>
