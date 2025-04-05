@@ -9,7 +9,7 @@
         <div class="flex justify-center">
           <div v-if="profile?.userImage.length" class="mb-4 mt-4">
             <img
-              :src="'data:image/png;base64,' + profile.userImage[0].imageData"
+              :src="'data:image/png;base64,' + profile?.userImage[0].imageData"
               class="w-40 h-40 md:w-48 md:h-48 rounded-full border-4 border-gray-400 shadow-lg object-cover"
               alt="User Profile"
             />
@@ -28,17 +28,17 @@
       <!-- User Detail -->
       <div class="mt-6 bg-gray-100 p-2 rounded-lg">
         <div class="p-3">
-          <h2 class="text-xl font-semibold">{{ profile.username }}</h2>
+          <h2 class="text-xl font-semibold">{{ profile?.username }}</h2>
 
           <div class="grid grid-cols-2">
             <div>
               <p class="font-semibold">Status:</p>
               <p class="text-blue-500">{{
-                profile.userStatus.statusName
+                profile?.userStatus.statusName
               }}</p>
             </div>
             <div>
-              <p class="text-gray-600">{{ profile.email }}</p>
+              <p class="text-gray-600">{{ profile?.email }}</p>
             </div>
           </div>
           <ModalEditUser :user="profile" :userStatus="userStatus" />
@@ -54,18 +54,18 @@
           <div class="grid grid-cols-[30%_auto] gap-2 mt-3">
             <div class="text-gray-500 text-right">Full Name:</div>
             <div class="text-gray-700">
-              {{ profile.userProfile.titleName }}
-              {{ profile.userProfile.fullName }}
+              {{ profile?.userProfile?.titleName }}
+              {{ profile?.userProfile?.fullName }}
             </div>
 
             <div class="text-gray-500 text-right">Nickname:</div>
             <div class="text-gray-700">
-              {{ profile.userProfile.nickName }}
+              {{ profile?.userProfile?.nickName }}
             </div>
 
             <div class="text-gray-500 text-right">Phone:</div>
             <div class="text-gray-700">
-              {{ profile.userProfile.telPhone }}
+              {{ profile?.userProfile?.telPhone }}
             </div>
 
             <div class="text-gray-500 text-right">Birthday:</div>
@@ -75,7 +75,7 @@
             <div class="text-gray-700">{{ formatAge }}</div>
           </div>
           <div class="flex justify-end mt-3">
-            <ModalEditProfile :profile="profile.userProfile" />
+            <ModalEditProfile :profile="profile?.userProfile" />
           </div>
         </div>
       </div>
@@ -85,8 +85,8 @@
         <h3 class="text-lg font-semibold text-gray-700 p-2">Contact</h3>
         <div>
           <CardContactProfile
-            :profileID="profile.userProfile.id"
-            :contact="profile.profileContact"
+            :profileID="profile?.userProfile?.id"
+            :contact="profile?.profileContact"
           />
         </div>
       </div>
@@ -124,7 +124,7 @@ onMounted(async () => {
 })
 
 const formatBirthDay = computed(() => {
-  if (!profile.value.userProfile.birthDay) {
+  if (!profile.value.userProfile?.birthDay) {
     return 'Day-Month-Year'
   }
   const birthDate = new Date(profile.value.userProfile.birthDay)

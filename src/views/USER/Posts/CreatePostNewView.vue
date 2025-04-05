@@ -1,3 +1,120 @@
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import { usePostStore } from '@/stores/post'
+import Swal from 'sweetalert2'
+import axiosAPI from '@/services/axiosAPI'
+import EditorTipTap from '@/components/EditorTipTap.vue'
+import imageFileBasic from '@/assets/icon/keyboard.jpg'
+
+const router = useRouter()
+const authAuth = useAuthStore()
+const postTypes = ref(null)
+const isSelectType = ref(true)
+const isButtonSelect = ref(false)
+const isNewType = ref(false)
+const imageFile = ref(null)
+const imageUrl = ref(null)
+
+const { apiGetPostTypes, apiCreatePostNew } = usePostStore()
+
+const form = ref({
+  title: '',
+  content: "<p>I'm running Tiptap with Vue.js. 🎉</p>",
+  refer: '',
+  typeID: '',
+  newType: '',
+})
+
+const onSelectType = () => {
+  if (form.value.typeID === 'new') {
+    isSelectType.value = false
+    isNewType.value = true
+    isButtonSelect.value = true
+    form.value.typeID = 0
+  } else {
+    form.value.newType = 0
+  }
+}
+
+const onSelectAgain = () => {
+  isSelectType.value = true
+  isNewType.value = false
+  isButtonSelect.value = false
+}
+
+const handleImageSelected = event => {
+  const file = event.target.files[0]
+  if (file) {
+    imageFile.value = file
+    imageUrl.value = URL.createObjectURL(file)
+  }
+}
+
+const onCreatePost = async () => {
+  const formData = new FormData()
+
+  formData.append('userID', authAuth.storeUser.user_login.id)
+  formData.append('title', form.value.title)
+  formData.append('content', form.value.content)
+  formData.append('refer', form.value.refer)
+  formData.append('newType', form.value.newType)
+  formData.append('typeID', form.value.typeID)
+
+  if (imageFile.value) {
+    formData.append('imageFile', imageFile.value)
+  } else {
+    const response = await fetch(imageFileBasic)
+    const blob = await response.blob()
+    const file = new File([blob], 'default-image.jpg', { type: 'image/jpeg' })
+    formData.append('imageFile', file)
+  }
+
+  try {
+    const response = await axiosAPI.post('/api/posts', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+
+    Swal.fire({
+      title: 'New Post!',
+      text: 'Your confirm create new post?',
+      icon: 'warning',
+      showCancelButton: true,
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: 'Confirm',
+    }).then(result => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: 'Success',
+          text: 'Create new successfully.',
+          icon: 'success',
+          timer: 1500,
+        }).then(() => {
+          console.log('create post success response', response)
+          router.push({ name: 'DashboardView' })
+        })
+      }
+    })
+  } catch (error) {
+    console.error('Error creating post:', error)
+  }
+}
+
+const onCancel = () => {
+  router.push({ name: 'DashboardView' })
+}
+
+onMounted(async () => {
+  postTypes.value = await apiGetPostTypes()
+  console.log('create post get post type ', postTypes.value)
+})
+</script>
 <template>
   <div class="bg-white rounded-xl shadow-lg mt-5 max-w-5xl m-auto p-10">
     <label
@@ -174,120 +291,4 @@
 }
 </style>
 
-<script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
-import { usePostStore } from '@/stores/post'
-import Swal from 'sweetalert2'
-import axiosAPI from '@/services/axiosAPI'
-import EditorTipTap from '@/components/EditorTipTap.vue'
-import imageFileBasic from '@/assets/icon/keyboard.jpg'
 
-const router = useRouter()
-const authAuth = useAuthStore()
-const postTypes = ref(null)
-const isSelectType = ref(true)
-const isButtonSelect = ref(false)
-const isNewType = ref(false)
-const imageFile = ref(null)
-const imageUrl = ref(null)
-
-const { apiGetPostTypes, apiCreatePostNew } = usePostStore()
-
-const form = ref({
-  title: '',
-  content: "<p>I'm running Tiptap with Vue.js. 🎉</p>",
-  refer: '',
-  typeID: '',
-  newType: '',
-})
-
-const onSelectType = () => {
-  if (form.value.typeID === 'new') {
-    isSelectType.value = false
-    isNewType.value = true
-    isButtonSelect.value = true
-    form.value.typeID = 0
-  } else {
-    form.value.newType = 0
-  }
-}
-
-const onSelectAgain = () => {
-  isSelectType.value = true
-  isNewType.value = false
-  isButtonSelect.value = false
-}
-
-const handleImageSelected = event => {
-  const file = event.target.files[0]
-  if (file) {
-    imageFile.value = file
-    imageUrl.value = URL.createObjectURL(file)
-  }
-}
-
-const onCreatePost = async () => {
-  const formData = new FormData()
-
-  formData.append('userID', authAuth.storeUser.user_login.id)
-  formData.append('title', form.value.title)
-  formData.append('content', form.value.content)
-  formData.append('refer', form.value.refer)
-  formData.append('newType', form.value.newType)
-  formData.append('typeID', form.value.typeID)
-
-  if (imageFile.value) {
-    formData.append('imageFile', imageFile.value)
-  } else {
-    const response = await fetch(imageFileBasic)
-    const blob = await response.blob()
-    const file = new File([blob], 'default-image.jpg', { type: 'image/jpeg' })
-    formData.append('imageFile', file)
-  }
-
-  try {
-    const response = await axiosAPI.post('/api/posts', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    })
-
-    Swal.fire({
-      title: 'New Post!',
-      text: 'Your confirm create new post?',
-      icon: 'warning',
-      showCancelButton: true,
-      cancelButtonColor: '#d33',
-      cancelButtonText: 'Cancel',
-      confirmButtonColor: '#3085d6',
-      confirmButtonText: 'Confirm',
-    }).then(result => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: 'Success',
-          text: 'Create new successfully.',
-          icon: 'success',
-          timer: 1500,
-        }).then(() => {
-          console.log('create post success response', response)
-          router.push({ name: 'DashboardView' })
-        })
-      }
-    })
-  } catch (error) {
-    console.error('Error creating post:', error)
-  }
-}
-
-const onCancel = () => {
-  router.push({ name: 'DashboardView' })
-}
-
-onMounted(async () => {
-  postTypes.value = await apiGetPostTypes()
-  console.log('create post get post type ', postTypes.value)
-})
-</script>

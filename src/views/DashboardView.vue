@@ -105,7 +105,7 @@ onMounted(async () => {
     </div>
     <div v-if="posts">
       <div
-        class="max-w-sm rounded overflow-hidden shadow-lg"
+        class="max-w-full rounded-sm m-10 shadow-lg"
         v-for="(post, index) in posts"
         :key="index"
       >

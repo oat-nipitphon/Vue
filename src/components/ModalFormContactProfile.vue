@@ -46,7 +46,7 @@ const onSelectFileIcon = (event, index) => {
   }
 }
 
-const onSaveContactProfile = async event => {
+const onSaveContactProfile = async (event) => {
   const formData = new FormData()
   formData.append('profileID', props.profileID)
   contacts.forEach((contact, index) => {
@@ -57,24 +57,21 @@ const onSaveContactProfile = async event => {
     }
   })
 
-  try {
-    const response = await axiosAPI.post(`/api/profile/contacts`, formData, {
-      headers: {
-        authorization: `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-
-    if (!response.ok) {
-      console.log('Failed to save.', response)
-      event.preventDefault()
+  const res = await axiosAPI.post('/api/profile/contacts', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${localStorage.getItem('token')}`
     }
+  });
 
-    window.location.reload()
-  } catch (error) {
-    console.error('on save contact profile function error', error)
+  if (res.ok) {
+    console.log('res ok insert contact true')
+  } else {
+    console.log('res ok insert contact false')
   }
+
 }
+
 </script>
 <template>
   <div>

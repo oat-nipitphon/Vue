@@ -16,6 +16,10 @@ const isButtonSelect = ref(false)
 const isNewType = ref(false)
 const imageFile = ref(null)
 const imageUrl = ref(null)
+const fileImage = ref(null);
+
+const isImageData = ref(true)
+const isImageSelectFile = ref(false)
 
 const form = ref({
   userID: "",
@@ -28,28 +32,39 @@ const form = ref({
   newType: ""
 })
 
-onMounted(async () => {
-  postTypes.value = await apiGetPostTypes()
-  posts.value = await apiGetPost(route.params.id)
-  if (posts.value) {
-    form.value.userID = posts.value.userID || ""
-    form.value.postID = posts.value.id || ""
-    form.value.title = posts.value.title || ""
-    form.value.content = posts.value.content || ""
-    form.value.refer = posts.value.refer || ""
-    form.value.typeID = posts.value.postType.id || ""
-    form.value.typeName = posts.value.postType.typeName || ""
-    form.value.newType = posts.value.newType || ""
-    if (posts.value.postImage) {
-      imageFile.value =
-        posts.value.postImage?.map(imgFile => ({
-          id: imgFile.id,
-          imgData: imgFile.imageData,
-        })) || []
-    }
+
+const getImage = (image) => {
+  if (!image) return '';
+
+  // If it's a base64 string (already contains MIME type)
+  if (image.startsWith('data:')) {
+    return image;
   }
-  console.log("posts value ", posts.value.postType.typeName);
-})
+
+  // If it's a file extension, we guess MIME type and prepend the base64 data
+  const fileExtension = image.split('.').pop().toLowerCase();
+  let mimeType = '';
+
+  switch (fileExtension) {
+    case 'png':
+      mimeType = 'image/png';
+      break;
+    case 'jpg':
+    case 'jpeg':
+      mimeType = 'image/jpeg';
+      break;
+    case 'gif':
+      mimeType = 'image/gif';
+      break;
+    case 'webp':
+      mimeType = 'image/webp';
+      break;
+    default:
+      mimeType = 'image/png'; // Default to PNG if type is unknown
+  }
+
+  return `data:${mimeType};base64,${image}`;
+}
 
 const onSelectType = () => {
   if (form.value.typeID === 'new') {
@@ -70,14 +85,18 @@ const onSelectAgain = () => {
   isButtonSelect.value = false
 }
 
-const onSelectImageFile = event => {
+const handleImageSelected = event => {
   const file = event.target.files[0]
   if (file) {
+
+    imageFile.value = event.target.files[0]
     imageUrl.value = URL.createObjectURL(file)
-    console.log("image url", imageUrl.value);
-    imageFile.value = file
-    console.log("image file", imageFile.value);
+
   }
+  console.log('image file', imageFile.value)
+  isImageData.value = false
+  isImageSelectFile.value = true
+
 }
 
 const onUpdatePost = async () => {
@@ -93,6 +112,7 @@ const onUpdatePost = async () => {
 
   if (imageFile.value) {
     formData.append('imageFile', imageFile.value)
+    console.log('form data image file', imageFile.value);
   }
 
   try {
@@ -119,8 +139,8 @@ const onUpdatePost = async () => {
           title: 'Success',
           text: 'Update post successfully.',
           icon: 'success',
-          timer: 1200,
-          timerProgressBar: 1200
+          timer: 1500,
+          timerProgressBar: 1500
         }).then(() => {
           router.push({ name: 'DashboardView' })
         })
@@ -137,6 +157,36 @@ const onCancel = () => {
     name: 'DashboardView',
   })
 }
+
+onMounted(async () => {
+  postTypes.value = await apiGetPostTypes();
+  posts.value = await apiGetPost(route.params.id);
+
+  if (posts.value) {
+    form.value.userID = posts.value.userID || "";
+    form.value.postID = posts.value.id || "";
+    form.value.title = posts.value.title || "";
+    form.value.content = posts.value.content || "";
+    form.value.refer = posts.value.refer || "";
+    form.value.typeID = posts.value.postType.id || "";
+    form.value.typeName = posts.value.postType.typeName || "";
+    form.value.newType = posts.value.newType || "";
+
+    fileImage.value = posts.value.postImage?.map(imgFile => ({
+      id: imgFile.id,
+      imgData: imgFile.imageData,
+    })) || [];
+
+    if (fileImage.value && fileImage.value.length > 0) {
+      imageFile.value = fileImage.value; // Array is not empty
+      console.log('image true', imageFile.value);
+    } else {
+      imageFile.value = false; // Array is empty
+      console.log('image false', imageFile.value);
+    }
+  }
+});
+
 </script>
 <template>
   <div v-if="posts" class="bg-white rounded-xl shadow-lg mt-5 max-w-5xl m-auto p-10">
@@ -151,9 +201,7 @@ const onCancel = () => {
       </label>
       <select
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-        v-model="form.typeID"
-        @change="onSelectType"
-      >
+        v-model="form.typeID" @change="onSelectType">
         <option v-for="type in postTypes" :key="type.id" :value="type.id">
           {{ type.post_type_name }}
         </option>
@@ -183,13 +231,7 @@ const onCancel = () => {
       <label for="postTitle" class="block text-xl font-medium text-gray-900 dark:text-white">
         Title
       </label>
-      <input
-        id="postTitle"
-        v-model="form.title"
-        type="text"
-        class="form-control mt-2"
-        placeholder="Enter Post Title"
-      />
+      <input id="postTitle" v-model="form.title" type="text" class="form-control mt-2" placeholder="Enter Post Title" />
     </div>
 
     <!-- Post Content (Editor) -->
@@ -205,43 +247,32 @@ const onCancel = () => {
       <label for="postRefer" class="block text-xl font-medium text-gray-900 dark:text-white">
         Reference
       </label>
-      <input
-        id="postRefer"
-        v-model="form.refer"
-        type="text"
-        class="form-control mt-2"
-        placeholder="Enter Reference URL"
-      />
+      <input id="postRefer" v-model="form.refer" type="text" class="form-control mt-2"
+        placeholder="Enter Reference URL" />
     </div>
 
-    <!-- Image Upload -->
+    <!-- Upload File Section -->
     <div class="mt-3">
-      <label for="fileImage" class="block text-xl font-medium text-gray-900 dark:text-white">
-        Upload Image
-      </label>
+      <label for="fileImage" class="block text-xl font-medium text-gray-900 dark:text-white">Upload Image</label>
       <div class="bg-white">
-        <input
-          id="fileImage"
-          accept="image/*"
-          type="file"
+        <input id="fileImage" accept="image/*" type="file"
           class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-          @change="onSelectImageFile"
-        />
-        <div v-for="(image, index) in posts.postImage" :key="index" class="w-full mt-2">
-          <img
-            v-if="imageUrl === null"
-            v-show="imageFile"
-            :src="'data:image/png;base64,' + image.imageData || imageUrl"
-            class="w-full max-h-80 object-cover"
-            alt="Post Image"
-          />
-          <img
-            v-else
-            :src="imageUrl || 'https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg'"
-            alt="Image Preview"
-            class="w-full max-h-80 object-cover"
-          />
+          @change="handleImageSelected" />
+
+
+        <div v-if="isImageData" v-for="(row, index) in posts.postImage" :key="index">
+          <img v-if="row.imageData" :src="`data:image/png;base64,${row.imageData}`" class="ibox-image-post mt-3">
+          <img v-else
+            src="https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg"
+            class="ibox-image-post mt-3">
         </div>
+
+        <div v-if="isImageSelectFile">
+          <img :src="imageUrl ||
+            'https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg'
+            " alt="Image Preview" class="ibox-image-post mt-3" />
+        </div>
+
       </div>
     </div>
 
@@ -298,4 +329,3 @@ const onCancel = () => {
   background-color: #c0392b;
 }
 </style>
-
