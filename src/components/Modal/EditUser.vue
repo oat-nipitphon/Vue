@@ -2,6 +2,7 @@
 import { defineProps, reactive, watch } from 'vue'
 import { useStoreUserProfile } from '@/stores/user.profile'
 const { apiUpdateUser } = useStoreUserProfile()
+
 const props = defineProps({
   user: Object,
   userStatus: Object,
@@ -22,7 +23,8 @@ watch(
       form.userID = row.id || ''
       form.email = row.email || ''
       form.username = row.username || ''
-      form.statusID = row.statusID || ''
+      form.statusID = row.userStatus.id || ''
+      form.statusName = row.userStatus.statusName || ''
     }
   },
   { immediate: true }
@@ -79,12 +81,11 @@ watch(
               <div>
                 <label class="mb-1 font-bold">status</label>
                 <select v-model="form.statusID" class="form-control">
-                  <option
-                    v-for="row in userStatus"
-                    :key="row.id"
-                    :value="row.id"
-                  >
-                    {{ row.status_name_th }}
+                  <!-- <option :value="form.statusID">
+                    {{ form.statusName }}
+                  </option> -->
+                  <option v-for="row in props.userStatus" :key="row.id" :value="row.id">
+                    {{ row.status_name }}
                   </option>
                 </select>
               </div>

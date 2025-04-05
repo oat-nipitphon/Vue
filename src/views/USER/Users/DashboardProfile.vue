@@ -13,9 +13,16 @@
               class="w-40 h-40 md:w-48 md:h-48 rounded-full border-4 border-gray-400 shadow-lg object-cover"
               alt="User Profile"
             />
-            <div class="flex justify-end">
+          </div>
+          <div v-else class="mb-4 mt-4">
+            <img
+              src="https://scontent.fkkc3-1.fna.fbcdn.net/v/t39.30808-6/461897536_3707658799483986_794048670785055411_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeHVG0UH5FgwbVkdtl70b39it0I862Qbciu3QjzrZBtyK4PmJExwkjQwGNMpc0Sbm9HeXRE2Yi7Fvc_GrvrUrXJN&_nc_ohc=Zj9f6Ykgj_MQ7kNvwHns_A6&_nc_oc=Adkw6MZae6jHpAbUcZe99HG3hVwiidVrscZ94RN0Jo4wvbaz0NOpEkzDZ4W76euYEF3rRTNjR5GrTmNdk-4KkMr0&_nc_zt=23&_nc_ht=scontent.fkkc3-1.fna&_nc_gid=yJdfy8i-yAtqoGkditV2CQ&oh=00_AYFvOH4bJXulmE7_72_EuN91LvW9S-6o-gDqcpBWqLCTpg&oe=67F6E571"
+              class="w-40 h-40 md:w-48 md:h-48 rounded-full border-4 border-gray-400 shadow-lg object-cover"
+              alt="User Profile"
+            />
+          </div>
+          <div class="flex justify-end">
               <ModalUploadImageUserProfile />
-            </div>
           </div>
         </div>
       </div>

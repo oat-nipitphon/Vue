@@ -11,7 +11,7 @@ const props = defineProps({
   profileID: Number,
   contact: Object,
 })
-console.log('card contact profile ', props)
+
 
 const contacts = ref([])
 const form = reactive({

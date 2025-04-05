@@ -171,6 +171,12 @@ const router = createRouter({
       meta: { auth: true }
     },
     {
+      path: '/new/reward',
+      name: 'NewRewardView',
+      component:  AdminNewRewardView,
+      meta: { auth: true }
+    },
+    {
       path: '/reward/update/:id',
       name: ' AdminEditRewardView',
       component:  AdminEditRewardView,

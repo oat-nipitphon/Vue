@@ -4,7 +4,6 @@ const props = defineProps({
   profile: Object,
 })
 
-console.log('card user point', props)
 </script>
 <template>
   <div class="bg-red-100">

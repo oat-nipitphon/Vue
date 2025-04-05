@@ -63,14 +63,14 @@ const submitReward = async () => {
         },
       }
     )
-    
-      const data = await res.json();
 
-      if (!res.ok) {
-        console.log('res data false',res );
-      }
+    const data = await res.json();
 
-      console.log('res data true', data);
+    if (!res.ok) {
+      console.log('res data false', res);
+    }
+
+    console.log('res data true', data);
 
   } catch (error) {
     console.error('Error inserting reward:', error)
@@ -84,62 +84,55 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="bg-white container rounded-lg shadow-lg p-5">
+  <div class="bg-white rounded-2xl shadow-xl p-8 max-w-6xl mx-auto mt-10">
     <!-- Navbar -->
-    <div class="grid grid-cols-2 mt-5">
-      <div class="flex justify-center">
-        <a href="#" class="p-2 text-gray-400 hover:text-gray-500">
-          <MagnifyingGlassIcon class="size-7" aria-hidden="true" />
+    <div class="flex justify-between items-center border-b pb-4 mb-6">
+      <div class="flex items-center space-x-4">
+        <a href="#" class="text-gray-400 hover:text-gray-600 transition">
+          <MagnifyingGlassIcon class="w-6 h-6" />
         </a>
       </div>
-      <div class="flex justify-end items-center">
-        <ShoppingBagIcon
-          class="size-8 text-gray-400 group-hover:text-gray-500"
-          aria-hidden="true"
-        />
-        <span class="ml-3 text-2xl text-gray-900">{{ cartItemCounters }}</span>
-        <span class="ml-3 text-2xl text-gray-900">{{ totalPoint }}</span>
+      <div class="flex items-center space-x-4">
+        <ShoppingBagIcon class="w-7 h-7 text-gray-500" />
+        <span class="text-xl font-semibold text-gray-800">{{ cartItemCounters }}</span>
+        <span class="text-xl font-semibold text-indigo-600">{{ totalPoint }}</span>
       </div>
     </div>
 
-    <!-- รายละเอียดแต้มและรางวัล -->
-    <div class="grid grid-cols-2 gap-5 mt-5 text-2xl text-gray-900">
-      <div class="grid grid-cols-3">
-        <p class="m-auto">แต้มสมาชิก</p>
-        <p class="m-auto">{{ userPoint }}</p>
-        <p class="m-auto">Point</p>
+    <!-- แต้มสมาชิก และรายการรางวัล -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-12 text-lg text-gray-800">
+      <div class="flex justify-between items-center">
+        <p>แต้มสมาชิก:</p>
+        <p class="font-semibold">{{ userPoint }} <span class="text-sm font-normal text-gray-500">Point</span></p>
       </div>
-      <div class="grid grid-cols-3">
-        <p class="m-auto">จำนวนรางวัล</p>
-        <p class="m-auto"><ModalShowCounter :counterItems="counterItems" /></p>
-        <p class="m-auto">รายการ</p>
+      <div class="flex justify-between items-center">
+        <p>จำนวนรางวัล:</p>
+        <p>
+          <ModalShowCounter :counterItems="counterItems" />
+        </p>
       </div>
-      <div class="grid grid-cols-3">
-        <p class="m-auto">จำนวนแต้ม</p>
-        <p class="m-auto">{{ totalPoint }}</p>
-        <p class="m-auto">Point</p>
+      <div class="flex justify-between items-center">
+        <p>จำนวนแต้ม:</p>
+        <p class="text-rose-600 font-bold">{{ totalPoint }} <span class="text-sm font-normal text-gray-500">Point</span>
+        </p>
       </div>
-      <div class="grid grid-cols-3">
-        <p class="m-auto">จำนวนคงเหลือ</p>
-        <p class="m-auto">{{ onUserAmount }}</p>
-        <p class="m-auto">Point</p>
+      <div class="flex justify-between items-center">
+        <p>แต้มคงเหลือ:</p>
+        <p class="text-green-600 font-bold">{{ onUserAmount }} <span
+            class="text-sm font-normal text-gray-500">Point</span></p>
       </div>
     </div>
 
-    <div class="flex justify-end">
-      <div class="w-50 mr-5">
-        <button
-          type="button"
-          @click="submitReward"
-          class="btn btn-md btn-outline-primary"
-        >
-          Confirm
-        </button>
-      </div>
+    <!-- ปุ่ม Confirm -->
+    <div class="flex justify-end mt-8">
+      <button type="button" @click="submitReward"
+        class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg shadow-md transition">
+        แลกของรางวัล
+      </button>
     </div>
 
     <!-- รายการรางวัล -->
-    <div class="w-full mt-5">
+    <div class="mt-10">
       <CardReward :rewards="storeRewards" />
     </div>
   </div>
