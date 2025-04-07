@@ -1,27 +1,28 @@
 <script setup>
 import { MagnifyingGlassIcon, ShoppingBagIcon } from '@heroicons/vue/24/outline'
-import { ref, reactive, computed, onMounted } from 'vue'
+import axiosAPI from '@/services/axiosAPI'
+import { reactive, ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-
-import axiosAPI from '@/services/axiosAPI'
 import { useAuthStore } from '@/stores/auth'
 import { useRewardStore } from '@/stores/reward'
 import { useRewardCartStore } from '@/stores/reward.cart'
-
 import CardReward from '@/components/Reward/CardReward.vue'
 import ModalShowCounter from '@/views/Reward/ModalShowCounter.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
-const rewardStore = useRewardStore()
-const rewardCartStore = useRewardCartStore()
-
 const { storeUser } = storeToRefs(authStore)
+const rewardStore = useRewardStore()
 const { storeRewards } = storeToRefs(rewardStore)
-const { counterItems, cartItemCounters, totalPoint } = storeToRefs(rewardCartStore)
+const rewardCartStore = useRewardCartStore()
+const { counterItems, cartItemCounters, totalPoint } =
+  storeToRefs(rewardCartStore)
 
 const userPoint = ref(storeUser.value?.user_login?.userPoint?.point || 0)
+const userPointCounters = ref(
+  storeUser.value?.user_login?.userPointCounters || []
+)
 
 const onUserAmount = computed(() => {
   return userPoint.value - totalPoint.value
@@ -33,26 +34,15 @@ const mainForm = reactive({
   counterItems: counterItems,
 })
 
-
+const itemsCardReset = () => {
+  rewardCartStore.resetCart()
+}
 
 const submitReward = async () => {
   const formData = new FormData()
   formData.append('userID', mainForm.userID)
   formData.append('totalPoint', mainForm.totalPoint)
   formData.append('counterItems', JSON.stringify(mainForm.counterItems))
-
-  try {
-    const res = await axiosAPI.post('/reward/submit', formData)
-    alert('แลกของรางวัลสำเร็จ!')
-    rewardCartStore.resetCart()
-  } catch (error) {
-    console.error(error)
-    alert('เกิดข้อผิดพลาดในการแลกของรางวัล')
-  }
-}
-
-const itemsCardReset = () => {
-  rewardCartStore.resetCart()
 }
 
 onMounted(async () => {
@@ -80,41 +70,39 @@ onMounted(async () => {
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-12 text-lg text-gray-800">
       <div class="flex justify-between items-center">
         <p>แต้มสมาชิก:</p>
-        <p class="font-semibold">
-          {{ userPoint }} <span class="text-sm font-normal text-gray-500">Point</span>
-        </p>
+        <p class="font-semibold">{{ userPoint }} <span class="text-sm font-normal text-gray-500">Point</span></p>
       </div>
       <div class="flex justify-between items-center">
         <p>จำนวนรางวัล:</p>
-        <p><ModalShowCounter :counterItems="counterItems" /></p>
+        <p>
+          <ModalShowCounter :counterItems="counterItems" />
+        </p>
       </div>
       <div class="flex justify-between items-center">
         <p>จำนวนแต้ม:</p>
-        <p class="text-rose-600 font-bold">
-          {{ totalPoint }} <span class="text-sm font-normal text-gray-500">Point</span>
+        <p class="text-rose-600 font-bold">{{ totalPoint }} <span class="text-sm font-normal text-gray-500">Point</span>
         </p>
       </div>
       <div class="flex justify-between items-center">
         <p>แต้มคงเหลือ:</p>
-        <p class="text-green-600 font-bold">
-          {{ onUserAmount }} <span class="text-sm font-normal text-gray-500">Point</span>
-        </p>
+        <p class="text-green-600 font-bold">{{ onUserAmount }} <span
+            class="text-sm font-normal text-gray-500">Point</span></p>
       </div>
     </div>
-
-    <!-- ตะกร้ารางวัล
-    <div class="w-full bg-red-300 font-bold p-4 mt-8 rounded-lg">
-      <div class="grid grid-cols-2 mb-4">
+    <div class="w-full bg-red-300 font-bold p-4">
+      <div class="grid grid-cols-2">
         <div>
-          <button type="button" class="btn btn-sm btn-danger" @click="itemsCardReset">รีเซ็ต</button>
+          <button type="submit" class="btn btn-sm btn-danger" @click="itemsCardReset">reset</button>
         </div>
       </div>
-
       <div class="flex justify-end">
-        <p class="m-2">จำนวนรางวัลทั้งหมด: {{ cartItemCounters }}</p>
-        <p class="m-2">จำนวนแต้มทั้งหมด: {{ totalPoint }}</p>
+        <p class="m-2">
+          จำนวนรางวัลทั้งหมด {{ cartItemCounters }}
+        </p>
+        <p class="m-2">
+          จำนวนแต้มทั้งหมด {{ totalPoint }}
+        </p>
       </div>
-
       <div v-for="item in counterItems" :key="item.rewardID" class="mb-2">
         <p>ID: {{ item.rewardID }}</p>
         <p>Name: {{ item.rewardName }}</p>
@@ -122,15 +110,11 @@ onMounted(async () => {
         <p>Total Point: {{ item.rewardAmount * item.rewardPoint }}</p>
         <hr class="my-2 border-white" />
       </div>
-    </div> -->
-
-    <!-- Confirm Button -->
+    </div>
+    <!-- ปุ่ม Confirm -->
     <div class="flex justify-end mt-8">
-      <button
-        type="button"
-        @click="submitReward"
-        class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg shadow-md transition"
-      >
+      <button type="button" @click="submitReward"
+        class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg shadow-md transition">
         แลกของรางวัล
       </button>
     </div>

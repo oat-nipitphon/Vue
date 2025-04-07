@@ -9,7 +9,7 @@ import EditRewardView from '@/views/ADMIN/Reward/AdminEditRewardView.vue'
 import ModalShowRewardDetail from '@/components/Tailwind/ModalShowRewardDetail.vue'
 
 const rewardStore = useRewardStore()
-const { rewards } = storeToRefs(rewardStore)
+const { storeRewards } = storeToRefs(rewardStore)
 const { deleteReward } = useRewardStore()
 
 onMounted(async () => {
@@ -47,9 +47,9 @@ const toggleStatus = reward => {
             <th class="py-3 px-4 text-center font-bold">Event</th>
           </tr>
         </thead>
-        <tbody v-if="Array.isArray(rewards) && rewards.length > 0">
+        <tbody v-if="storeRewards">
           <tr
-            v-for="(reward, index) in rewards"
+            v-for="(reward, index) in storeRewards"
             :key="reward.id"
             class="border-b hover:bg-gray-100"
           >
@@ -145,7 +145,7 @@ const toggleStatus = reward => {
             </td>
           </tr>
         </tbody>
-        <tbody v-else>
+        <!-- <tbody v-else>
           <tr>
             <td
               colspan="7"
@@ -154,7 +154,7 @@ const toggleStatus = reward => {
               No rewards available
             </td>
           </tr>
-        </tbody>
+        </tbody> -->
       </table>
     </div>
   </div>
