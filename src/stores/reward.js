@@ -119,5 +119,29 @@ export const useRewardStore = defineStore('rewardStore', {
             }
         },
 
+
+        async getReportRewards(userID) {
+            try {
+
+                const res = await fetch(`/api/cartItems/getReportReward/${userID}`, {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                
+                const data = await res.json();
+
+                if (!res.ok) {
+                    console.log('store get report reward request false', res);
+                } else {
+                    return data.userPointCounter
+                }
+
+            } catch (error) {
+                console.error('store get report reward function error', error)
+            }
+        },
+
     }
 })

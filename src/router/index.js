@@ -40,7 +40,7 @@ import ReportRecoverPostsView from '@/views/USER/Posts/ReportRecoverPostsView.vu
 
 //  Reward 
 import DashboardRewardView from '@/views/Reward/DashboardRewardView.vue'
-
+import ReportReward from '@/views/Reward/ReportReward.vue'
 
 
 const router = createRouter({
@@ -123,6 +123,12 @@ const router = createRouter({
       path: '/reward/DashboardRewardView',
       name: 'DashboardRewardView',
       component: DashboardRewardView,
+      meta: { auth: true }
+    },
+    {
+      path: '/cartItems/getReportReward/:userID',
+      name: 'ReportReward',
+      component: ReportReward,
       meta: { auth: true }
     },
 

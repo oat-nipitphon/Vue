@@ -1,29 +1,54 @@
 <script setup>
-import { ref } from 'vue'
-import axiosAPI from '@/services/axiosAPI'
+import { ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
+import axiosAPI from '@/services/axiosAPI'
+import { useAuthStore } from '@/stores/auth'
 import { useRewardCartStore } from '@/stores/reward.cart'
-const rewardCartStore = useRewardCartStore()
-const { counterItems, cartItemCounters, totalPoint } = storeToRefs(rewardCartStore)
-const itemsCardReset = () => {
-  rewardCartStore.resetCart()
-}
+
 const props = defineProps({
   counterItems: Object,
   userID: Number,
 })
 
+const authStore = useAuthStore()
+const { storeUser } = storeToRefs(authStore)
+const userPoint = ref(storeUser.value?.user_login?.userPoint?.point || 0)
+
+const rewardCartStore = useRewardCartStore()
+const { counterItems, cartItemCounters, totalPoint } = storeToRefs(rewardCartStore)
+const itemsCardReset = () => {
+  rewardCartStore.resetCart()
+}
+
 const form = ref({
   userID: props.userID,
-  totalPoint: totalPoint,
+  userAmount: '',
   counterItems: counterItems,
+})
+
+
+const onUserAmount = computed(() => {
+  return userPoint.value - totalPoint.value
 })
 
 const onSave = async () => {
   const formData = new FormData()
   formData.append('userID', form.userID)
-  formData.append('totalPoint', form.totalPoint)
+  formData.append('userAmount', onUserAmount)
   formData.append('counterItems', JSON.stringify(form.counterItems))
+
+  const res = await axiosAPI.post(`/api/cartItems/userConfirmSelectReward`, formData, {
+    authorization: `Bearer ${localStorage.getItem('token')}`
+  });
+
+  const data = await res.json()
+
+  if (data.ok) {
+    console.log('confirm selecter reward success.', data)
+  } else {
+    console.log('error confirm selecter reward not success !!', data.error)
+  }
+
 }
 
 </script>
@@ -54,6 +79,7 @@ const onSave = async () => {
               <div class="flex justify-end">
                 <p class="m-2">จำนวนรางวัลทั้งหมด: {{ cartItemCounters }}</p>
                 <p class="m-2">จำนวนแต้มทั้งหมด: {{ totalPoint }}</p>
+                <p class="m-2">จำนวนแต้มคงเหลือ: {{ onUserAmount }}</p>
               </div>
 
               <div v-for="item in props.counterItems" :key="item.rewardID" class="mb-2">
@@ -69,7 +95,7 @@ const onSave = async () => {
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
               Close
             </button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-primary" @click="onSave">Save changes</button>
           </div>
         </div>
       </div>
