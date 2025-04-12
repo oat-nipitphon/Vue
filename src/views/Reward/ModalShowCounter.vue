@@ -33,22 +33,28 @@ const onUserAmount = computed(() => {
 
 const onSave = async () => {
   const formData = new FormData()
-  formData.append('userID', form.userID)
-  formData.append('userAmount', onUserAmount)
-  formData.append('counterItems', JSON.stringify(form.counterItems))
+  formData.append('userID', form.value.userID)
+  formData.append('userAmount', onUserAmount.value)
+  formData.append('counterItems', JSON.stringify(counterItems.value))
 
-  const res = await axiosAPI.post(`/api/cartItems/userConfirmSelectReward`, formData, {
-    authorization: `Bearer ${localStorage.getItem('token')}`
-  });
+  try {
+    const res = await axiosAPI.post(`/api/cartItems/userConfirmSelectReward`, formData, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    })
 
-  const data = await res.json()
+    const data = res.data
 
-  if (data.ok) {
-    console.log('confirm selecter reward success.', data)
-  } else {
-    console.log('error confirm selecter reward not success !!', data.error)
+    if (data.ok) {
+      console.log('✅ Confirm select reward success:', data)
+      // อาจเพิ่มการ resetCart() หรือแจ้งเตือน
+    } else {
+      console.error('❌ Error: Confirm select reward failed!', data.error)
+    }
+  } catch (error) {
+    console.error('❌ Request failed:', error)
   }
-
 }
 
 </script>
