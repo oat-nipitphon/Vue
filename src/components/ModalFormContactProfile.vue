@@ -47,6 +47,7 @@ const onSelectFileIcon = (event, index) => {
 }
 
 const onSaveContactProfile = async (event) => {
+
   const formData = new FormData()
   formData.append('profileID', props.profileID)
   contacts.forEach((contact, index) => {
@@ -57,10 +58,9 @@ const onSaveContactProfile = async (event) => {
     }
   })
 
-  const res = await axiosAPI.post('/api/profile/contacts', formData, {
+  const res = await axiosAPI.post('/api/profile/newContacts', formData, {
     headers: {
-      'Content-Type': 'multipart/form-data',
-      Authorization: `Bearer ${localStorage.getItem('token')}`
+      authorization: `Bearer ${localStorage.getItem('token')}`
     }
   });
 

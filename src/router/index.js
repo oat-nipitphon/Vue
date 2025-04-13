@@ -52,9 +52,15 @@ const router = createRouter({
     },
     {
       path: '/',
+      name: 'IndexView',
+      component: () => import('@/views/IndexView.vue'),
+      meta: { guest:true }
+    },
+    {
+      path: '/home',
       name: 'HomeView',
       component: HomeView,
-      meta: { guest: true }
+      meta: { auth: true }
     },
     {
       path: '/RegisterView',
@@ -198,12 +204,12 @@ router.beforeEach(async (to, from) => {
 
   if (!authStore.storeUser && to.meta.auth) {
     // Redirect unauthenticated users trying to access protected routes
-    return { name: 'HomeView' };
+    return { name: 'IndexView' };
   }
 
   if (authStore.storeUser && to.meta.guest) {
     // Redirect authenticated users trying to access guest routes
-    return { name: 'DashboardView' };
+    return { name: 'HomeView' };
   }
 });
 
