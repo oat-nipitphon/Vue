@@ -143,5 +143,29 @@ export const useRewardStore = defineStore('rewardStore', {
             }
         },
 
+
+        async cancelReward(rewardID, userID) {
+            try {
+                const res = fetch(`/api/cancel_reward/${rewardID}${userID}`, {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+
+                const data = (await res).json();
+
+                if(data.ok) {
+                    console.log('cancel reward success.');
+                } else {
+                    console.log('cancel reward mot success.');
+                }
+
+            } catch (error) {
+                console.error('function cancel reward error', error);
+            }
+        }
+
+
     }
 })
