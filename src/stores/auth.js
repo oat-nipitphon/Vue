@@ -50,17 +50,18 @@ export const useAuthStore = defineStore('authStore', {
         async apiStoreRegister(apiRouter, formData) {
 
             const result = await Swal.fire({
-                title: "ยืนยันข้อมูล",
-                text: "คุณต้องการลงทะเบียนใช่หรือไม่?",
+                title: "ยืนยันการลงทะเบียน",
+                text: "คุณต้องการใช้ข้อมูลนี้ สำหรับลงทะเบียนใช่หรือไม่ ?",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
-                confirmButtonText: "Confirm",
+                confirmButtonText: "ยืนยัน",
+                cancelButtonText: "ยกเลิก",
             });
 
             if (!result.isConfirmed) {
-                console.log('!isConfirmd');
+                // console.log('!isConfirmd');
                 result.dismiss === Swal.DismissReason.cancel
             }
 
@@ -89,7 +90,7 @@ export const useAuthStore = defineStore('authStore', {
             } else if (response.status === 500) {
                 Swal.fire({
                     title: "ข้อมูลผิดพลาด",
-                    text: `สถานะ 500 <br>` + data,
+                    text: `สถานะ 500 ` + data,
                 });
             } else {
                 Swal.fire({

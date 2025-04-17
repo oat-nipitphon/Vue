@@ -6,6 +6,9 @@ import { useAuthStore } from '@/stores/auth'
 const { apiStoreRegister, apiGetUserStatus } = useAuthStore()
 const userStatus = ref([])
 
+const emailError = ref('')
+const usernameError = ref('')
+
 const form = reactive({
   email: '',
   username: '',
@@ -14,19 +17,81 @@ const form = reactive({
   statusID: '',
 })
 
+
+// ตรวจสอบรูปแบบ Email + เช็คซ้ำ
+const checkEmail = async () => {
+  if (!form.email.includes('@')) {
+    emailError.value = 'รูปแบบอีเมลไม่ถูกต้อง เช่น example@gmail.com'
+    return
+  }
+
+  try {
+    const response = await axiosAPI.post('/api/check-email', { email: form.email })
+    if (response.data.exists) {
+      emailError.value = 'อีเมลนี้ถูกใช้งานแล้ว กรุณาใช้อีเมลอื่น'
+    } else {
+      emailError.value = 'อีเมลนี้สามารถใช้งานได้'
+    }
+  } catch (error) {
+    console.error(error)
+    emailError.value = 'เกิดข้อผิดพลาดในการตรวจสอบอีเมล'
+  }
+}
+
+// ตรวจสอบ Username ซ้ำ
+const checkUsername = async () => {
+  if (!form.username) {
+    usernameError.value = 'โปรดกรอกชื่อผู้ใช้'
+    return
+  }
+
+  try {
+    const response = await axiosAPI.post('/api/check-username', { username: form.username })
+    if (response.data.exists) {
+      usernameError.value = 'ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว'
+    } else {
+      usernameError.value = 'ชื่อผู้ใช้นี้สามารถใช้งานได้'
+    }
+  } catch (error) {
+    console.error(error)
+    usernameError.value = 'เกิดข้อผิดพลาดในการตรวจสอบชื่อผู้ใช้'
+  }
+}
+
+const passwordCheck = computed(() => {
+  if (!form.password) {
+    return `<p class="text-red-600 text-sm mt-2">
+      โปรดกรอกรหัสผ่าน สำหรับลงทะเบียน.
+    </p>`
+  }
+  if (form.password.length < 6) {
+    return `
+      <p class="text-red-600 text-sm mt-2">
+        รหัสผ่านต้องมีจำนวนมากกว่า 5 ตัว
+        </p>
+    `
+  }
+
+  return `<p class="text-green-600 text-sm mt-2">
+    รหัสผ่านถูกต้อง สามารถใช้งานได้.
+  </p>`
+
+})
+
 const passwordConfirmErrorMessage = computed(() => {
   if (!form.confirmPassword) {
     return `<p class="text-red-600 text-sm mt-2">
-      โปรดกรอกรหัสผ่านอีกครั้ง เพื่อยืนยัน
+      โปรดยืนยันรหัสผ่านอีกครั้ง สำหรับลงทะเบียน.
     </p>`
   }
   if (form.password !== form.confirmPassword) {
     return `<p class="text-red-600 text-sm mt-2">
-      รหัสผ่านของท่านไม่ตรงกัน
+      รหัสผ่านไม่ตรงกัน โปรดตรวจสอบรหัสผ่านของท่านอีกครั้ง
     </p>`
   }
+
   return `<p class="text-green-600 text-sm mt-2">
-    รหัสผ่านตรงกัน สามารถใช้งานได้
+    รหัสผ่านตรงกัน สามารถใช้งานได้.
   </p>`
 })
 
@@ -35,7 +100,7 @@ const getUserStatus = async () => {
     const response = await axiosAPI.get('/api/status_user');
 
     if (response.ok) {
-      console.log('response false', response)
+      // console.log('response false', response);
     } else {
       return response.data.userStatus
     }
@@ -55,8 +120,8 @@ onMounted(async () => {
       <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">
         ลงทะเบียน
       </h2>
+
       <form class="" @submit.prevent="apiStoreRegister(`register`, form)">
-        <!-- Status Dropdown -->
         <div class="inline-block relative w-full">
           <label for="User-Status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
             สถานะบัญชี
@@ -69,48 +134,60 @@ onMounted(async () => {
             </option>
           </select>
           <p v-if="!form.statusID" class="text-red-600 text-sm mt-2">
-            โปรดเลือกสถานะบัญชีเข้าใช้งานระบบ.
+            โปรดเลือกสถานะบัญชี เข้าใช้งานระบบ.
           </p>
           <p v-else class="text-green-600 text-sm mt-2">
-            สถานะถูกต้อง สามารถใช้งานได้.
+            เลือกสถานะบัญชีสำเร็จ.
           </p>
         </div>
+
         <div class="grid grid-cols-2">
-          <!-- Email Field -->
           <div class="p-2">
             <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
               อีเมล์
             </label>
-            <input
+            <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+            type="email" id="email" required placeholder="example@gmail.com" v-model="form.email"
+              @blur="checkEmail" />
+            <p :class="emailError.includes('สามารถ') ? 'text-green-600' : 'text-red-600'" class="text-sm mt-2">
+              {{ emailError }}
+            </p>
+            <!-- <input
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
               type="email" id="email" required placeholder="example@gmail.com" v-model="form.email" />
             <p v-if="!form.email" class="text-red-600 text-sm mt-2">
               โปรดกรอกอีเมล์ สำหรับลงทะเบียน.
             </p>
             <p v-else class="text-green-600 text-sm mt-2">
-              อีเมล์ถูกต้อง สามารถใช้งานได้.
-            </p>
+              อีเมล์นี้ สามารถใช้งานได้.
+            </p> -->
           </div>
 
-          <!-- Username Field -->
+
           <div class="p-2">
             <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
               ชื่อผู้ใช้
             </label>
             <input
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+            type="text" id="username" required placeholder="example" v-model="form.username"
+              @blur="checkUsername" />
+            <p :class="usernameError.includes('สามารถ') ? 'text-green-600' : 'text-red-600'" class="text-sm mt-2">
+              {{ usernameError }}
+            </p>
+            <!-- <input
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
               type="username" id="username" required placeholder="example" v-model="form.username" />
             <p v-if="!form.username" class="text-red-600 text-sm mt-2">
               โปรดกรอกชื่อผู้ใช้ สำหรับลงทะเบียน.
             </p>
             <p v-else class="text-green-600 text-sm mt-2">
-              ชื่อผู้ใช้ถูกต้อง สามารถใช้งานได้.
-            </p>
+              ชื่อผู้ใช้นี้ สามารถใช้งานได้.
+            </p> -->
           </div>
         </div>
 
         <div class="grid grid-cols-2">
-          <!-- Password Field -->
           <div class="p-2">
             <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
               รหัสผ่าน
@@ -118,25 +195,22 @@ onMounted(async () => {
             <input
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
               type="password" id="password" required="" placeholder="password" v-model="form.password" />
-            <p v-if="!form.password" class="text-red-600 text-sm mt-2">
-              โปรดกรอกรหัสผ่าน.
-            </p>
-            <p v-else class="text-green-600 text-sm mt-2">
-              รหัสผ่านถูกต้อง สามารถใช้งานได้
+            <p v-html="passwordCheck"></p>
+            <p>
+              {{ }}
             </p>
           </div>
 
-          <!-- Confirm Password Field -->
           <div class="p-2">
             <label for="confirm-password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              ยืนยันรหัสผ่านอีกครั้ง
+              โปรดยืนยันรหัสผ่านอีกครั้ง.
             </label>
             <input
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
               type="password" id="confirmPassword" required placeholder="confirm password"
               v-model="form.confirmPassword" />
             <p v-html="passwordConfirmErrorMessage"></p>
-            <p>{{  }}</p>
+            <p>{{ }}</p>
           </div>
 
         </div>
