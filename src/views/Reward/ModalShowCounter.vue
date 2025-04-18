@@ -39,7 +39,7 @@ const onSave = async () => {
   formData.append('counterItems', JSON.stringify(counterItems.value))
 
   try {
-    
+
     const res = await axiosAPI.post(`/api/cartItems/userConfirmSelectReward`, formData, {
       headers: {
         authorization: `Bearer ${localStorage.getItem('token')}`
@@ -67,38 +67,44 @@ const onSave = async () => {
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-md">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">ของรางวัลที่คุณเลือก</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+            </button>
           </div>
           <div class="modal-body" v-if="props.counterItems">
             <!-- ตะกร้ารางวัล -->
             <div class="w-max-full">
-              <div v-for="item in props.counterItems" :key="item.rewardID" class="mb-2">
-                <p>ID: {{ item.rewardID }}</p>
-                <p>Name: {{ item.rewardName }}</p>
-                <p>Amount: {{ item.rewardAmount }}</p>
-                <p>Total Point: {{ item.rewardAmount * item.rewardPoint }}</p>
+              <div v-for="(item, index) in props.counterItems" :key="index" class="mb-2">
+                <p>ไอดี: {{ index }}</p>
+                <p>ชื่อ: {{ item.rewardName }}</p>
+                <p>จำนวน: {{ item.rewardAmount }}</p>
+                <p>รวม: {{ item.rewardAmount * item.rewardPoint }}</p>
                 <hr class="my-2 border-white" />
               </div>
             </div>
           </div>
-          <div class="modal-footer text-center">
-              <div class="grid grid-cols-3">
-                <div class="m-auto p-3">จำนวนรางวัล: {{ cartItemCounters }}</div>
-                <div class="m-auto p-3">จำนวนแต้ม: {{ totalPoint }}</div>
-                <div class="m-auto p-3">แต้มคงเหลือ: {{ onUserAmount }}</div>
+          <div class="p-3">
+            <div class="grid grid-rows-2">
+              <div class="grid grid-cols-3 bg-yellow-100  border-b-2">
+                <div class="font-normal text-gray-900 text-1xl m-auto p-2">จำนวนรางวัล: {{ cartItemCounters }}</div>
+                <div class="font-normal text-gray-900 text-1xl m-auto p-2">จำนวนแต้ม: {{ totalPoint }}</div>
+                <div class="font-normal text-gray-900 text-1xl m-auto p-2">แต้มคงเหลือ: {{ onUserAmount }}</div>
               </div>
-            <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-              Close
-            </button>
-            <button type="button" class="btn btn-primary" @click="onSave">Save changes</button> -->
+              <div class="flex justify-end p-2">
+                <button type="button" class="btn btn-sm btn-primary m-2" @click="onSave">แลกรางวัล</button>
+
+                <button type="button" class="btn btn-sm btn-outline-danger m-2" @click="itemsCardReset">
+                  รีเช็ต
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
-

@@ -27,13 +27,6 @@ const resetCart = () => {
     <div
       class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8"
     >
-      <!-- <div class="grid grid-cols-2">
-        <h2 class="text-2xl font-bold tracking-tight text-gray-900">Rewards</h2>
-        <button class="btn btn-sm btn-danger mr-5 mt-auto" @click="resetCart">
-          reset
-        </button>
-      </div> -->
-
       <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-10">
         <!-- Start Array Card Reward Items -->
         <div v-for="reward in props.rewards" :key="reward.id" class="m-3">
@@ -62,8 +55,8 @@ const resetCart = () => {
                   {{ reward.name }}
                 </span>
               </h3>
-              <span class="text-3md font-medium mt-auto">
-                amount {{ reward.amount }}
+              <span class="text-1xl font-normal mt-auto">
+                คงเหลือ {{ reward.amount }}
               </span>
             </div>
             <div class="gird grid-rows-2 text-right">
