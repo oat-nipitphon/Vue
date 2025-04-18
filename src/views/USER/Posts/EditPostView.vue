@@ -125,19 +125,19 @@ const onUpdatePost = async () => {
     });
 
     Swal.fire({
-      title: 'Edit Post!',
-      text: 'Your confirm update post?',
+      title: 'ยืนยันการแก้ไข!',
+      text: 'คุณแน่ใจที่จะแก้ไขบทความนี้ ใช่หรือไม่ ?',
       icon: 'warning',
       showCancelButton: true,
       cancelButtonColor: '#d33',
-      cancelButtonText: 'Cancel',
+      cancelButtonText: 'ยกเลิก',
       confirmButtonColor: '#3085d6',
-      confirmButtonText: 'Update',
+      confirmButtonText: 'ยืนยัน',
     }).then(result => {
       if (result.isConfirmed) {
         Swal.fire({
-          title: 'Success',
-          text: 'Update post successfully.',
+          title: 'แก้ไขบทความสำเร็จ',
+          text: 'คุณได้แก้ไขบทความสำเร็จแล้ว !!',
           icon: 'success',
           timer: 1500,
           timerProgressBar: 1500
@@ -190,14 +190,14 @@ onMounted(async () => {
 </script>
 <template>
   <div v-if="posts" class="bg-white rounded-xl shadow-lg mt-5 max-w-5xl m-auto p-10">
-    <label for="title-edit-text" class="block mb-2 text-4xl font-medium text-gray-900 dark:text-white">
-      Edit Post ID: {{ form.postID }}
+    <label for="title-edit-text" class="block mb-2 text-3xl font-medium text-gray-900 dark:text-white">
+      แก้ไขบทความ {{ form.title }}
     </label>
 
     <!-- Post Type Selection -->
     <div class="grid mt-5" v-if="isSelectType">
-      <label for="countries" class="block mb-2 text-xl font-medium text-gray-900 dark:text-white">
-        Select Post Type
+      <label for="countries" class="block mb-2 text-1xl font-medium text-gray-900 dark:text-white">
+        หมวดหมู่
       </label>
       <select
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -205,7 +205,7 @@ onMounted(async () => {
         <option v-for="type in postTypes" :key="type.id" :value="type.id">
           {{ type.post_type_name }}
         </option>
-        <option value="new">Add New Type +</option>
+        <option value="new">เพิ่มหมวดหมู่ +</option>
       </select>
     </div>
 
@@ -214,12 +214,12 @@ onMounted(async () => {
       <div class="grid grid-cols-2">
         <div>
           <label for="newTypePost" class="block mb-2 text-xl font-medium text-gray-900 dark:text-white">
-            New Type Post
+            ชื่อหมวดหมู่
           </label>
         </div>
         <div v-if="isButtonSelect" class="flex justify-end mt-auto mb-auto">
-          <button @click="onSelectAgain" class="btn btn-sm btn-outline-primary">
-            Select Post Type
+          <button @click="onSelectAgain" class="btn btn-sm">
+            เลือกหมวดหมู่ที่มีอยู่แล้ว
           </button>
         </div>
       </div>
@@ -228,24 +228,24 @@ onMounted(async () => {
 
     <!-- Post Title -->
     <div class="mt-3">
-      <label for="postTitle" class="block text-xl font-medium text-gray-900 dark:text-white">
-        Title
+      <label for="postTitle" class="block text-1xl font-medium text-gray-900 dark:text-white">
+        หัวข้อ
       </label>
       <input id="postTitle" v-model="form.title" type="text" class="form-control mt-2" placeholder="Enter Post Title" />
     </div>
 
     <!-- Post Content (Editor) -->
     <div class="mt-3">
-      <label for="postContent" class="block text-xl font-medium text-gray-900 dark:text-white">
-        Content
+      <label for="postContent" class="block text-1xl font-medium text-gray-900 dark:text-white">
+        เนื้อหา
       </label>
       <EditorTipTap v-model="form.content" id="postContent" />
     </div>
 
     <!-- Post Reference -->
     <div class="mt-2">
-      <label for="postRefer" class="block text-xl font-medium text-gray-900 dark:text-white">
-        Reference
+      <label for="postRefer" class="block text-1xl font-medium text-gray-900 dark:text-white">
+        แหล่งอ้างอิง
       </label>
       <input id="postRefer" v-model="form.refer" type="text" class="form-control mt-2"
         placeholder="Enter Reference URL" />
@@ -253,8 +253,8 @@ onMounted(async () => {
 
     <!-- Upload File Section -->
     <div class="mt-3">
-      <label for="fileImage" class="block text-xl font-medium text-gray-900 dark:text-white">Upload Image</label>
-      <div class="bg-white">
+      <label for="fileImage" class="block text-1xl font-medium text-gray-900 dark:text-white">รูปภาพ</label>
+      <div class="bg-white mt-2">
         <input id="fileImage" accept="image/*" type="file"
           class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
           @change="handleImageSelected" />
@@ -279,10 +279,10 @@ onMounted(async () => {
     <!-- Action Buttons -->
     <div class="flex justify-end mt-5">
       <button @click="onUpdatePost" type="button" class="btn btn-primary btn-sm m-3">
-        Update
+        แก้ไข
       </button>
       <button @click="onCancel" type="button" class="btn btn-danger btn-sm m-3">
-        Cancel
+        ยกเลิก
       </button>
     </div>
   </div>

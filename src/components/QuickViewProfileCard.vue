@@ -17,7 +17,7 @@ const toggleShowQuickView = () => {
       <img
         @click="toggleShowQuickView"
         :src="props.imageProfile"
-        class="size-8 rounded-full"
+        class="size-12 rounded-full"
       />
     </div>
     <TransitionRoot as="template" :show="open">

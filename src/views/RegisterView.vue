@@ -6,8 +6,8 @@ import { useAuthStore } from '@/stores/auth'
 const { apiStoreRegister, apiGetUserStatus } = useAuthStore()
 const userStatus = ref([])
 
-const emailError = ref('')
-const usernameError = ref('')
+const emailError = ref('ตัวอย่าง example@gmail.com')
+const usernameError = ref('ตัวอย่าง example1234')
 
 const form = reactive({
   email: '',
@@ -26,15 +26,17 @@ const checkEmail = async () => {
   }
 
   try {
-    const response = await axiosAPI.post('/api/check-email', { email: form.email })
+    const response = await axiosAPI.post('/api/register/check_email', { email: form.email })
     if (response.data.exists) {
       emailError.value = 'อีเมลนี้ถูกใช้งานแล้ว กรุณาใช้อีเมลอื่น'
     } else {
       emailError.value = 'อีเมลนี้สามารถใช้งานได้'
     }
+
   } catch (error) {
     console.error(error)
     emailError.value = 'เกิดข้อผิดพลาดในการตรวจสอบอีเมล'
+    
   }
 }
 
@@ -46,7 +48,7 @@ const checkUsername = async () => {
   }
 
   try {
-    const response = await axiosAPI.post('/api/check-username', { username: form.username })
+    const response = await axiosAPI.post('/api/register/check_username', { username: form.username })
     if (response.data.exists) {
       usernameError.value = 'ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว'
     } else {
@@ -152,15 +154,6 @@ onMounted(async () => {
             <p :class="emailError.includes('สามารถ') ? 'text-green-600' : 'text-red-600'" class="text-sm mt-2">
               {{ emailError }}
             </p>
-            <!-- <input
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              type="email" id="email" required placeholder="example@gmail.com" v-model="form.email" />
-            <p v-if="!form.email" class="text-red-600 text-sm mt-2">
-              โปรดกรอกอีเมล์ สำหรับลงทะเบียน.
-            </p>
-            <p v-else class="text-green-600 text-sm mt-2">
-              อีเมล์นี้ สามารถใช้งานได้.
-            </p> -->
           </div>
 
 
@@ -175,15 +168,6 @@ onMounted(async () => {
             <p :class="usernameError.includes('สามารถ') ? 'text-green-600' : 'text-red-600'" class="text-sm mt-2">
               {{ usernameError }}
             </p>
-            <!-- <input
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              type="username" id="username" required placeholder="example" v-model="form.username" />
-            <p v-if="!form.username" class="text-red-600 text-sm mt-2">
-              โปรดกรอกชื่อผู้ใช้ สำหรับลงทะเบียน.
-            </p>
-            <p v-else class="text-green-600 text-sm mt-2">
-              ชื่อผู้ใช้นี้ สามารถใช้งานได้.
-            </p> -->
           </div>
         </div>
 

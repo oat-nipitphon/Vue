@@ -21,7 +21,7 @@ const { apiGetPostTypes, apiCreatePostNew } = usePostStore()
 
 const form = ref({
   title: '',
-  content: "<p>I'm running Tiptap with Vue.js. 🎉</p>",
+  content: "<p> เริ่มเขียนบทความของคุณ เพื่อรับ 100 คะแนน สำหรับแลกรับของรางวัล 🎉</p>",
   refer: '',
   typeID: '',
   newType: '',
@@ -80,23 +80,23 @@ const onCreatePost = async () => {
     })
 
     Swal.fire({
-      title: 'New Post!',
-      text: 'Your confirm create new post?',
+      title: 'ยืนยันสร้างบทความ !',
+      text: 'คุณแน่ใจที่จะสร้างบทความนี้ ใช่หรือไม่ ?',
       icon: 'warning',
       showCancelButton: true,
       cancelButtonColor: '#d33',
-      cancelButtonText: 'Cancel',
+      cancelButtonText: 'ยกเลิก',
       confirmButtonColor: '#3085d6',
-      confirmButtonText: 'Confirm',
+      confirmButtonText: 'บันทึก',
     }).then(result => {
       if (result.isConfirmed) {
         Swal.fire({
           title: 'Success',
-          text: 'Create new successfully.',
+          text: 'สร้างบทความสำเร็จ',
           icon: 'success',
           timer: 1500,
         }).then(() => {
-          console.log('create post success response', response)
+          // console.log('create post success response', response)
           router.push({ name: 'DashboardView' })
         })
       }
@@ -112,23 +112,23 @@ const onCancel = () => {
 
 onMounted(async () => {
   postTypes.value = await apiGetPostTypes()
-  console.log('create post get post type ', postTypes.value)
+  // console.log('create post get post type ', postTypes.value)
 })
 </script>
 <template>
   <div class="bg-white rounded-xl shadow-lg mt-5 max-w-5xl m-auto p-10">
     <label
       for="countries"
-      class="block mb-2 text-4xl font-medium text-gray-900 dark:text-white"
-      >Create New Post</label
+      class="block mb-2 text-3xl font-medium text-gray-900 dark:text-white"
+      >สร้างบทความ</label
     >
 
     <!-- Select Type Post -->
     <div class="grid mt-5" v-if="isSelectType">
       <label
         for="countries"
-        class="block mb-2 text-xl font-medium text-gray-900 dark:text-white"
-        >Select Post Type</label
+        class="block mb-2 text-1xl font-medium text-gray-900 dark:text-white"
+        >หมวดหมู่</label
       >
       <select
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -138,7 +138,7 @@ onMounted(async () => {
         <option v-for="type in postTypes" :key="type.id" :value="type.id">
           {{ type.post_type_name }}
         </option>
-        <option value="new">Add New Type +</option>
+        <option value="new">เพิ่มหมวดหมู่ +</option>
       </select>
     </div>
 
@@ -148,13 +148,13 @@ onMounted(async () => {
         <div>
           <label
             for="newTypePost"
-            class="block mb-2 text-xl font-medium text-gray-900 dark:text-white"
-            >New Post Type</label
+            class="block mb-2 text-1xl font-medium text-gray-900 dark:text-white"
+            >ชื่อหมวดหมู่</label
           >
         </div>
         <div v-if="isButtonSelect" class="flex justify-end mt-auto mb-auto">
-          <button @click="onSelectAgain" class="btn btn-sm btn-outline-primary">
-            <label>Select Post Type</label>
+          <button @click="onSelectAgain" class="btn btn-sm">
+            <label class="font-bold">เลือกหมวดหมู่ที่มีอยู่แล้ว</label>
           </button>
         </div>
       </div>
@@ -170,8 +170,8 @@ onMounted(async () => {
     <div class="mt-3">
       <label
         for="postTitle"
-        class="block text-xl font-medium text-gray-900 dark:text-white"
-        >Title</label
+        class="block text-1xl font-medium text-gray-900 dark:text-white"
+        >หัวข้อ</label
       >
       <input
         id="postTitle"
@@ -185,8 +185,8 @@ onMounted(async () => {
     <div class="mt-3">
       <label
         for="postContent"
-        class="block text-xl font-medium text-gray-900 dark:text-white"
-        >Content</label
+        class="block text-1xl font-medium text-gray-900 dark:text-white"
+        >เนื้อหา</label
       >
       <EditorTipTap required v-model="form.content" id="postContent" />
     </div>
@@ -195,8 +195,8 @@ onMounted(async () => {
     <div class="mt-3">
       <label
         for="postRefer"
-        class="block text-xl font-medium text-gray-900 dark:text-white"
-        >Refer</label
+        class="block text-1xl font-medium text-gray-900 dark:text-white"
+        >แหล่งอ้างอิง</label
       >
       <input
         id="postRefer"
@@ -210,10 +210,10 @@ onMounted(async () => {
     <div class="mt-3">
       <label
         for="fileImage"
-        class="block text-xl font-medium text-gray-900 dark:text-white"
-        >Upload Image</label
+        class="block text-1xl font-medium text-gray-900 dark:text-white"
+        >รูปภาพ</label
       >
-      <div class="bg-white">
+      <div class="bg-white mt-2">
         <input
           id="fileImage"
           accept="image/*"
@@ -239,10 +239,10 @@ onMounted(async () => {
         type="button"
         class="btn btn-primary btn-sm m-3"
       >
-        Save
+        บันทึก
       </button>
       <button @click="onCancel" type="button" class="btn btn-danger btn-sm m-3">
-        Cancel
+        ยกเลิก
       </button>
     </div>
   </div>

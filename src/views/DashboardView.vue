@@ -1,4 +1,5 @@
 <script setup>
+import axiosAPI from '@/services/axiosAPI'
 import { ref, onMounted, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { storeToRefs } from 'pinia'
@@ -78,21 +79,85 @@ const modalValuePostContent = content => {
   selectedPostContent.value = content
 }
 
-const formatDate = dateString => {
-  const date = new Date(dateString)
-  return date.toLocaleString('th-TH', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    // hour: "2-digit",
-    // minute: "2-digit",
-    // second: "2-digit",
-    // timeZoneName: "short",
-  })
-}
+const formatDateTime = (dateTime) => {
+  if (!dateTime) return '-';
+
+  const date = new Date(dateTime);
+
+  const year = date.getFullYear() + 543; // แปลงเป็น พ.ศ.
+  const month = date.getMonth(); // 0-11
+  const day = date.getDate();
+
+  const hour = date.getHours().toString().padStart(2, '0');
+  const minute = date.getMinutes().toString().padStart(2, '0');
+  const second = date.getSeconds().toString().padStart(2, '0');
+
+  const thaiMonths = [
+    'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+    'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+  ];
+
+  return `${day} ${thaiMonths[month]} ${year} เวลา ${hour}:${minute}:${second} น.`;
+};
 
 const onModalShowUserProfile = userProfile => {
   selectedUserProfile.value = userProfile
+}
+
+const onFollowers = async (postUserID, authUserID) => {
+  console.log('postUserID', postUserID);
+  console.log('authUserID', authUserID);
+  try {
+    const res = await axiosAPI.post(
+      `/api/followers/${postUserID}/${authUserID}`,
+      {}, // ถ้าไม่มี body ให้ส่งเป็น {} ไป
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json', // หรือเอาออกไปเลยก็ได้ถ้าไม่มี file upload
+        }
+      }
+    );
+
+
+    if (res.error) {
+      console.log('api followers error', res);
+    }
+
+    console.log('api followers success', res);
+    posts.value = await apiGetPosts()
+  } catch (error) {
+    console.error('function followers error', error);
+  }
+}
+
+const onPopLike = async (postUserID, authUserID) => {
+  console.log('postUserID', postUserID);
+  console.log('authUserID', authUserID);
+  try {
+    const res = await axiosAPI.post(
+      `/api/pop_like/${postUserID}/${authUserID}`,
+      {}, // ถ้าไม่มี body ให้ส่งเป็น {} ไป
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json', // หรือเอาออกไปเลยก็ได้ถ้าไม่มี file upload
+        }
+      }
+    );
+
+
+    if (res.error) {
+      console.log('api pop like error', res);
+    }
+
+    console.log('api pop like success', res);
+
+    posts.value = await apiGetPosts()
+
+  } catch (error) {
+    console.error('function pop like error', error);
+  }
 }
 
 onMounted(async () => {
@@ -133,13 +198,46 @@ onMounted(async () => {
                 <div class="space-y-0.5 font-medium dark:text-white text-left rtl:text-right ms-3">
                   <div>{{ post.userProfile?.fullName }}</div>
                   <div class="text-sm text-gray-500 dark:text-gray-400">
-                    {{ post.user?.email }}
+                    <div class="grid grid-cols-2">
+                      <div class="flex justify-center">
+                        <div class="grid grid-cols-2">
+                          <div class="flex justify-center items-center">
+                            <button class="btn btn-sm btn-outline-primary"
+                              @click="onFollowers(post.userProfile?.id, authStore.storeUser.user_login?.id)">
+                              Followers
+                            </button>
+                          </div>
+                          <div class="text-center">
+                            <p class="m-auto mt-auto text-gray-700 text-md-2xl">
+                              {{post.userFollowersProfile.filter(followers => followers.status_followers ===
+                                'true').length || 0}}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex justify-center">
+                        <div class="grid grid-cols-2">
+                          <div class="flex justify-center items-center">
+                            <button class="btn btn-sm btn-outline-primary"
+                              @click="onPopLike(post.userProfile?.id, authStore.storeUser.user_login?.id)">
+                              Like
+                            </button>
+                          </div>
+                          <div class="text-center">
+                            <p class="m-auto mt-auto text-gray-700 text-md-2xl">
+                              {{post.userPopularityProfiles.filter(popLike => popLike.status_pop === 'true').length ||
+                              0 }}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </figcaption>
             </figure>
             <label class="font-semibold text-sm text-gray-700 mt-2 ml-5">
-              สร้างโพสต์ วันที่ {{ formatDate(post.createdAt) }}
+              สร้างโพสต์ วันที่ {{ formatDateTime(post.updatedAt) }}
             </label>
           </div>
           <div class="grid grid-cols-2">
@@ -153,7 +251,7 @@ onMounted(async () => {
                     <form @submit.prevent="apiStorePost(post.id)">
                       <button class="dropdown-item" type="submit">
                         <label for="Event-Store" class="text-sm ml-2 text-gray-900">
-                          Store
+                          จัดเก็บ
                         </label>
                       </button>
                     </form>
@@ -164,14 +262,14 @@ onMounted(async () => {
                       params: { id: post.id },
                     }" class="dropdown-item">
                       <label for="Event-Post-Edit" class="text-sm ml-2 text-gray-900">
-                        Edit
+                        แก้ไข
                       </label>
                     </RouterLink>
                   </li>
                   <li>
                     <button @click="apiDeletePost(post.id)" class="dropdown-item">
                       <label for="Event-Post-Delete" class="text-sm ml-2 text-gray-900">
-                        Delete
+                        ลบ
                       </label>
                     </button>
                   </li>
@@ -194,7 +292,7 @@ onMounted(async () => {
               data-bs-toggle="modal" data-bs-target="#modalShowMovePostContents"
               @click="modalValuePostContent(post.content)">
               <p class="flex justify-between text-blue-600 text-sm m-auto">
-                More ...
+                อ่านเพิ่มเติม ...
               </p>
             </button>
             <div class="modal fade" id="modalShowMovePostContents" tabindex="-1" aria-labelledby="exampleModalLabel"
@@ -210,7 +308,7 @@ onMounted(async () => {
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">
-                      Close
+                      ปิด
                     </button>
                   </div>
                 </div>
@@ -277,7 +375,7 @@ onMounted(async () => {
     </div>
 
     <div v-else class="flex justify-center mt-5">
-      <p class="text-lg font-medium text-red-600">No posts available</p>
+      <p class="text-lg font-medium text-red-600">ไม่มีเนื้อหาบทความ</p>
     </div>
   </div>
 </template>

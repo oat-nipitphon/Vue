@@ -51,6 +51,11 @@ onUnmounted(() => {
   window.removeEventListener('click', closeDropdown)
 })
 
+const onCreatePost = () => {
+  router.push({ name: 'CreatePostNewView' })
+  isMobileDropdownOpen.value = false
+}
+
 const onHome = () => {
   router.push({ name: 'DashboardView' })
   isMobileDropdownOpen.value = false
@@ -87,6 +92,7 @@ const onLogout = async () => {
   await apiStoreLogout()
   isMobileDropdownOpen.value = false
 }
+
 </script>
 <template>
   <div v-if="authStore.storeUser">
@@ -96,9 +102,9 @@ const onLogout = async () => {
           <!-- Navbar Left -->
           <div class="flex items-center">
             <!-- Image icon tailwind -->
-            <div class="shrink-0">
+            <!-- <div class="shrink-0">
               <img @click="onHome" class="size-8" src="../assets/icon/tailwind.png" alt="Your Company" />
-            </div>
+            </div> -->
 
             <!-- Navbar Main Left -->
             <div class="hidden md:block">
@@ -108,48 +114,61 @@ const onLogout = async () => {
                 Default:   "text-gray-300 hover:bg-gray-700 hover:text-white"
                             "ml-10 flex items-baseline space-x-4"
                  -->
-                <!-- <RouterLink
-                  :aria-current="isActive('DashboardView')"
-                  :class="navClass('DashboardView')"
-                  :to="{ name: 'DashboardView' }"
-                >
-                  Home
-                </RouterLink> -->
+                <RouterLink :aria-current="isActive('DashboardView')" :class="navClass('DashboardView')"
+                  :to="{ name: 'DashboardView' }">
+                  หน้าหลัก
+                </RouterLink>
+
+                <RouterLink :aria-current="isActive('CreatePostNewView')" :class="navClass('CreatePostNewView')" :to="{
+                  name: 'CreatePostNewView'
+                }">
+                  สร้างบทความ
+                </RouterLink>
 
                 <RouterLink :aria-current="isActive('ReportRecoverPostsView')"
                   :class="navClass('ReportRecoverPostsView')" :to="{
                     name: 'ReportRecoverPostsView',
                     params: { userID: authStore.storeUser.user_login.id },
                   }">
-                  Recover Post
+                  กู้คืนบทความ
                 </RouterLink>
 
                 <RouterLink :aria-current="isActive('DashboardProfile')" :class="navClass('DashboardProfile')" :to="{
                   name: 'DashboardProfile',
                   params: { id: authStore.storeUser.user_login.id },
                 }">
-                  Dashboard Profile
+                  โปรไฟล์ผู้ใช้
                 </RouterLink>
 
                 <RouterLink :aria-current="isActive('DashboardRewardView')" :class="navClass('DashboardRewardView')"
                   :to="{
                     name: 'DashboardRewardView',
                   }">
-                  Dashboard Reward
+                  แลกของรางวัล
                 </RouterLink>
 
                 <RouterLink :aria-current="isActive('AdminDashboardView')" :class="navClass('AdminDashboardView')"
                   :to="{ name: 'AdminDashboardView' }" v-if="isAdmin">
-                  Dashboard Admin
+                  หน้าหลักแอดมิน
                 </RouterLink>
               </div>
             </div>
           </div>
 
           <div class="hidden md:block">
-            <div class="ml-4 flex items-center md:ml-6">
+            <div class="ml-4 flex md:ml-6">
+
+              <div class="grid grid-cols-2">
+                <div class="flex justify-center font-blod m-auto text-white">
+                  คะแนน
+                </div>
+                <div class="flex justify-center font-blod m-auto text-white">
+                  {{ authStore.storeUser?.user_login?.userPoint?.point || 0 }}
+                </div>
+              </div>
+
               <!-- Notifications -->
-              <button type="button"
+              <!-- <button type="button"
                 class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                 <span class="absolute -inset-1.5"></span>
                 <span class="sr-only">View notifications</span>
@@ -158,7 +177,7 @@ const onLogout = async () => {
                   <path stroke-linecap="round" stroke-linejoin="round"
                     d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
                 </svg>
-              </button>
+              </button> -->
 
               <!-- Profile dropdown -->
               <div class="relative ml-3">
@@ -166,22 +185,17 @@ const onLogout = async () => {
 
                 <div class="text-white text-center" v-for="(image, index) in authStore.storeUser.user_login
                   .userImage" :key="index">
-                  <div v-if="image.imageData !== null">
+                  <div>
                     <button type="button" @click="toggleMainDropdown"
                       class="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                       id="navbar-main-menu" aria-expanded="false" aria-haspopup="true">
                       <span class="absolute -inset-1.5"></span>
                       <span class="sr-only">Open user menu</span>
-                      <img class="size-8 rounded-full" :src="'data:image/png;base64,' + image.imageData" alt="" />
-                    </button>
-                  </div>
-                  <div v-else>
-                    <button type="button" @click="toggleMainDropdown"
-                      class="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                      id="navbar-main-menu" aria-expanded="false" aria-haspopup="true">
-                      <span class="absolute -inset-1.5"></span>
-                      <span class="sr-only">Open user menu</span>
-                      <img class="size-8 rounded-full" src="../assets/icon/icon-user-default.png" alt="" />
+                      <img
+                        class="size-8 rounded-full"
+                        :src="image.imageData ? 'data:image/png;base64,' + image.imageData : 'https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg'"
+                        alt=""
+                      />
                     </button>
                   </div>
                 </div>
@@ -204,21 +218,24 @@ const onLogout = async () => {
                     @click="onHome"
                     >Home</span
                   > -->
-                  <span class="block px-4 py-2 text-sm text-gray-700 btn btn-sm" @click="onAdminManager" v-if="isAdmin">
-                    Dashboard Admin
+                  <span class="block px-4 py-2 text-sm text-gray-700 btn btn-sm" @click="onHome">
+                    หน้าหลัก
                   </span>
-                  <span class="block px-4 py-2 text-sm text-gray-700 btn btn-sm" @click="onDashboardProfile">Dashboard
-                    Profile</span>
+                  <span class="block px-4 py-2 text-sm text-gray-700 btn btn-sm" @click="onRecoverPost">
+                    กู้คืนบทความ
+                  </span>
+                  <span class="block px-4 py-2 text-sm text-gray-700 btn btn-sm" @click="onDashboardProfile">
+                    โปรไฟล์ผู้ใช้
+                  </span>
 
                   <span class="block px-4 py-2 text-sm text-gray-700 btn btn-sm" @click="onReward">
-                    Dashboard Reward
+                    แลกของรางวัล
                   </span>
-
-                  <span class="block px-4 py-2 text-sm text-gray-700 btn btn-sm" @click="onRecoverPost">Recover
-                    Post</span>
-
+                  <span class="block px-4 py-2 text-sm text-gray-700 btn btn-sm" @click="onAdminManager" v-if="isAdmin">
+                    หน้าหลักแอดมิน
+                  </span>
                   <span class="block px-4 py-2 text-sm text-gray-700 btn btn-sm" @click="onLogout">
-                    Logout
+                    ออกจากระบบ
                   </span>
 
                   <!-- <a
@@ -287,26 +304,33 @@ const onLogout = async () => {
                 </div>
               </div>
               <div class="mt-3 space-y-1 px-2">
-                <!-- <span
-                  class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                  @click="onHome"
-                  >Home</span
-                > -->
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                  @click="onAdminManager" v-if="isAdmin">
-                  Dashboard Admin
+                  @click="onCreatePost">
+                  สร้างบทความ
                 </span>
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                  @click="onDashboardProfile">Dashboard Profile</span>
+                  @click="onHome">หน้าหลัก</span>
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                  @click="onRecoverPost">Recover Post</span>
+                  @click="onRecoverPost">กู้คืนบทความ</span>
+
+                <span
+                  class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                  @click="onDashboardProfile">โปรไฟล์ผู้ใช้</span>
+                <span
+                  class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                  @click="onReward">แลกของรางวัล</span>
+                <span
+                  class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                  @click="onAdminManager" v-if="isAdmin">
+                  หน้าหลักแอดมิน
+                </span>
                 <span
                   class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                   @click="onLogout">
-                  Logout
+                  ออกจากระบบ
                 </span>
               </div>
             </div>
@@ -319,8 +343,8 @@ const onLogout = async () => {
     <nav class="bg-white">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex justify-end">
         <div class="m-1">
-          <RouterLink class="text-white m-auto p-3 btn btn-md" :to="{ name: 'LoginView' }">login</RouterLink>
-          <RouterLink class="text-white m-auto p-3 btn btn-md" :to="{ name: 'RegisterView' }">register</RouterLink>
+          <RouterLink class="text-white m-auto p-3 btn btn-md" :to="{ name: 'LoginView' }">เข้าใช้งาน</RouterLink>
+          <RouterLink class="text-white m-auto p-3 btn btn-md" :to="{ name: 'RegisterView' }">ลงทะเบียน</RouterLink>
         </div>
       </div>
     </nav>
