@@ -27,7 +27,7 @@ const onUserAmount = computed(() => {
   return userPoint.value - totalPoint.value
 })
 
-const mainForm = reactive({
+const form = reactive({
   userID: storeUser.value?.user_login?.id || '',
   userAmount: '',
   counterItems: '',
@@ -35,38 +35,32 @@ const mainForm = reactive({
 
 
 const onSave = async () => {
-  if (cartItemCounters.value === 0) {
-    alert('กรุณาเลือกรางวัลก่อนแลก')
-    return
-  }
-
   const formData = new FormData()
-  formData.append('userID', mainForm.userID)
+  formData.append('userID', storeUser.value?.user_login?.id)
   formData.append('userAmount', onUserAmount.value)
   formData.append('counterItems', JSON.stringify(counterItems.value))
 
   try {
+    
     const res = await axiosAPI.post(`/api/cartItems/userConfirmSelectReward`, formData, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
+        authorization: `Bearer ${localStorage.getItem('token')}`
       }
     })
 
-    const data = res.data
-
-    if (data.ok) {
-      console.log('✅ แลกของรางวัลสำเร็จ:', data)
-      rewardCartStore.resetCart()
-      alert('แลกของรางวัลสำเร็จ!')
+    if (res.status === 201) {
+      window.location.reload()
     } else {
-      console.error('❌ แลกของรางวัลล้มเหลว:', data.error)
+      console.log('confirm selected reward false', res.data);
     }
+
   } catch (error) {
-    console.error('❌ มีข้อผิดพลาดในการส่งคำขอ:', error)
+    console.error('Request failed:', error)
   }
 }
 
-const itemsCardReset = () => {
+
+const onResetItemsCart = () => {
   rewardCartStore.resetCart()
 }
 
@@ -79,101 +73,80 @@ onMounted(async () => {
 <template>
   <div class="bg-white rounded-2xl shadow-xl p-8 max-w-6xl mx-auto mt-10">
 
-    <!-- Navbar -->
-    <div class="flex justify-between items-center border-b pb-4 mb-6">
-      <div class="flex items-center space-x-4">
-        <a href="#" class="text-gray-400 hover:text-gray-600 transition">
-          <MagnifyingGlassIcon class="w-6 h-6" />
-        </a>
-        <div class="flex items-center space-x-4">
-          <RouterLink
-            :to="{
-              name: 'ReportReward',
-              params: {
-                userID: mainForm.userID
-              }
-            }"
-          >
-            ของรางวัลของฉัน
-          </RouterLink>
+    <!-- ข้อมูลแต้ม -->
+    <div class="grid gap-6 border-b border-gray-200 pb-6 mb-6">
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex justify-between items-center">
+          <p>แต้มสมาชิก:</p>
+          <p class="font-semibold text-right">
+            {{ userPoint.toLocaleString() }} <span class="text-sm font-normal text-gray-500">Point</span>
+          </p>
         </div>
-      </div>
-      <div class="flex items-center space-x-4">
-        <ShoppingBagIcon class="w-7 h-7 text-gray-500" />
-        <span class="text-xl font-semibold text-gray-800">{{ cartItemCounters }}</span>
-        <span class="text-xl font-semibold text-indigo-600">{{ totalPoint }}</span>
-      </div>
-    </div>
-
-    <!-- แต้มสมาชิก และรายการรางวัล -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-12 text-lg text-gray-800">
-      <div class="flex justify-between items-center">
-        <p>แต้มสมาชิก:</p>
-        <p class="font-semibold">
-          {{ userPoint }} <span class="text-sm font-normal text-gray-500">Point</span>
-        </p>
-      </div>
-      <div class="flex justify-between items-center">
-        <p>จำนวนรางวัล:</p>
-        <p>
+        <div class="flex justify-between items-center">
+          <p>จำนวนรางวัล:</p>
           <ModalShowCounter :counterItems="counterItems" />
-        </p>
-      </div>
-      <div class="flex justify-between items-center">
-        <p>จำนวนแต้ม:</p>
-        <p class="text-rose-600 font-bold">
-          {{ totalPoint }} <span class="text-sm font-normal text-gray-500">Point</span>
-        </p>
-      </div>
-      <div class="flex justify-between items-center">
-        <p>แต้มคงเหลือ:</p>
-        <p class="text-green-600 font-bold">
-          {{ onUserAmount }} <span class="text-sm font-normal text-gray-500">Point</span>
-        </p>
-      </div>
-    </div>
-
-    <!-- ตะกร้ารางวัล
-    <div class="w-full bg-red-300 font-bold p-4 mt-8 rounded-lg">
-      <div class="grid grid-cols-2 mb-4">
-        <div>
-          <button type="button" class="btn btn-sm btn-danger" @click="itemsCardReset">รีเซ็ต</button>
         </div>
       </div>
 
-      <div class="flex justify-end">
-        <p class="m-2">จำนวนรางวัลทั้งหมด: {{ cartItemCounters }}</p>
-        <p class="m-2">จำนวนแต้มทั้งหมด: {{ totalPoint }}</p>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex justify-between items-center">
+          <p>จำนวนแต้ม:</p>
+          <p class="text-rose-600 font-bold text-right">
+            {{ totalPoint.toLocaleString() }} <span class="text-sm font-normal text-gray-500">Point</span>
+          </p>
+        </div>
+        <div class="flex justify-between items-center">
+          <p>แต้มคงเหลือ:</p>
+          <p class="text-green-600 font-bold text-right">
+            {{ onUserAmount.toLocaleString() }} <span class="text-sm font-normal text-gray-500">Point</span>
+          </p>
+        </div>
       </div>
-
-      <div v-for="item in counterItems" :key="item.rewardID" class="mb-2">
-        <p>ID: {{ item.rewardID }}</p>
-        <p>Name: {{ item.rewardName }}</p>
-        <p>Amount: {{ item.rewardAmount }}</p>
-        <p>Total Point: {{ item.rewardAmount * item.rewardPoint }}</p>
-        <hr class="my-2 border-white" />
-      </div>
-    </div> -->
-
-    <!-- Confirm Button -->
-    <div class="flex justify-end mt-8">
-      <button type="button" @click="onSave"
-        class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-90 text-white px-6 py-2 rounded-xl shadow-lg transition">
-        🎁 แลกของรางวัล
-      </button>
-
-      <button type="button" :disabled="onUserAmount < 0 || cartItemCounters === 0" @click="onSave"
-        class="px-6 py-2 rounded-xl shadow transition text-white" :class="{
-          'bg-gray-400 cursor-not-allowed': onUserAmount < 0 || cartItemCounters === 0,
-          'bg-indigo-600 hover:bg-indigo-700': onUserAmount >= 0 && cartItemCounters > 0
-        }">
-        🎁 แลกของรางวัล
-      </button>
     </div>
 
-    <!-- รายการรางวัล -->
-    <div class="mt-10">
-      <CardReward :rewards="storeRewards" />
+    <!-- ปุ่มลิงก์และการดำเนินการ -->
+    <div class="grid grid-cols-3 items-center gap-4 border-b border-gray-200 pb-6 mb-6">
+      <div>
+        <RouterLink
+          :to="{ name: 'ReportReward', params: { userID: form.userID } }"
+          class="text-blue-600 hover:underline font-medium"
+        >
+          ของรางวัลของฉัน
+        </RouterLink>
+      </div>
+
+      <div class="col-span-2 flex justify-end gap-4">
+        <button
+          type="button"
+          :disabled="onUserAmount < 0 || cartItemCounters === 0"
+          @click="onSave"
+          class="px-6 py-2 rounded-xl shadow transition text-white"
+          :class="{
+            'bg-gray-400 cursor-not-allowed': onUserAmount < 0 || cartItemCounters === 0,
+            'bg-blue-500 hover:bg-blue-700': onUserAmount >= 0 && cartItemCounters > 0
+          }"
+        >
+          แลกของรางวัล
+        </button>
+
+        <button
+          type="button"
+          :disabled="cartItemCounters === 0"
+          @click="onResetItemsCart"
+          class="px-6 py-2 rounded-xl shadow transition text-white"
+          :class="{
+            'bg-gray-400 cursor-not-allowed': cartItemCounters === 0,
+            'bg-red-600 hover:bg-red-700': cartItemCounters > 0
+          }"
+        >
+          รีเซ็ตแลกของรางวัล
+        </button>
+      </div>
     </div>
+  </div>
+
+  <!-- รายการรางวัล -->
+  <div class="mt-10">
+    <CardReward :rewards="storeRewards" />
   </div>
 </template>

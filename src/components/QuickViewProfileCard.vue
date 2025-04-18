@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { TransitionRoot } from '@headlessui/vue'
+import imageFileBasic from '@/assets/icon/keyboard.jpg'
 const props = defineProps({
   imageProfile: String,
 })
@@ -16,8 +17,8 @@ const toggleShowQuickView = () => {
     <div>
       <img
         @click="toggleShowQuickView"
-        :src="props.imageProfile"
-        class="size-12 rounded-full"
+        :src="props.imageProfile || imageFileBasic"
+        class="w-40 rounded-md"
       />
     </div>
     <TransitionRoot as="template" :show="open">

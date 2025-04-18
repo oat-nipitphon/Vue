@@ -5,7 +5,7 @@ import { RouterLink } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '@/stores/auth'
 import { usePostStore } from '@/stores/post'
-import defaultImage from '@/assets/icon/icon-user-default.png'
+import imageFileBasic from '@/assets/icon/keyboard.jpg'
 import QuickViewProfileCard from '@/components/QuickViewProfileCard.vue';
 
 
@@ -30,6 +30,14 @@ const selectedUserProfile = ref([])
 const likeCount = ref(null)
 const disLikeCount = ref(null)
 const isLoading = ref(false)
+
+const testImageProfileNull = async () => {
+  const response = await fetch(imageFileBasic)
+  const blob = await response.blob()
+  const file = new File([blob], 'default-image.jpg', { type: 'image/jpeg' })
+  // console.log('function test image profile null', file);
+  return file, blob
+}
 
 // Compute enriched data for posts
 const enrichedPosts = computed(() =>
@@ -169,7 +177,7 @@ onMounted(async () => {
   <div class="container">
     <div class="mt-5 flex justify-end">
       <RouterLink class="btn btn-sm btn-primary mr-10" :to="{
-        name: 'CreatePostNewView',
+        name: 'CreatePostNewView'
       }">
         Create post
       </RouterLink>
@@ -178,8 +186,7 @@ onMounted(async () => {
       <div class="max-w-full rounded-sm m-10 shadow-lg" v-for="(post, index) in enrichedPosts" :key="index">
         <div class="grid grid-cols-2">
           <div>
-            <figure
-              class="flex flex-col items-start justify-start p-2 m-auto text-start bg-white border-gray-200 md:rounded-es-lg dark:bg-gray-800 dark:border-gray-700">
+            <figure class=" bg-white border-gray-200 md:rounded-es-lg dark:bg-gray-800 dark:border-gray-700">
               <figcaption class="flex items-start justify-start ml-5 mt-3">
                 <div v-for="(image, index) in post.userImage" :key="index">
                   <div v-if="image.imageData !== null">
@@ -191,7 +198,7 @@ onMounted(async () => {
                     <QuickViewProfileCard :imageProfile="'data:image/png;base64,' + image.imageData" />
                   </div>
                   <div v-else>
-                    <img class="size-8 rounded-full" src="../assets/icon/icon-user-default.png" alt="" />
+                    <img class="size-10 rounded-full" src="../assets/icon/icon-user-default.png" alt="" />
                   </div>
                 </div>
 
@@ -202,32 +209,48 @@ onMounted(async () => {
                       <div class="flex justify-center">
                         <div class="grid grid-cols-2">
                           <div class="flex justify-center items-center">
-                            <button class="btn btn-sm btn-outline-primary"
+                            <button class="btn btn-sm"
                               @click="onFollowers(post.userProfile?.id, authStore.storeUser.user_login?.id)">
-                              Followers
+                              <div class="grid grid-cols-3">
+                                <div class="flex justify-center p-1 bg-red-200">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                                    class="bi bi-bell-fill" viewBox="0 0 16 16">
+                                    <path
+                                      d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
+                                  </svg>
+                                </div>
+                                <div class="flex justify-center p-1 bg-red-500">
+                                  <p class="m-auto mt-auto text-gray-700 text-md-2xl">
+                                    {{post.userFollowersProfile.filter(followers => followers.status_followers ===
+                                      'true').length || 0}}
+                                  </p>
+                                </div>
+                                <div class="flex justify-center p-1 bg-red-700 m-auto">Followers</div>
+                              </div>
                             </button>
-                          </div>
-                          <div class="text-center">
-                            <p class="m-auto mt-auto text-gray-700 text-md-2xl">
-                              {{post.userFollowersProfile.filter(followers => followers.status_followers ===
-                                'true').length || 0}}
-                            </p>
                           </div>
                         </div>
                       </div>
                       <div class="flex justify-center">
-                        <div class="grid grid-cols-2">
+                        <div class="grid grid-cols-3">
                           <div class="flex justify-center items-center">
                             <button class="btn btn-sm btn-outline-primary"
                               @click="onPopLike(post.userProfile?.id, authStore.storeUser.user_login?.id)">
-                              Like
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                  d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
+                              </svg>
                             </button>
                           </div>
                           <div class="text-center">
                             <p class="m-auto mt-auto text-gray-700 text-md-2xl">
                               {{post.userPopularityProfiles.filter(popLike => popLike.status_pop === 'true').length ||
-                              0 }}
+                                0}}
                             </p>
+                          </div>
+                          <div class="text-center">
+                            Like
                           </div>
                         </div>
                       </div>

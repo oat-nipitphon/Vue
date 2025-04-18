@@ -77,7 +77,8 @@ const onUploadFile = async () => {
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">
-            Profile {{ authStore.storeUser?.user_login?.id || 'N/A' }}
+            <!-- โปรไฟล์ไอดี {{ authStore.storeUser?.user_login?.id || 'N/A' }} -->
+             อัพเดทรูปโปรไฟล์ผู้ใช้
           </h5>
           <button
             type="button"
@@ -112,7 +113,7 @@ const onUploadFile = async () => {
 
         <div class="modal-footer">
           <button class="btn btn-sm btn-primary w-full" @click="onUploadFile">
-            Upload
+            อัพโหลด
           </button>
         </div>
       </div>

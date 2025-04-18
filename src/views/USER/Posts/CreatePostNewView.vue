@@ -69,6 +69,7 @@ const onCreatePost = async () => {
     const blob = await response.blob()
     const file = new File([blob], 'default-image.jpg', { type: 'image/jpeg' })
     formData.append('imageFile', file)
+    console.log();
   }
 
   try {

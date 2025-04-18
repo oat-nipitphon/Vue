@@ -37,17 +37,58 @@ const onDelete = async id => {
   }
 }
 
-const onDeleteSelected = async () => {
+const onRecoverSelected = async () => {
   try {
     const result = await Swal.fire({
-      title: 'Confirm Delete!',
-      text: 'Are you sure you want to delete this post?',
+      title: 'ยืนยันกู้คืนบทความ!',
+      text: 'คุณต้องการ กู้คืนบทความทั้งหมดที่เลือก ใช่หรือไม่ ?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Confirm delete',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: 'ยืนยัน',
+      cancelButtonText: 'ยกเลิก',
+    })
+
+    if (result.isConfirmed) {
+      const token = localStorage.getItem('token')
+
+      if (token) {
+        const res = await axiosAPI.post(
+          `/api/posts/recoverSelected`,
+          { ids: selectedItems.value },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+
+        posts.value = posts.value.filter(
+          post => !selectedItems.value.includes(post.id)
+        )
+
+      }
+    } else {
+      selectedItems.value = []
+      selectAll.value = false
+    }
+  } catch (error) {
+    console.error('recover select function error', error)
+  }
+}
+
+const onDeleteSelected = async () => {
+  try {
+    const result = await Swal.fire({
+      title: 'ยืนยันลบบทความ!',
+      text: 'คุณต้องการ ลบบทความทั้งหมดที่เลือก ใช่หรือไม่ ?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'ยืนยัน',
+      cancelButtonText: 'ยกเลิก',
     })
 
     if (result.isConfirmed) {
@@ -76,6 +117,27 @@ const onDeleteSelected = async () => {
   }
 }
 
+const formatDateTime = (dateTime) => {
+  if (!dateTime) return '-';
+
+  const date = new Date(dateTime);
+
+  const year = date.getFullYear() + 543; // แปลงเป็น พ.ศ.
+  const month = date.getMonth(); // 0-11
+  const day = date.getDate();
+
+  const hour = date.getHours().toString().padStart(2, '0');
+  const minute = date.getMinutes().toString().padStart(2, '0');
+  const second = date.getSeconds().toString().padStart(2, '0');
+
+  const thaiMonths = [
+    'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+    'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+  ];
+
+  return `${day} ${thaiMonths[month]} ${year} เวลา ${hour}:${minute}:${second} น.`;
+};
+
 const toggleAllCancel = () => {
   selectedItems.value = []
   isShowButtonDeleteAll.value = false
@@ -86,62 +148,44 @@ const toggleAllCancel = () => {
 <template>
   <div class="container bg-white shadow-lg rounded-lg mx-auto p-6">
     <div class="w-full">
-      <h2 class="ml-2 p-2">Recover store posts</h2>
+      <h2 class="ml-2 p-2">กู้คืนบทความ</h2>
     </div>
     <div class="overflow-x-auto">
       <table class="w-full text-sm text-gray-700">
         <thead class="bg-gray-200 text-gray-700 uppercase">
           <tr>
             <th class="p-3 text-center">
-              <input
-                v-if="posts.length"
-                type="checkbox"
-                :checked="selectAll"
-                @change="selectAll = !selectAll"
-                class="m-auto"
-              />
+              <input v-if="posts.length" type="checkbox" :checked="selectAll" @change="selectAll = !selectAll"
+                class="m-auto" />
               <!-- <button v-if="selectedItems.length" @click="toggleAllCancel" class="ml-2 text-red-600 hover:underline text-xs">
                 Cancel
               </button> -->
             </th>
-            <th class="p-3 text-center">Title</th>
-            <th class="p-3 text-center">Deleted At</th>
-            <th class="p-3 text-center">Recover</th>
-            <th class="p-3 text-center">Delete</th>
+            <th class="p-3 text-center">หัวข้อ</th>
+            <th class="p-3 text-center">วันที่จัดเก็บ</th>
+            <th class="p-3 text-center">กู้คืน</th>
+            <th class="p-3 text-center">ลบถาวร</th>
           </tr>
         </thead>
         <tbody v-if="posts.length">
-          <tr
-            v-for="post in posts"
-            :key="post.id"
-            class="border-b hover:bg-gray-100 transition"
-          >
+          <tr v-for="post in posts" :key="post.id" class="border-b hover:bg-gray-100 transition">
             <td class="p-3 text-center">
-              <input
-                type="checkbox"
-                :value="post.id"
-                v-model="selectedItems"
-                class="m-auto"
-              />
+              <input type="checkbox" :value="post.id" v-model="selectedItems" class="m-auto" />
             </td>
             <td class="p-3 text-center">{{ post.post_title }}</td>
             <td class="p-3 text-center text-gray-500">
-              {{ post.date_time_delete }}
+              {{ formatDateTime(post.created_at) }}
             </td>
             <td class="p-3 text-center">
-              <button
-                @click="apiRecoverPost(post.id)"
-                class="bg-green-500 hover:bg-green-600 text-white text-sm font-medium py-1.5 px-3 rounded-lg shadow-md transition duration-300"
-              >
-                Recover
+              <button @click="apiRecoverPost(post.id)"
+                class="bg-green-500 hover:bg-green-600 text-white text-sm font-medium py-1.5 px-3 rounded-lg shadow-md transition duration-300">
+                กู้คืน
               </button>
             </td>
             <td class="p-3 text-center">
-              <button
-                @click="onDelete(post.id)"
-                class="bg-red-500 hover:bg-red-600 text-white text-sm font-medium py-1.5 px-3 rounded-lg shadow-md transition duration-300"
-              >
-                Delete
+              <button @click="onDelete(post.id)"
+                class="bg-red-500 hover:bg-red-600 text-white text-sm font-medium py-1.5 px-3 rounded-lg shadow-md transition duration-300">
+                ลบถาวร
               </button>
             </td>
           </tr>
@@ -149,19 +193,23 @@ const toggleAllCancel = () => {
         <tbody v-else>
           <tr>
             <td colspan="5" class="text-center py-5 text-red-600 font-medium">
-              No posts available for recovery.
+              ไม่มีบทความ ที่สามารถกู้คืนได้ !
             </td>
           </tr>
         </tbody>
       </table>
       <div class="flex justify-start mt-4">
-        <button
-          v-if="selectedItems.length"
-          class="bg-red-500 hover:bg-red-600 text-white text-sm font-medium py-2 px-4 rounded-lg shadow-md transition duration-300"
-          @click="onDeleteSelected"
-        >
-          Delete Selected
+        <button v-if="selectedItems.length"
+          class="bg-yellow-300 hover:bg-yellow-300 text-gray-900 text-sm font-medium py-2 px-4 rounded-lg shadow-md transition duration-300"
+          @click="onRecoverSelected">
+          กู้คืนบทความที่เลือก
         </button>
+        <button v-if="selectedItems.length"
+          class="bg-red-500 hover:bg-red-600 text-white text-sm font-medium py-2 px-4 rounded-lg shadow-md transition duration-300"
+          @click="onDeleteSelected">
+          ลบบทความที่เลือก
+        </button>
+
       </div>
     </div>
   </div>

@@ -66,33 +66,33 @@ const formatAge = computed(() => {
         <div>
           <div class="bg-gray-50 p-6 rounded-xl shadow-inner">
             <div class="flex justify-between items-center mb-6">
-              <h3 class="text-xl font-semibold text-gray-700">Profile Detail</h3>
+              <h3 class="text-xl font-semibold text-gray-700">รายละเอียด</h3>
               <ModalEditUser :user="profile" :userStatus="userStatus" />
             </div>
 
             <div class="grid grid-cols-2 gap-x-6 gap-y-4 text-sm">
-              <div class="text-gray-500">Username:</div>
+              <div class="text-gray-500">ชื่อผู้ใช้:</div>
               <div class="text-gray-800 font-medium">{{ profile?.username }}</div>
 
-              <div class="text-gray-500">Email:</div>
+              <div class="text-gray-500">อีเมล์:</div>
               <div class="text-gray-800 font-medium">{{ profile?.email }}</div>
 
-              <div class="text-gray-500">Full Name:</div>
+              <div class="text-gray-500">ชื่อ-นามสกุล:</div>
               <div class="text-gray-800 font-medium">
                 {{ profile?.userProfile?.titleName }}
                 {{ profile?.userProfile?.fullName }}
               </div>
 
-              <div class="text-gray-500">Nickname:</div>
+              <div class="text-gray-500">ชื่อเล่น:</div>
               <div class="text-gray-800 font-medium">{{ profile?.userProfile?.nickName }}</div>
 
-              <div class="text-gray-500">Phone:</div>
+              <div class="text-gray-500">เบอร์โทรศัพท์:</div>
               <div class="text-gray-800 font-medium">{{ profile?.userProfile?.telPhone }}</div>
 
-              <div class="text-gray-500">Birthday:</div>
+              <div class="text-gray-500">วัน เดือน ปีเกิด:</div>
               <div class="text-gray-800 font-medium">{{ formatBirthDay }}</div>
 
-              <div class="text-gray-500">Age:</div>
+              <div class="text-gray-500">อายุ:</div>
               <div class="text-gray-800 font-medium">{{ formatAge }}</div>
             </div>
 
@@ -105,7 +105,7 @@ const formatAge = computed(() => {
 
       <!-- Contact Section -->
       <div class="bg-white mt-6 p-6 rounded-xl border-t border-gray-200 shadow-sm">
-        <h3 class="text-xl font-semibold text-gray-700 mb-4">Contact</h3>
+        <h3 class="text-xl font-semibold text-gray-700 mb-4">ช่องทางติดต่อ</h3>
         <CardContactProfile :profileID="profile?.userProfile?.id" :contact="profile?.profileContact" />
       </div>
     </div>

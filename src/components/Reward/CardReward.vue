@@ -1,14 +1,38 @@
+<script setup>
+import { ref, computed } from 'vue'
+import { RouterLink } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { useRewardCartStore } from '@/stores/reward.cart'
+
+const defaultImage =
+  'https://png.pngitem.com/pimgs/s/104-1042351_gifto-gto-icon-gifto-token-hd-png-download.png'
+
+const props = defineProps({
+  rewards: Object,
+})
+
+const rewardCartStore = useRewardCartStore()
+
+const addToCart = (reward) => {
+  rewardCartStore.addToCart(reward)
+}
+
+const resetCart = () => {
+  rewardCartStore.resetCart()
+}
+
+</script>
 <template>
   <div class="bg-white">
     <div
       class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8"
     >
-      <div class="grid grid-cols-2">
+      <!-- <div class="grid grid-cols-2">
         <h2 class="text-2xl font-bold tracking-tight text-gray-900">Rewards</h2>
         <button class="btn btn-sm btn-danger mr-5 mt-auto" @click="resetCart">
           reset
         </button>
-      </div>
+      </div> -->
 
       <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-10">
         <!-- Start Array Card Reward Items -->
@@ -62,28 +86,3 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref, computed } from 'vue'
-import { RouterLink } from 'vue-router'
-import { storeToRefs } from 'pinia'
-import { useRewardCartStore } from '@/stores/reward.cart'
-
-const defaultImage =
-  'https://png.pngitem.com/pimgs/s/104-1042351_gifto-gto-icon-gifto-token-hd-png-download.png'
-
-const props = defineProps({
-  rewards: Object,
-})
-
-const rewardCartStore = useRewardCartStore()
-
-const addToCart = (reward) => {
-  rewardCartStore.addToCart(reward)
-}
-
-const resetCart = () => {
-  rewardCartStore.resetCart()
-}
-
-</script>

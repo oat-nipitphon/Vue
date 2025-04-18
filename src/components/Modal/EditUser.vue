@@ -65,7 +65,8 @@ watch(
         <div class="modal-content">
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="exampleModalLabel">
-              Update User ID {{ user.id }}
+              <!-- Update User ID {{ user.id }} -->
+               แก้ไขข้อมูลผู้ใช้
             </h1>
             <button
               type="button"
@@ -78,7 +79,7 @@ watch(
             <form @submit.prevent="apiUpdateUser(form)">
               <input type="hidden" v-model="form.userID" />
               <div>
-                <label class="mb-1 font-bold">status</label>
+                <label class="mb-1 font-bold">สถานะบัญชีผู้ใช้</label>
                 <select v-model="form.statusID" class="form-control">
                   <!-- <option :value="form.statusID">
                     {{ form.statusName }}
@@ -89,11 +90,11 @@ watch(
                 </select>
               </div>
               <div>
-                <label class="mb-1 font-bold">email</label>
+                <label class="mb-1 font-bold">อีเมล์</label>
                 <input type="text" class="form-control" v-model="form.email" />
               </div>
               <div>
-                <label class="mb-1 font-bold">username</label>
+                <label class="mb-1 font-bold">ชื่อผู้ใช้</label>
                 <input
                   type="text"
                   class="form-control"
@@ -106,7 +107,7 @@ watch(
                   class="btn btn-sm btn-primary"
                   data-bs-dismiss="modal"
                 >
-                  update
+                  อัพเดท
                 </button>
               </div>
             </form>

@@ -64,7 +64,8 @@ watch(
         <div class="modal-content">
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="exampleModalLabel">
-              Update Profile ID : {{ profile.id }}
+              <!-- Update Profile ID : {{ profile.id }} -->
+               แก้ไขรายละเอียดโปรไฟล์
             </h1>
             <button
               type="button"
@@ -77,7 +78,7 @@ watch(
             <div class="modal-body">
               <input type="hidden" v-model="profile.id" class="form-control" />
               <div>
-                <label class="font-bold mb-2">full name</label>
+                <label class="font-bold mb-2">ชื่อ-นามสกุล</label>
                 <input
                   v-model="form.fullName"
                   type="text"
@@ -85,7 +86,7 @@ watch(
                 />
               </div>
               <div>
-                <label class="font-bold mb-2">nick name</label>
+                <label class="font-bold mb-2">ชื่อเล่น</label>
                 <input
                   v-model="form.nickName"
                   type="text"
@@ -93,7 +94,7 @@ watch(
                 />
               </div>
               <div>
-                <label class="font-bold mb-2">tel phone</label>
+                <label class="font-bold mb-2">เบอร์โทรศัพท์</label>
                 <input
                   v-model="form.telPhone"
                   type="text"
@@ -101,7 +102,7 @@ watch(
                 />
               </div>
               <div>
-                <label class="font-bold mb-2">birth day</label>
+                <label class="font-bold mb-2">วัน เดือน ปีเกิด</label>
                 <input
                   v-model="form.birthDay"
                   type="date"
@@ -116,7 +117,7 @@ watch(
                 class="btn btn-primary"
                 data-bs-dismiss="modal"
               >
-                update
+                อัพเดท
               </button>
             </div>
           </form>

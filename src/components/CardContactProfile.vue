@@ -30,7 +30,7 @@ const form = reactive({
         <h5
           class="mb-3 text-base font-semibold text-gray-900 md:text-xl dark:text-white"
         >
-          Contact Profile
+          ช่องทางติดต่อ
         </h5>
       </div>
       <div class="flex justify-end">
