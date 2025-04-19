@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { useRouter } from 'vue-router'
+import axiosAPI from '@/services/axiosAPI';
 
 export const useRewardStore = defineStore('rewardStore', {
     state: () => ({
@@ -129,7 +130,7 @@ export const useRewardStore = defineStore('rewardStore', {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }
                 })
-                
+
                 const data = await res.json();
 
                 if (!res.ok) {
@@ -144,25 +145,19 @@ export const useRewardStore = defineStore('rewardStore', {
         },
 
 
-        async cancelReward(rewardID, userID) {
+        async cancelReward(itemID) {
             try {
-                const res = fetch(`/api/cancel_reward/${rewardID}${userID}`, {
-                    method: 'POST',
+
+                const res = await axiosAPI.post(`/api/cartItems/cancel_reward/${itemID}`, {
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                        authorization: `Bearer ${localStorage.getItem('token')}`
                     }
                 });
 
-                const data = (await res).json();
-
-                if(data.ok) {
-                    console.log('cancel reward success.');
-                } else {
-                    console.log('cancel reward mot success.');
-                }
+                console.log('cancel api reward', res);
 
             } catch (error) {
-                console.error('function cancel reward error', error);
+                console.error(error);
             }
         }
 
