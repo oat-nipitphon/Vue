@@ -11,6 +11,7 @@ import QuickViewProfileCard from '@/components/QuickViewProfileCard.vue';
 
 const authStore = useAuthStore()
 const { storeUser } = storeToRefs(authStore)
+
 const props = defineProps({
   title: String,
   content: String,
@@ -23,6 +24,7 @@ const {
   apiPostPopLike,
   apiPostPopDisLike,
 } = usePostStore()
+
 const userID = ref(authStore.storeUser?.user_login?.id || null)
 const posts = ref([])
 const selectedPostContent = ref([])
@@ -63,6 +65,10 @@ const enrichedPosts = computed(() =>
     }
   })
 )
+
+onMounted(async () => {
+  posts.value = await apiGetPosts()
+})
 
 const handleLike = async (postID, userID) => {
   if (isLoading.value) return
@@ -113,8 +119,6 @@ const onModalShowUserProfile = userProfile => {
 }
 
 const onFollowers = async (postUserID, authUserID) => {
-  console.log('postUserID', postUserID);
-  console.log('authUserID', authUserID);
   try {
     const res = await axiosAPI.post(
       `/api/followers/${postUserID}/${authUserID}`,
@@ -126,13 +130,9 @@ const onFollowers = async (postUserID, authUserID) => {
         }
       }
     );
-
-
     if (res.error) {
       console.log('api followers error', res);
     }
-
-    console.log('api followers success', res);
     posts.value = await apiGetPosts()
   } catch (error) {
     console.error('function followers error', error);
@@ -140,8 +140,6 @@ const onFollowers = async (postUserID, authUserID) => {
 }
 
 const onPopLike = async (postUserID, authUserID) => {
-  console.log('postUserID', postUserID);
-  console.log('authUserID', authUserID);
   try {
     const res = await axiosAPI.post(
       `/api/pop_like/${postUserID}/${authUserID}`,
@@ -153,8 +151,6 @@ const onPopLike = async (postUserID, authUserID) => {
         }
       }
     );
-
-
     if (res.error) {
       console.log('api pop like error', res);
     }
@@ -171,10 +167,6 @@ const onPopLike = async (postUserID, authUserID) => {
 const isFollowing = (followersList, userId) => {
   return followersList?.some(f => f.followers_user_id === userId && f.status_followers === 'true');
 };
-
-onMounted(async () => {
-  posts.value = await apiGetPosts()
-})
 </script>
 
 <template>
@@ -217,13 +209,13 @@ onMounted(async () => {
                               @click="onFollowers(post.userProfile?.id, authStore.storeUser.user_login?.id)">
                               <div class="grid grid-cols-3">
                                 <div class="flex justify-center p-1">
-                                  <svg v-if="authStore.storeUser.user_login.id === post.userFollowersProfile?.followers_user_id" 
+                                  <svg 
                                   xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                                     class="bi bi-bell-fill text-yellow-300" viewBox="0 0 16 16">
                                     <path
                                       d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
                                   </svg>
-                                  <svg v-else xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                                     class="bi bi-bell-fill" viewBox="0 0 16 16">
                                     <path
                                       d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
@@ -283,13 +275,11 @@ onMounted(async () => {
                   data-bs-toggle="dropdown" aria-expanded="false" />
                 <ul class="dropdown-menu">
                   <li>
-                    <form @submit.prevent="apiStorePost(post.id)">
-                      <button class="dropdown-item" type="submit">
+                    <button class="dropdown-item" type="submit" @click="apiStorePost(post.id)">
                         <label for="Event-Store" class="text-sm ml-2 text-gray-900">
                           จัดเก็บ
                         </label>
                       </button>
-                    </form>
                   </li>
                   <li>
                     <RouterLink :to="{

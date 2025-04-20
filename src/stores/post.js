@@ -5,6 +5,7 @@ import Swal from 'sweetalert2'
 export const usePostStore = defineStore('postStore', {
     state: () => ({
         storePost: null,
+        storePosts: null,
         errors: {}
     }),
     actions: {
@@ -180,8 +181,7 @@ export const usePostStore = defineStore('postStore', {
                             timer: 1200,
                             timerProgressBar: 1200,
                         }).then(() => {
-                            console.log("store delete post data", data);
-                            window.location.reload();
+                            console.log('store delete', res);
                         });
                     }
 
@@ -215,52 +215,59 @@ export const usePostStore = defineStore('postStore', {
 
         async apiStorePost(postID) {
             try {
-
                 const result = await Swal.fire({
-                    title: "Confirm Store !",
-                    text: "Are you sure you want to store this post?",
+                    title: "ยืนยัน",
+                    text: "คุณต้องการจัดเก็บบทความนี้ใช่หรือไม่ ?",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#3085d6",
                     cancelButtonColor: "#d33",
-                    confirmButtonText: "Confirm",
-                    cancelButtonText: "Cancel",
+                    confirmButtonText: "จัดเก็บ",
+                    cancelButtonText: "ยกเลิก",
                 });
-
+        
                 if (result.isConfirmed) {
-
                     const res = await fetch(`/api/posts/store/${postID}`, {
                         method: "POST",
                         headers: {
                             authorization: `Bearer ${localStorage.getItem('token')}`
                         }
                     });
-
+        
                     const data = await res.json();
-
+        
                     if (res.ok) {
                         Swal.fire({
-                            title: "Success",
-                            text: "store post successfully.",
+                            title: "สำเร็จ",
+                            text: "ดำเนินจัดเก็บบทความสำเร็จ.",
                             icon: "success",
-                            timer: 1500,
+                            timer: 1200,
                         }).then(() => {
                             window.location.reload();
                         });
                     } else {
-                        console.log("store apiStorePost response false or data error", data.error);
+                        Swal.fire({
+                            title: "เกิดข้อผิดพลาด",
+                            text: data?.error || "ไม่สามารถจัดเก็บบทความได้",
+                            icon: "error"
+                        });
                     }
-
+        
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
                     Swal.close();
-                } else {
-                    console.log("store result swal false");
+                    return; // ป้องกันไม่ให้โค้ดข้างล่างรันต่อ
                 }
-
+        
             } catch (error) {
                 console.error("store function api store confirm", error);
+                Swal.fire({
+                    title: "ข้อผิดพลาด",
+                    text: "ไม่สามารถดำเนินการได้ กรุณาลองใหม่อีกครั้ง",
+                    icon: "error"
+                });
             }
         },
+        
 
         async apiRecoverGetPost(userID,) {
             try {
@@ -278,7 +285,6 @@ export const usePostStore = defineStore('postStore', {
                 }
 
                 return data.recoverPosts;
-                // return data.recoverPosts.filter(post => post.id === post.id);
 
             } catch (error) {
                 console.error("store recover get post error", error);
@@ -290,14 +296,14 @@ export const usePostStore = defineStore('postStore', {
 
                 if (postID) {
                     const result = await Swal.fire({
-                        title: "Your Recover Post ?",
-                        text: "your confirm recover post yes and on",
+                        title: "ยืนยัน",
+                        text: "คุณต้องการกู้คืนบทความนี้ใช่หรือไม่ ?",
                         icon: "warning",
                         showCancelButton: true,
                         confirmButtonColor: "#3085d6",
                         cancelButtonColor: "#d33",
-                        confirmButtonText: "Confirm Recover.",
-                        cancelButtonText: "Cancel Recover."
+                        confirmButtonText: "กู้คืน",
+                        cancelButtonText: "ยกเลิก"
                     });
 
                     if (result.dismiss === Swal.DismissReason.cancel) {
@@ -315,12 +321,11 @@ export const usePostStore = defineStore('postStore', {
 
                         if (response.ok) {
                             Swal.fire({
-                                title: "Recover success.",
-                                text: "Post recover successfully.",
+                                title: "สำเร็จ",
+                                text: "ดำเนินการกู้คืนบทความสำเร็จ",
                                 icon: "success",
-                                timer: 1500,
+                                timer: 1200,
                             }).then(() => {
-                                // return data.recoverPosts.filter(post => post.id !== postID);
                                 window.location.reload();
                             });
                         }

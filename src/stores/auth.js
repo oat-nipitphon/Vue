@@ -49,58 +49,60 @@ export const useAuthStore = defineStore('authStore', {
 
         async apiStoreRegister(apiRouter, formData) {
 
-            const result = await Swal.fire({
-                title: "ยืนยันการลงทะเบียน",
-                text: "คุณต้องการใช้ข้อมูลนี้ สำหรับลงทะเบียนใช่หรือไม่ ?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "ยืนยัน",
-                cancelButtonText: "ยกเลิก",
-            });
+            try {
 
-            if (!result.isConfirmed) {
-                // console.log('!isConfirmd');
-                result.dismiss === Swal.DismissReason.cancel
-            }
-
-            const response = await fetch(`/api/${apiRouter}`, {
-                method: "POST",
-                body: JSON.stringify(formData),
-            });
-
-            const data = await response.json();
-
-            if (response.status === 201) {
-                Swal.fire({
-                    title: "ลงทะเบียนสำเร็จ",
-                    icon: "success",
-                    timer: 1500,
-                    timerProgressBar: true,
-                }).then(() => {
-                    // localStorage.setItem('token', data.token);
-                    // this.storeUser = data.user;
-                    // this.router.push({ name: 'DashboardView' });
-                    // const router = useRouter();
-                    this.router.push({
-                        name: 'HomeView'
+                const result = await Swal.fire({
+                    title: "ยืนยัน",
+                    text: "คุณต้องการลงทะเบียนเข้าใช้งานระบบใช่หรือไม่ ?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "ลงทะเบียน",
+                    cancelButtonText: "ยกเลิก",
+                });
+    
+                if (result.isConfirmed) {
+                    const response = await fetch(`/api/${apiRouter}`, {
+                        method: "POST",
+                        body: JSON.stringify(formData),
                     });
-                });
-            } else if (response.status === 500) {
-                Swal.fire({
-                    title: "ข้อมูลผิดพลาด",
-                    text: `สถานะ 500 ` + data,
-                });
-            } else {
-                Swal.fire({
-                    title: "ข้อมูลผิดพลาด",
-                    text: data,
-                });
+        
+                    const data = await response.json();
+        
+                    if (response.status === 201) {
+                        Swal.fire({
+                            title: "ลงทะเบียนสำเร็จ",
+                            icon: "success",
+                            timer: 1500,
+                            timerProgressBar: true,
+                        }).then(() => {
+                            this.router.push({
+                                name: 'HomeView'
+                            });
+                        });
+                    } else if (response.status === 500) {
+                        Swal.fire({
+                            title: "ข้อมูลผิดพลาด",
+                            text: `สถานะ 500 ` + data,
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "ข้อมูลผิดพลาด",
+                            text: data,
+                        });
+                    }
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    Swal.close()
+                    return
+                }
+
+            } catch (error) {
+                console.error('store register function error', error);
             }
+
         },
 
-        // login
         async apiStoreLogin(apiRouter, form) {
             try {
                 const res = await fetch(`/api/${apiRouter}`, {
@@ -110,13 +112,12 @@ export const useAuthStore = defineStore('authStore', {
                     },
                     body: JSON.stringify(form)
                 });
-
+        
                 const data = await res.json();
-
+        
                 if (data.status === 200) {
-
                     localStorage.setItem('token', data.token);
-
+        
                     Swal.fire({
                         title: "สำเร็จ",
                         text: "ลงชื่อเข้าใช้งานระบบสำเร็จ",
@@ -131,26 +132,33 @@ export const useAuthStore = defineStore('authStore', {
                             this.router.push({ name: 'DashboardView' });
                         }
                     });
+        
                 } else {
                     Swal.fire({
-                        title: "Login failed.",
-                        text: "Incorrect system access information!",
+                        title: "ล็อคอินไม่สำเร็จ",
+                        text: "โปรดตรวจสอบ อีเมล์ ชื่อผู้ใช้ หรือรหัสผ่าน อีกครั้ง!",
                         icon: "error",
-                        confirmButtonText: "Try Again",
-                        cancelButtonText: "Cancel"
+                        showCancelButton: true,
+                        confirmButtonText: "ตกลง",
+                        cancelButtonText: "ลืมรหัสผ่าน"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Swal.close();
+                        } else if (result.dismiss === Swal.DismissReason.cancel) {
+                            this.router.push({ name: 'ForgetYourPasswordView' }); // หรือใส่ route ที่ต้องการ
+                        }
                     });
                 }
+        
             } catch (error) {
                 Swal.fire({
-                    title: "Error",
-                    text: error,
+                    title: "ข้อผิดพลาด",
+                    text: error.message || "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้",
                     icon: "error",
                 });
             }
         },
-
-
-        // logout
+        
         async apiStoreLogout() {
             try {
                 const token = localStorage.getItem('token')
@@ -196,6 +204,9 @@ export const useAuthStore = defineStore('authStore', {
                             this.router.push({ name: 'HomeView' })
                         })
                     }
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    Swal.close();
+                    return;
                 }
 
             } catch (error) {
