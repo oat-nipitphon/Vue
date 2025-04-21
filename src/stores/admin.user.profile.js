@@ -2,7 +2,8 @@ import { defineStore } from "pinia";
 import { useRoute } from "vue-router";
 import Swal from "sweetalert2";
 
-export const useAdminUserProfileStore = defineStore("adminUserProfileStore", {
+export const useAdminUserProfileStore = 
+defineStore("adminUserProfileStore", {
     state: () => ({
         storeUserProfiles: null,
         errors: {}
