@@ -8,6 +8,8 @@ import { useAdminUserProfileStore } from '@/stores/admin.user.profile'
 import { useAdminPostStore } from '@/stores/admin.posts'
 import { useAdminRewardStore } from '@/stores/admin.rewards'
 
+import ChartAdminReportReward from '@/components/ChartAdminReportReward.vue'
+
 const route = useRoute()
 const router = useRouter()
 
@@ -71,6 +73,9 @@ onMounted(async () => {
       </div>
     </div>
     <div class="bg-white shadow-sm mt-5 p-5">
+      <div class="m-auto">
+        <ChartAdminReportReward />
+      </div>
       <div class="m-auto p-auto">
         <!-- Report Chart Data API -->
         <div v-if="rewards">
