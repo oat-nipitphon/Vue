@@ -202,6 +202,7 @@ const router = createRouter({
   ],
 })
 
+
 router.beforeEach(async (to, from) => {
   const authStore = useAuthStore();
   await authStore.apiAuthStore();

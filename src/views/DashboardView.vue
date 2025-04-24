@@ -180,17 +180,15 @@ const isFollowing = (followersList, userId) => {
     </div>
     <div v-if="enrichedPosts.length > 0">
       <div class="max-w-full rounded-sm m-10 shadow-lg" v-for="(post, index) in enrichedPosts" :key="index">
+
         <div class="grid grid-cols-2">
           <div>
             <figure class=" bg-white border-gray-200 md:rounded-es-lg dark:bg-gray-800 dark:border-gray-700">
               <figcaption class="flex items-start justify-start ml-5 mt-3">
+
+                <!-- image profile user create post -->
                 <div v-for="(image, index) in post.userImage" :key="index">
                   <div v-if="image.imageData !== null">
-                    <!-- <img
-                      class="size-8 rounded-full"
-                      :src="'data:image/png;base64,' + image.imageData"
-                      alt=""
-                    /> -->
                     <QuickViewProfileCard :imageProfile="'data:image/png;base64,' + image.imageData" />
                   </div>
                   <div v-else>
@@ -198,6 +196,7 @@ const isFollowing = (followersList, userId) => {
                   </div>
                 </div>
 
+                <!-- detail profile user create post -->
                 <div class="space-y-0.5 font-medium dark:text-white text-left rtl:text-right ms-3">
                   <div>{{ post.userProfile?.fullName }}</div>
                   <div class="text-sm text-gray-500 dark:text-gray-400">
@@ -209,8 +208,7 @@ const isFollowing = (followersList, userId) => {
                               @click="onFollowers(post.userProfile?.id, authStore.storeUser.user_login?.id)">
                               <div class="grid grid-cols-3">
                                 <div class="flex justify-center p-1">
-                                  <svg 
-                                  xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                                     class="bi bi-bell-fill text-yellow-300" viewBox="0 0 16 16">
                                     <path
                                       d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
@@ -241,15 +239,16 @@ const isFollowing = (followersList, userId) => {
                               <div class="grid grid-cols-3">
                                 <div class="flex justify-center p-1">
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-heart-fill" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd"
-                                  d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
-                              </svg>
+                                    class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                      d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
+                                  </svg>
                                 </div>
                                 <div class="flex justify-center p-1">
                                   <p class="m-auto mt-auto text-gray-700 text-md-2xl">
-                                    {{post.userPopularityProfiles.filter(popLike => popLike.status_pop === 'true').length ||
-                                0}}
+                                    {{post.userPopularityProfiles.filter(popLike => popLike.status_pop ===
+                                      'true').length ||
+                                    0}}
                                   </p>
                                 </div>
                                 <div class="flex justify-center p-1 m-auto">Followers</div>
@@ -261,14 +260,18 @@ const isFollowing = (followersList, userId) => {
                     </div>
                   </div>
                 </div>
+
               </figcaption>
             </figure>
             <label class="font-semibold text-sm text-gray-700 mt-2 ml-5">
               สร้างโพสต์ วันที่ {{ formatDateTime(post.updatedAt) }}
             </label>
           </div>
+
           <div class="grid grid-cols-2">
             <div class="grid grid-cols-2"></div>
+
+            <!-- menu event manager post -->
             <div class="flex justify-end" v-if="post.userID === authStore.storeUser.user_login.id">
               <div class="dropdown mr-5 mt-3">
                 <img class="size-6 mr-5 mt-3" src="../assets/icon/sliders.svg" alt="SettingPost"
@@ -276,10 +279,10 @@ const isFollowing = (followersList, userId) => {
                 <ul class="dropdown-menu">
                   <li>
                     <button class="dropdown-item" type="submit" @click="apiStorePost(post.id)">
-                        <label for="Event-Store" class="text-sm ml-2 text-gray-900">
-                          จัดเก็บ
-                        </label>
-                      </button>
+                      <label for="Event-Store" class="text-sm ml-2 text-gray-900">
+                        จัดเก็บ
+                      </label>
+                    </button>
                   </li>
                   <li>
                     <RouterLink :to="{
@@ -301,17 +304,26 @@ const isFollowing = (followersList, userId) => {
                 </ul>
               </div>
             </div>
+
           </div>
         </div>
+
+        <!-- image post main -->
         <div class="w-full p-4 m-auto flex justify-center" v-for="postImage in post.postImage" :key="postImage.id">
           <img class="size-9/12 mt-3 sm:bg-cover md:bg-contain lg:bg-auto xl:bg-cover"
             :src="'data:image/png/jpg;base64,' + postImage.imageData" alt="Sunset in the mountains" />
         </div>
+
+        <!-- report post box -->
         <div class="p-2 ml-5 mr-5">
           <blockquote class="max-w-2xl mx-auto mb-4 text-gray-500 lg:mb-8 dark:text-gray-400">
+
+            <!-- show post title -->
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
               {{ post.title }}
             </h3>
+
+            <!-- show post content index -->
             <p class="my-4 post-content" v-html="post.content"></p>
             <button v-if="post.content.length > 200" type="button" class="btn btn-sm text-primary"
               data-bs-toggle="modal" data-bs-target="#modalShowMovePostContents"
@@ -320,6 +332,8 @@ const isFollowing = (followersList, userId) => {
                 อ่านเพิ่มเติม ...
               </p>
             </button>
+
+            <!-- modal show post detail -->
             <div class="modal fade" id="modalShowMovePostContents" tabindex="-1" aria-labelledby="exampleModalLabel"
               aria-hidden="true">
               <div class="modal-dialog modal-lg">
@@ -339,11 +353,14 @@ const isFollowing = (followersList, userId) => {
                 </div>
               </div>
             </div>
+
           </blockquote>
         </div>
         <div class="">
           <div class="grid grid-cols-2">
             <div class="grid grid-cols-2 p-3">
+
+              <!-- button event pop like post -->
               <div class="flex justify-center">
                 <button
                   v-if="post.postPopularity.some(pop => pop.userID === authStore.storeUser.user_login.id && pop.status === 'Like')"
@@ -364,11 +381,16 @@ const isFollowing = (followersList, userId) => {
                   </svg>
                 </button>
               </div>
+
+              <!-- show total pop like post -->
               <div class="font-blod">
                 {{post.postPopularity.filter(pop => pop.status === 'Like').length || 0}}
               </div>
+
             </div>
             <div class="grid grid-cols-2 p-3">
+
+              <!-- button event pop dis like post -->
               <div class="flex justify-center">
                 <button
                   v-if="post.postPopularity.some(pop => pop.userID === authStore.storeUser.user_login.id && pop.status === 'DisLike')"
@@ -390,18 +412,23 @@ const isFollowing = (followersList, userId) => {
                   </svg>
                 </button>
               </div>
+
+              <!-- show total pop dis like post -->
               <div class="font-blod">
                 {{post.postPopularity.filter(pop => pop.status === 'DisLike').length || 0}}
               </div>
+
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- show report requert false data null -->
     <div v-else class="flex justify-center mt-5">
       <p class="text-lg font-medium text-red-600">ไม่มีเนื้อหาบทความ</p>
     </div>
+
   </div>
 </template>
 <style>

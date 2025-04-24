@@ -1,26 +1,6 @@
 <script setup>
-import axiosAPI from '@/services/axiosAPI'
-import { ref, onMounted, watch } from 'vue'
-import { useRoute, useRouter, RouterLink } from 'vue-router'
-import { storeToRefs } from 'pinia'
 
-import { useAdminUserProfileStore } from '@/stores/admin.user.profile'
-import { useAdminPostStore } from '@/stores/admin.posts'
-import { useAdminRewardStore } from '@/stores/admin.rewards'
-
-import ChartAdminReportReward from '@/components/ChartAdminReportReward.vue'
-
-const route = useRoute()
-const router = useRouter()
-
-const adminRewardStore = useAdminRewardStore()
-const { storeRewards } = storeToRefs(adminRewardStore)
-
-
-onMounted(async () => {
-  await adminRewardStore.storeAdminAPIGetRewards()
-})
-
+import { RouterLink } from 'vue-router'
 
 </script>
 <template>
@@ -70,19 +50,6 @@ onMounted(async () => {
             </RouterLink>
           </div>
         </a>
-      </div>
-    </div>
-    <div class="bg-white shadow-sm mt-5 p-5">
-      <div class="m-auto">
-        <ChartAdminReportReward />
-      </div>
-      <div class="m-auto p-auto">
-        <!-- Report Chart Data API -->
-        <div v-if="rewards">
-          <div v-for="(reward, index) in rewards" :key="index">
-            {{ reward }}
-          </div>
-        </div>
       </div>
     </div>
   </div>

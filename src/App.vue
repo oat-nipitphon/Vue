@@ -2,26 +2,27 @@
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
 import Navbar from './layouts/Navbar.vue'
-import Footer from './layouts/Footer.vue';
+import AdminNavbar from '@/layouts/AdminNavbar.vue'
+import { storeToRefs } from 'pinia'
+import { useAuthStore } from '@/stores/auth'
+const authStore = useAuthStore()
+const { storeUser } = storeToRefs(authStore)
+console.log('app config ', authStore.storeUser);
 </script>
 
 <template>
-<div>
-  <div>
-    <Navbar />
-  </div>
-  <div>
+
+
+  <Navbar />
+
   <RouterView />
-  </div>
-  <div>
-    <Footer />
-  </div>
-</div>
+
+
 </template>
 
 <style scoped>
 header {
-max-width: 100%;
+  max-width: 100%;
 }
 
 /* .logo {

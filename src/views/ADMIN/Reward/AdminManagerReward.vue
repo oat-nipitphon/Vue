@@ -1,161 +1,198 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, reactive } from 'vue'
 import { RouterLink } from 'vue-router'
-import { useRewardStore } from '@/stores/reward'
 import { storeToRefs } from 'pinia'
+import { useAdminRewardStore } from '@/stores/admin.rewards'
 
-
-import EditRewardView from '@/views/ADMIN/Reward/AdminEditRewardView.vue'
-import ModalShowRewardDetail from '@/components/Tailwind/ModalShowRewardDetail.vue'
-
-const rewardStore = useRewardStore()
+const rewardStore = useAdminRewardStore()
 const { storeRewards } = storeToRefs(rewardStore)
-const { deleteReward } = useRewardStore()
+const { storeAdminAPIGetRewards, storeAdminDeleteReward } = useAdminRewardStore()
+const rewards = ref([]);
+const rewardUpdate = ref([]);
+
+const formUpdate = reactive({
+  id: '',
+  name: '',
+  point: '',
+  amount: '',
+});
 
 onMounted(async () => {
-  await rewardStore.getRewards()
+  rewards.value = await rewardStore.storeAdminAPIGetRewards()
 })
 
-const toggleStatus = reward => {
-  reward.status = reward.status === 'true' ? 'false' : 'Active'
+const toggleStatus = async(reward) => {
+  const rewardID = reward.id;
+  const status = reward.status;
+  try {
+
+    const res = await fetch(`/api/admin/rewards/updateStatusReward/${rewardID}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: JSON.stringify({
+        rewardID: rewardID,
+        status: status,
+      }),
+    });
+
+    const data = await res.json()
+
+    if (res.ok) {
+      window.location.reload();
+    } else {
+      console.log('update false', res);
+    }
+
+  } catch (error) {
+    console.error('function toggle status error', error);
+  }
+
 }
+
+const onShowDetailReward = (reward) => {
+  console.log('onShowDetailReward', reward);
+}
+
+const onShowModalEditReward = (reward) => {
+  rewardUpdate.value = reward
+} 
 
 </script>
 
 <template>
-  <div class="container mx-auto p-6">
-    <div class="flex justify-between items-center mb-4">
-      <h1 class="text-2xl font-semibold text-gray-800">Rewards List</h1>
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6">
+      <h1 class="text-3xl font-bold text-gray-800 mb-4 sm:mb-0">Manage Rewards</h1>
       <RouterLink
         :to="{ name: 'NewRewardView' }"
-        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+        class="btn btn-md btn-outline-primary"
       >
-        + New Reward
+        new
       </RouterLink>
     </div>
 
-    <div class="bg-white shadow-lg rounded-lg p-4">
-      <table class="w-full border-collapse">
+    <div class="overflow-x-auto bg-white rounded-2xl shadow-xl p-4">
+      <table class="min-w-full text-sm text-gray-700">
         <thead>
-          <tr class="bg-gray-200 text-gray-700 uppercase text-sm font-semibold">
-            <th class="py-3 px-4 text-center font-bold">ID</th>
-            <th class="py-3 px-4 text-center font-bold">Image</th>
-            <th class="py-3 px-4 text-center font-bold">Name</th>
-            <th class="py-3 px-4 text-center font-bold">Point</th>
-            <th class="py-3 px-4 text-center font-bold">Status</th>
-            <th class="py-3 px-4 text-center font-bold">Quantity</th>
-            <th class="py-3 px-4 text-center font-bold">Event</th>
+          <tr class="bg-gray-100 text-xs uppercase tracking-wider">
+            <th class="text-center px-4 py-3 font-semibold">#</th>
+            <th class="text-center px-4 py-3 font-semibold">Image</th>
+            <th class="text-left px-4 py-3 font-semibold">Name</th>
+            <th class="text-center px-4 py-3 font-semibold hidden md:table-cell">Points</th>
+            <th class="text-center px-4 py-3 font-semibold">Status</th>
+            <th class="text-center px-4 py-3 font-semibold hidden md:table-cell">Amount</th>
+            <th class="text-center px-4 py-3 font-semibold">Actions</th>
           </tr>
         </thead>
-        <tbody v-if="storeRewards">
+        <tbody v-if="rewards">
           <tr
-            v-for="(reward, index) in storeRewards"
+            v-for="(reward, index) in rewards"
             :key="reward.id"
-            class="border-b hover:bg-gray-100"
+            class="border-b hover:bg-gray-50 transition"
           >
-            <td class="py-3 px-4">{{ index }}</td>
-            <td class="py-3 px-4">
-              <p v-for="image in reward.rewardImage" :key="image.id">
-                <img
-                  v-if="image.image_data"
-                  :src="image.image_data"
-                  class="size-10 rounded-lg m-auto"
-                  alt="ImageReward"
-                />
-                <img
-                  v-else
-                  src="https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg"
-                  alt="ImageReward"
-                />
-              </p>
+            <td class="text-center px-4 py-3 font-medium">{{ index + 1 }}</td>
+
+            <td class="text-center px-4 py-3">
+              <img
+                v-if="reward.rewardImage[0]?.image_data"
+                :src="reward.rewardImage[0].image_data"
+                class="w-12 h-12 object-cover rounded-lg mx-auto"
+                alt="Reward Image"
+              />
+              <img
+                v-else
+                src="https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg"
+                class="w-12 h-12 object-contain mx-auto opacity-50"
+                alt="No Image"
+              />
             </td>
-            <td class="py-3 px-4">{{ reward.name }}</td>
-            <td class="py-3 px-4">{{ reward.point }}</td>
-            <td class="py-3 px-4">
+
+            <td class="px-4 py-3">{{ reward.name }}</td>
+
+            <td class="text-center px-4 py-3 hidden md:table-cell">{{ reward.point }}</td>
+
+            <td class="text-center px-4 py-3">
               <button
                 @click="toggleStatus(reward)"
-                class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
-                :class="
-                  reward.status === 'true' ? 'text-green-600' : 'text-red-600'
-                "
+                class="text-sm font-semibold rounded-full px-4 py-1 transition"
+                :class="reward.status === 'true' ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200'"
               >
-                Swit
-                {{ reward.status === 'true' ? 'true' : 'false' }}
+                {{ reward.status === 'true' ? 'Active' : 'Inactive' }}
               </button>
             </td>
-            <td class="py-3 px-4">{{ reward.quantity }}</td>
-            <td class="py-3 px-4 text-center">
-              <div class="dropdown">
+
+            <td class="text-center px-4 py-3 hidden md:table-cell">{{ reward.amount }}</td>
+
+            <td class="text-center px-4 py-3">
+              <div class="inline-flex space-x-1">
                 <button
-                  class="btn btn-sm btn-secondary dropdown-toggle w-full"
-                  type="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
+                  class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-xs"
+                  @click="onShowDetailReward(reward)"
                 >
-                  Event
+                  Show
                 </button>
-                <ul class="dropdown-menu w-full">
-                  <!-- <li class="dropdown-item">
-                    <toggle-button @change="onChangeEventHandler" />
-
-                    <toggle-button v-model="myDataVariable" />
-
-                    <toggle-button
-                      :value="false"
-                      color="#82C7EB"
-                      :sync="true"
-                      :labels="true"
-                    />
-
-                    <toggle-button
-                      :value="true"
-                      :labels="{ checked: 'Foo', unchecked: 'Bar' }"
-                    />
-                  </li> -->
-                  <li class="dropdown-item">
-                    <button
-                      @click="toggleStatus(reward)"
-                      class="block w-full text-center px-4 py-2 text-sm hover:bg-gray-200"
-                      :class="
-                        reward.status === 'true'
-                          ? 'text-green-600'
-                          : 'text-red-600'
-                      "
-                    >
-                      Switch {{ reward.status === 'true' ? 'true' : 'false' }}
-                    </button>
-                  </li>
-                  <li class="dropdown-item">
-                    <button class="btn btn-primary w-full text-center">
-                      Show
-                    </button>
-                  </li>
-                  <li class="dropdown-item">
-                    <button class="btn btn-warning w-full text-center">
-                      Edit
-                    </button>
-                  </li>
-                  <li class="dropdown-item">
-                    <button class="btn btn-danger w-full text-center" type="submit" @click="deleteReward(reward.id)">
-                      Delete
-                    </button>
-                  </li>
-                </ul>
+                <button
+                  class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-lg text-xs"
+                  data-bs-toggle="modal" data-bs-target="#modalEditReward"
+                  @click="onShowModalEditReward(reward)"
+                >
+                  Edit
+                </button>
+                <button
+                  class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-xs"
+                  @click="storeAdminDeleteReward(reward.id)"
+                >
+                  Delete
+                </button>
               </div>
             </td>
           </tr>
+          <!-- modal edit reward -->
+          <div class="modal fade" id="modalEditReward" tabindex="-1" aria-labelledby="exampleModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">update reward ID :: {{ rewardUpdate.id }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    
+                    <!-- form update reward -->
+                    <div class="grid">
+                      <label for="">name</label>
+                      <input type="text" :value="rewardUpdate.name" v-model="formUpdate.name" class="form-control">
+                      <label for="">point</label>
+                      <input type="text" :value="rewardUpdate.point" v-model="formUpdate.point" class="form-control">
+                      <label for="">amount</label>
+                      <input type="text" :value="rewardUpdate.amount" v-model="formUpdate.amount" class="form-control">
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-primary m-2">
+                      update
+                    </button>
+                    <button type="button" class="btn btn-sm btn-dargen m-2" data-bs-dismiss="modal">
+                      cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
         </tbody>
-        <!-- <tbody v-else>
+
+        <tbody v-else>
           <tr>
-            <td
-              colspan="7"
-              class="py-4 text-center text-lg text-red-500 font-bold"
-            >
-              No rewards available
+            <td colspan="7" class="text-center py-6 text-red-500 font-semibold text-lg">
+              No rewards available.
             </td>
           </tr>
-        </tbody> -->
+        </tbody>
       </table>
     </div>
   </div>
 </template>
+

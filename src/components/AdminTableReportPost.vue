@@ -239,8 +239,11 @@ onMounted(async () => {
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body">
-            {{ modalPostContent }}
+          <div class="modal-body p-3">
+            <!-- Modal show content post -->
+             <p v-html="modalPostContent"
+              class="text-1xl font-normal"
+             ></p>
           </div>
           <div class="modal-footer"></div>
         </div>

@@ -44,7 +44,7 @@
               <TabGroup as="div" class="mt-2">
                 <div class="border-b border-gray-200">
                   <TabList class="-mb-px flex space-x-8 px-4">
-                    <Tab
+                    <!-- <Tab
                       as="template"
                       v-for="category in navigation.categories"
                       :key="category.name"
@@ -60,11 +60,11 @@
                       >
                         {{ category.name }}
                       </button>
-                    </Tab>
+                    </Tab> -->
                   </TabList>
                 </div>
                 <TabPanels as="template">
-                  <TabPanel
+                  <!-- <TabPanel
                     v-for="category in navigation.categories"
                     :key="category.name"
                     class="space-y-10 px-4 pt-10 pb-8"
@@ -121,7 +121,7 @@
                         </li>
                       </ul>
                     </div>
-                  </TabPanel>
+                  </TabPanel> -->
                 </TabPanels>
               </TabGroup>
 
@@ -171,17 +171,12 @@
       </Dialog>
     </TransitionRoot>
 
-    <header class="relative bg-white">
-      <p
-        class="flex h-10 items-center justify-center bg-indigo-600 px-4 text-sm font-medium text-white sm:px-6 lg:px-8"
-      >
-        Get free delivery on orders over $100
-      </p>
-
+    <!-- Menu navbar top -->
+    <header class="relative bg-white" >
       <nav aria-label="Top" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="border-b border-gray-200">
           <div class="flex h-16 items-center">
-            <button
+            <button v-if="authStore.storeUser"
               type="button"
               class="relative rounded-md bg-white p-2 text-gray-400 lg:hidden"
               @click="open = true"
@@ -191,10 +186,10 @@
               <Bars3Icon class="size-6" aria-hidden="true" />
             </button>
 
-            <!-- Logo -->
-            <div class="ml-4 flex lg:ml-0">
+            <!-- Logo image and my name user login -->
+            <div class="ml-4 flex lg:ml-0" v-if="authStore.storeUser">
               <a href="#">
-                <span class="sr-only">Your Company</span>
+                <span class="sr-only">{{ authStore.storeUser?.user_login.username || '' }}</span>
                 <img
                   class="h-8 w-auto"
                   src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
@@ -204,7 +199,7 @@
             </div>
 
             <!-- Flyout menus -->
-            <PopoverGroup class="hidden lg:ml-8 lg:block lg:self-stretch">
+            <PopoverGroup class="hidden lg:ml-8 lg:block lg:self-stretch" v-if="authStore.storeUser">
               <div class="flex h-full space-x-8">
                 <Popover
                   v-for="category in navigation.categories"
@@ -317,7 +312,77 @@
               </div>
             </PopoverGroup>
 
-            <div class="ml-auto flex items-center">
+            <div class="flex justify-end bg-red-200">
+              <div class="relative ml-3 flex justify-end" v-if="authStore.storeUser">
+                <!-- Button image profile dropdown -->
+
+                <div class="text-white text-center" v-for="(image, index) in authStore.storeUser?.user_login
+                  .userImage" :key="index">
+                  <div>
+                    <button type="button" @click="toggleMainDropdown"
+                      class="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                      id="navbar-main-menu" aria-expanded="false" aria-haspopup="true">
+                      <span class="absolute -inset-1.5"></span>
+                      <span class="sr-only">Open user menu</span>
+                      <img
+                        class="size-8 rounded-full"
+                        :src="image.imageData ? 'data:image/png;base64,' + image.imageData : 'https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg'"
+                        alt=""
+                      />
+                    </button>
+                  </div>
+                </div>
+                <!-- Menu image profile dropdown -->
+                <div v-if="isMainDropdownOpen"
+                  class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none"
+                  role="menu" aria-orientation="vertical" aria-labelledby="navbar-main-menu" tabindex="-1">
+                  <!--Dropdown menu, show/hide based on menu state.
+                  Entering: "transition ease-out duration-100"
+                    From: "transform opacity-0 scale-95"
+                    To: "transform opacity-100 scale-100"
+                    Leaving: "transition ease-in duration-75"
+                    From: "transform opacity-100 scale-100"
+                    To: "transform opacity-0 scale-95"
+                -->
+
+                  <!-- Active: "bg-gray-100 outline-none", Not Active: "" -->
+                  <!-- <span
+                    class="block px-4 py-2 text-sm text-gray-700 btn btn-sm"
+                    @click="onHome"
+                    >Home</span
+                  > -->
+                  <span class="block px-4 py-2 text-sm text-gray-700 btn btn-sm" @click="onHome">
+                    หน้าหลัก
+                  </span>
+                  <span class="block px-4 py-2 text-sm text-gray-700 btn btn-sm" @click="onRecoverPost">
+                    กู้คืนบทความ
+                  </span>
+                  <span class="block px-4 py-2 text-sm text-gray-700 btn btn-sm" @click="onDashboardProfile">
+                    โปรไฟล์ผู้ใช้
+                  </span>
+
+                  <span class="block px-4 py-2 text-sm text-gray-700 btn btn-sm" @click="onReward">
+                    แลกของรางวัล
+                  </span>
+                  <span class="block px-4 py-2 text-sm text-gray-700 btn btn-sm" @click="onAdminManager" v-if="isAdmin">
+                    หน้าหลักแอดมิน
+                  </span>
+                  <span class="block px-4 py-2 text-sm text-gray-700 btn btn-sm" @click="onLogout">
+                    ออกจากระบบ
+                  </span>
+
+                  <!-- <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-gray-700"
+                    role="menuitem"
+                    tabindex="-1"
+                    id="user-menu-item-1"
+                    >Settings</a
+                  > -->
+                </div>
+              </div>
+
+            <div class="ml-auto flex items-center" v-if="!authStore.storeUser">
               <div
                 class="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6"
               >
@@ -372,15 +437,147 @@
                 </a>
               </div>
             </div>
+            </div>
+
+            <div class="grid grid-cols-2 bg-red-200">
+              <div class="grid bg-black"></div>
+              <div class=" bg-white flex justify-end">
+                <div class="relative ml-3 flex justify-end" v-if="authStore.storeUser">
+                <!-- Button image profile dropdown -->
+
+                <div class="text-white text-center" v-for="(image, index) in authStore.storeUser?.user_login
+                  .userImage" :key="index">
+                  <div>
+                    <button type="button" @click="toggleMainDropdown"
+                      class="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                      id="navbar-main-menu" aria-expanded="false" aria-haspopup="true">
+                      <span class="absolute -inset-1.5"></span>
+                      <span class="sr-only">Open user menu</span>
+                      <img
+                        class="size-8 rounded-full"
+                        :src="image.imageData ? 'data:image/png;base64,' + image.imageData : 'https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg'"
+                        alt=""
+                      />
+                    </button>
+                  </div>
+                </div>
+                <!-- Menu image profile dropdown -->
+                <div v-if="isMainDropdownOpen"
+                  class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none"
+                  role="menu" aria-orientation="vertical" aria-labelledby="navbar-main-menu" tabindex="-1">
+                  <!--Dropdown menu, show/hide based on menu state.
+                  Entering: "transition ease-out duration-100"
+                    From: "transform opacity-0 scale-95"
+                    To: "transform opacity-100 scale-100"
+                    Leaving: "transition ease-in duration-75"
+                    From: "transform opacity-100 scale-100"
+                    To: "transform opacity-0 scale-95"
+                -->
+
+                  <!-- Active: "bg-gray-100 outline-none", Not Active: "" -->
+                  <!-- <span
+                    class="block px-4 py-2 text-sm text-gray-700 btn btn-sm"
+                    @click="onHome"
+                    >Home</span
+                  > -->
+                  <span class="block px-4 py-2 text-sm text-gray-700 btn btn-sm" @click="onHome">
+                    หน้าหลัก
+                  </span>
+                  <span class="block px-4 py-2 text-sm text-gray-700 btn btn-sm" @click="onRecoverPost">
+                    กู้คืนบทความ
+                  </span>
+                  <span class="block px-4 py-2 text-sm text-gray-700 btn btn-sm" @click="onDashboardProfile">
+                    โปรไฟล์ผู้ใช้
+                  </span>
+
+                  <span class="block px-4 py-2 text-sm text-gray-700 btn btn-sm" @click="onReward">
+                    แลกของรางวัล
+                  </span>
+                  <span class="block px-4 py-2 text-sm text-gray-700 btn btn-sm" @click="onAdminManager" v-if="isAdmin">
+                    หน้าหลักแอดมิน
+                  </span>
+                  <span class="block px-4 py-2 text-sm text-gray-700 btn btn-sm" @click="onLogout">
+                    ออกจากระบบ
+                  </span>
+
+                  <!-- <a
+                    href="#"
+                    class="block px-4 py-2 text-sm text-gray-700"
+                    role="menuitem"
+                    tabindex="-1"
+                    id="user-menu-item-1"
+                    >Settings</a
+                  > -->
+                </div>
+              </div>
+
+            <div class="ml-auto flex items-center" v-if="!authStore.storeUser">
+              <div
+                class="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6"
+              >
+                <a
+                  href="#"
+                  class="text-sm font-medium text-gray-700 hover:text-gray-800"
+                  >Sign in</a
+                >
+                <span class="h-6 w-px bg-gray-200" aria-hidden="true" />
+                <a
+                  href="#"
+                  class="text-sm font-medium text-gray-700 hover:text-gray-800"
+                  >Create account</a
+                >
+              </div>
+
+              <div class="hidden lg:ml-8 lg:flex">
+                <a
+                  href="#"
+                  class="flex items-center text-gray-700 hover:text-gray-800"
+                >
+                  <img
+                    src="https://tailwindcss.com/plus-assets/img/flags/flag-canada.svg"
+                    alt=""
+                    class="block h-auto w-5 shrink-0"
+                  />
+                  <span class="ml-3 block text-sm font-medium">CAD</span>
+                  <span class="sr-only">, change currency</span>
+                </a>
+              </div>
+
+              <!-- Search -->
+              <div class="flex lg:ml-6">
+                <a href="#" class="p-2 text-gray-400 hover:text-gray-500">
+                  <span class="sr-only">Search</span>
+                  <MagnifyingGlassIcon class="size-6" aria-hidden="true" />
+                </a>
+              </div>
+
+              <!-- Cart -->
+              <div class="ml-4 flow-root lg:ml-6">
+                <a href="#" class="group -m-2 flex items-center p-2">
+                  <ShoppingBagIcon
+                    class="size-6 shrink-0 text-gray-400 group-hover:text-gray-500"
+                    aria-hidden="true"
+                  />
+                  <span
+                    class="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800"
+                    >0</span
+                  >
+                  <span class="sr-only">items in cart, view bag</span>
+                </a>
+              </div>
+            </div>
+              </div>
+            </div>
+            
           </div>
         </div>
       </nav>
     </header>
+
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import {
   Dialog,
   DialogPanel,
@@ -402,6 +599,104 @@ import {
   ShoppingBagIcon,
   XMarkIcon,
 } from '@heroicons/vue/24/outline'
+
+
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useRouter, useRoute, routeLocationKey, RouterLink } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { useAuthStore } from '@/stores/auth'
+const route = useRoute()
+const router = useRouter()
+const { apiStoreLogout } = useAuthStore()
+const authStore = useAuthStore()
+const { storeUser } = storeToRefs(authStore)
+
+const isAdmin = computed(() => {
+  return authStore.storeUser.user_login.userStatus.status_name === 'admin'
+})
+
+const isActive = name => (route.name === name ? 'page' : null)
+
+const navClass = name =>
+  route.name === name
+    ? 'rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white'
+    : 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white'
+
+const isMainDropdownOpen = ref(false)
+const toggleMainDropdown = event => {
+  event.stopPropagation()
+  isMainDropdownOpen.value = !isMainDropdownOpen.value
+}
+
+const isMobileDropdownOpen = ref(false)
+const toggleMobileDropdown = event => {
+  event.stopPropagation()
+  isMobileDropdownOpen.value = !isMobileDropdownOpen.value
+}
+
+const closeDropdown = event => {
+  if (!event.target.closest('#navbar-main-menu')) {
+    isMainDropdownOpen.value = false
+  }
+  if (
+    !event.target.closest('#navbar-mobile-menu') &&
+    !event.target.closest('#mobile-menu-button')
+  ) {
+    isMobileDropdownOpen.value = false
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('click', closeDropdown)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('click', closeDropdown)
+})
+
+const onCreatePost = () => {
+  router.push({ name: 'CreatePostNewView' })
+  isMobileDropdownOpen.value = false
+}
+
+const onHome = () => {
+  router.push({ name: 'DashboardView' })
+  isMobileDropdownOpen.value = false
+}
+const onAdminManager = () => {
+  router.push({ name: 'AdminDashboardView' })
+  isMobileDropdownOpen.value = false
+}
+
+const onDashboardProfile = async () => {
+  router.push({
+    name: 'DashboardProfile',
+    params: { id: authStore.storeUser.user_login.id },
+  })
+  isMobileDropdownOpen.value = false
+}
+
+const onRecoverPost = async () => {
+  router.push({
+    name: 'ReportRecoverPostsView',
+    params: { userID: authStore.storeUser.user_login.id },
+  })
+  isMobileDropdownOpen.value = false
+}
+
+const onReward = async () => {
+  router.push({
+    name: 'DashboardRewardView',
+  })
+  isMobileDropdownOpen.value = false
+}
+
+const onLogout = async () => {
+  await apiStoreLogout()
+  isMobileDropdownOpen.value = false
+}
+
+
 
 const navigation = {
   categories: [
@@ -527,10 +822,13 @@ const navigation = {
       ],
     },
   ],
+
   pages: [
-    { name: 'Company', href: '#' },
-    { name: 'Stores', href: '#' },
+    { name: 'DashboardView', href: '#' },
+    { name: 'DashboardProfile', href: '#' },
+    { name: 'CreatePostNewView', href: '#' },
   ],
+
 }
 
 const open = ref(false)
