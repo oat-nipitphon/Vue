@@ -32,11 +32,10 @@ const onUploadFile = async () => {
     })
 
     Swal.fire({
-      title: '',
-      text: '',
-      icon: '',
-      timer: 1500,
-      timerProgressBar: 1500,
+      title: 'Scuuess.',
+      text: 'Upload image profile successflly.',
+      icon: 'success',
+      timer: 1200
     }).then(() => {
       window.location.reload()
     })
@@ -77,7 +76,6 @@ const onUploadFile = async () => {
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">
-            <!-- โปรไฟล์ไอดี {{ authStore.storeUser?.user_login?.id || 'N/A' }} -->
              อัพเดทรูปโปรไฟล์ผู้ใช้
           </h5>
           <button
@@ -100,7 +98,6 @@ const onUploadFile = async () => {
               />
             </div>
 
-            <!-- File Input -->
             <input
               @change="onSelectImageFile"
               type="file"
