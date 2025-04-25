@@ -1,23 +1,11 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
 import Navbar from './layouts/Navbar.vue'
-import AdminNavbar from '@/layouts/AdminNavbar.vue'
-import { storeToRefs } from 'pinia'
-import { useAuthStore } from '@/stores/auth'
-const authStore = useAuthStore()
-const { storeUser } = storeToRefs(authStore)
-console.log('app config ', authStore.storeUser);
 </script>
 
 <template>
-
-
   <Navbar />
-
   <RouterView />
-
-
 </template>
 
 <style scoped>

@@ -51,18 +51,27 @@ export const useAdminRewardStore = defineStore('adminRewardStore', {
             }
         }, 
 
-        async storeAdminEditReward (rewardID) {
+        async storeAdminUpdateReward (formData, rewardID) {
             try {
                 const res = await fetch(`/api/admin/rewards/manager/${rewardID}`, {
-                    method: "POST",
+                    method: "PUT",
                     headers: {
                         authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
+                    },
+                    body: formData
                 });
+
+                const data = await res.json()
+
+                if (!res.ok) {
+                    console.error('store admin update reward false');
+                }
+
+                console.log('store admin update reward success', data.reward)
         
 
             } catch (error) {
-                console.error('storeAdminEditReward function error', error);
+                console.error('storeAdminUpdateReward function error', error);
             }
         },
 
