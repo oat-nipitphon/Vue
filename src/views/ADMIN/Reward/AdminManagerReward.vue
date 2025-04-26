@@ -103,8 +103,7 @@ const onUpdateReward = async () => {
       </RouterLink>
     </div>
 
-    <div class="overflow-x-auto bg-white rounded-2xl shadow-xl p-4">
-      <table class="w-full text-sm text-gray-700">
+    <table class="w-full text-sm text-gray-700">
         <thead>
           <tr class="bg-gray-100 text-xs uppercase tracking-wider">
             <th class="text-center px-4 py-3 font-semibold">#</th>
@@ -203,6 +202,5 @@ const onUpdateReward = async () => {
           </tr>
         </tbody>
       </table>
-    </div>
   </div>
 </template>
