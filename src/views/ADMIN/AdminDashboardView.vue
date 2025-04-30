@@ -1,18 +1,9 @@
 <script setup>
-import axiosAPI from '@/services/axiosAPI'
-import { ref, onMounted, watch } from 'vue'
-import { useRoute, useRouter, RouterLink } from 'vue-router'
-import { storeToRefs } from 'pinia'
-
-
-import { useAdminUserProfileStore } from '@/stores/admin.user.profile'
-import { useAdminPostStore } from '@/stores/admin.posts'
-import { useAdminRewardStore } from '@/stores/admin.rewards'
-
-
+  import { ref } from 'vue'
+  import { RouterLink } from 'vue-router'
 </script>
 <template>
-  <div class="container mt-10">
+    <div class="container mt-10">
     <div class="grid grid-cols-2">
       <div class="block mt-10 p-5">
         <a href="#"
