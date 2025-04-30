@@ -197,7 +197,6 @@ const onLogout = async () => {
                         alt=""
                       />
                     </button>
-                    {{ image.imageData }}
                   </div>
                   <div v-else class="text-white font-bold text-lg">
                     image null
