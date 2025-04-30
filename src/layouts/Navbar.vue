@@ -185,7 +185,7 @@ const onLogout = async () => {
 
                 <div class="text-white text-center" v-for="(image, index) in authStore.storeUser.user_login
                   .userImage" :key="index">
-                  <div>
+                  <div v-if="image !== null">
                     <button type="button" @click="toggleMainDropdown"
                       class="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                       id="navbar-main-menu" aria-expanded="false" aria-haspopup="true">
@@ -197,8 +197,13 @@ const onLogout = async () => {
                         alt=""
                       />
                     </button>
+                    {{ image.imageData }}
+                  </div>
+                  <div v-else class="text-white font-bold text-lg">
+                    image null
                   </div>
                 </div>
+
                 <!-- Menu image profile dropdown -->
                 <div v-if="isMainDropdownOpen"
                   class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none"
