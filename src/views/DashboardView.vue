@@ -170,7 +170,7 @@ const isFollowing = (followersList, userId) => {
 </script>
 
 <template>
-  <div class="container">
+  <div class="w-3/4 mx-auto">
     <div class="mt-5 flex justify-end">
       <RouterLink class="btn btn-sm btn-primary mr-10" :to="{
         name: 'CreatePostNewView'
@@ -178,10 +178,12 @@ const isFollowing = (followersList, userId) => {
         Create post
       </RouterLink>
     </div>
-    <div v-if="enrichedPosts.length > 0">
-      <div class="max-w-full rounded-sm m-10 shadow-lg" v-for="(post, index) in enrichedPosts" :key="index">
+
+    <div v-if="enrichedPosts.length > 0" class="bg-red-500 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2">
+      <div class="w-full mx-auto bg-white rounded-lg shadow-md p-6 space-y-4" v-for="(post, index) in enrichedPosts" :key="index">
 
         <div class="grid grid-cols-2">
+
           <div>
             <figure class=" bg-white border-gray-200 md:rounded-es-lg dark:bg-gray-800 dark:border-gray-700">
               <figcaption class="flex items-start justify-start ml-5 mt-3">
@@ -196,11 +198,13 @@ const isFollowing = (followersList, userId) => {
                   </div>
                 </div>
 
-                <!-- detail profile user create post -->
+                <!-- Full name user create and Event Popularity Profile -->
                 <div class="space-y-0.5 font-medium dark:text-white text-left rtl:text-right ms-3">
                   <div>{{ post.userProfile?.fullName }}</div>
                   <div class="text-sm text-gray-500 dark:text-gray-400">
                     <div class="grid grid-cols-2">
+
+                      <!-- Post Pop Like -->
                       <div class="flex justify-center">
                         <div class="grid grid-cols-2">
                           <div class="flex justify-center items-center">
@@ -233,6 +237,8 @@ const isFollowing = (followersList, userId) => {
                           </div>
                         </div>
                       </div>
+
+                      <!-- Post Dis Like -->
                       <div class="flex justify-center">
                         <div class="grid grid-cols-2">
                           <div class="flex justify-center items-center">
@@ -266,22 +272,24 @@ const isFollowing = (followersList, userId) => {
                           </div>
                         </div>
                       </div>
+
                     </div>
                   </div>
                 </div>
 
               </figcaption>
             </figure>
+
+            <!-- Show date time create post or update and recover -->
             <label class="font-semibold text-sm text-gray-700 mt-2 ml-5">
               สร้างโพสต์ วันที่ {{ formatDateTime(post.updatedAt) }}
             </label>
+
           </div>
 
-          <div class="grid grid-cols-2">
-            <div class="grid grid-cols-2"></div>
-
-            <!-- menu event manager post -->
-            <div class="flex justify-end" v-if="post.userID === authStore.storeUser.user_login.id">
+          <!-- Post Menu dropdown Event -->
+          <div class="flex justify-end">
+            <div v-if="post.userID === authStore.storeUser.user_login.id">
               <div class="dropdown mr-5 mt-3">
                 <img class="size-6 mr-5 mt-3" src="../assets/icon/sliders.svg" alt="SettingPost"
                   data-bs-toggle="dropdown" aria-expanded="false" />
@@ -313,11 +321,11 @@ const isFollowing = (followersList, userId) => {
                 </ul>
               </div>
             </div>
-
           </div>
+
         </div>
 
-        <!-- image post main -->
+        <!-- Post Image -->
         <div class="w-full p-4 m-auto flex justify-center" v-for="postImage in post.postImage" :key="postImage.id">
           <img class="size-9/12 mt-3 sm:bg-cover md:bg-contain lg:bg-auto xl:bg-cover"
             :src="'data:image/png/jpg;base64,' + postImage.imageData" alt="Sunset in the mountains" />
@@ -328,16 +336,19 @@ const isFollowing = (followersList, userId) => {
           <blockquote class="max-w-2xl mx-auto mb-4 text-gray-500 lg:mb-8 dark:text-gray-400">
 
             <div class="grid grid-cols-2 mt-2">
-              <!-- show post title -->
+
+              <!-- Post title -->
               <div class="flex">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                   {{ post.title }}
                 </h3>
               </div>
+
+              <!-- Post Event Popularity -->
               <div class="flex justify-end">
-                <!-- Post PopLike and DisLike -->
                 <div class="grid grid-cols-2">
 
+                  <!-- Post PopLike -->
                   <div class="grid grid-cols-2">
                     <button
                       v-if="post.postPopularity.some(pop => pop.userID === authStore.storeUser.user_login.id && pop.status === 'Like')"
@@ -361,8 +372,7 @@ const isFollowing = (followersList, userId) => {
                     </button>
                   </div>
 
-
-
+                  <!-- Post DisLike -->
                   <div class="grid grid-cols-2">
                     <button
                       v-if="post.postPopularity.some(pop => pop.userID === authStore.storeUser.user_login.id && pop.status === 'DisLike')"
@@ -391,32 +401,34 @@ const isFollowing = (followersList, userId) => {
               </div>
             </div>
 
-            <!-- show post content index -->
-            <p class="my-4 post-content" v-html="post.content"></p>
-            <button v-if="post.content.length > 200" type="button" class="btn btn-sm text-primary"
-              data-bs-toggle="modal" data-bs-target="#modalShowMovePostContents"
-              @click="modalValuePostContent(post.content)">
-              <p class="flex justify-between text-blue-600 text-sm m-auto">
-                อ่านเพิ่มเติม ...
-              </p>
-            </button>
+            <!-- Show sub content and Event button click show modal all content -->
+            <div class="p-2">
+              <p class="my-4 post-content" v-html="post.content"></p>
+              <button v-if="post.content.length > 200" type="button" class="btn btn-sm text-primary"
+                data-bs-toggle="modal" data-bs-target="#modalShowMovePostContents"
+                @click="modalValuePostContent(post.content)">
+                <p class="flex justify-between text-blue-600 text-sm m-auto">
+                  อ่านเพิ่มเติม ...
+                </p>
+              </button>
 
-            <!-- modal show post detail -->
-            <div class="modal fade" id="modalShowMovePostContents" tabindex="-1" aria-labelledby="exampleModalLabel"
-              aria-hidden="true">
-              <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title">เนื้อหาทั้งหมด</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <p class="text-md text-gray-700" v-html="selectedPostContent"></p>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">
-                      ปิด
-                    </button>
+              <!-- Modal Show All Content -->
+              <div class="modal fade" id="modalShowMovePostContents" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">เนื้อหาทั้งหมด</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <p class="text-md text-gray-700" v-html="selectedPostContent"></p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">
+                        ปิด
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -424,6 +436,7 @@ const isFollowing = (followersList, userId) => {
 
           </blockquote>
         </div>
+
       </div>
     </div>
 

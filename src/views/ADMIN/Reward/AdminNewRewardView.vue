@@ -61,7 +61,7 @@ const onSave = async () => {
           icon: 'success',
           timer: 1200
         }).then(() => {
-          router.push({ name: 'DashboardRewardView' })
+          router.push({ name: 'AdminManagerReward' })
         })
       }
     } catch (error) {
@@ -72,8 +72,8 @@ const onSave = async () => {
       })
     }
   }
+  
 }
-
 
 const onCancel = () => {
   router.push({ name: 'DashboardRewardView' })
@@ -82,90 +82,93 @@ const onCancel = () => {
 </script>
 <template>
 
-  <div class="w-50 m-auto bg-white mt-10 shadow-lg rounded-sm px-8 pt-6 pb-8 mb-4">
+<div class="mx-auto max-w-md overflow-hidden rounded-xl bg-white shadow-md md:max-w-2xl">
+  <div class="md:flex">
+    <div class="md:shrink-0">
+      <img
+        class="h-48 w-full object-cover md:h-full md:w-48"
+        src="@/assets/icon/keyboard.jpg"
+        alt="Modern building architecture"
+      />
+    </div>
+    <div class="p-8">
+      <div class="text-sm font-semibold tracking-wide text-indigo-500 uppercase">Company retreats</div>
+      <a href="#" class="mt-1 block text-lg leading-tight font-medium text-black hover:underline">
+        Incredible accommodation for your team
+      </a>
+      <p class="mt-2 text-gray-500">
+        Looking to take your team away on a retreat to enjoy awesome food and take in some sunshine? We have a list of
+        places to do just that.
+      </p>
+    </div>
+  </div>
+</div>
 
-    <div class="grid grid-cols-2">
-      <div class="flex p-2">
-        <label for="fileImage" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Upload Image</label>
-        <div class="bg-white">
-          <input id="fileImage" accept="image/*" type="file"
-            class="w-[100%] h-[40px] text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-            @change="onSelectFileImage" />
-          <img :src="imageUrl ||
-            'https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg'
-            " alt="Image Preview"
-            class="m-auto w-[100%] h-[250px] object-cover mt-3 rounded-lg border border-gray-300 dark:border-gray-600" />
+  <div class="w-full max-w-[80%] bg-white m-auto rounded-lg shadow-lg mt-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <!-- Image Upload reward -->
+      <div class="flex flex-col space-y-4 bg-white shadow-lg p-5 rounded-lg">
+        <p class="text-gray-900 text-3xl font-medium">Upload Image</p>
+        <img
+          :src="imageUrl || 'https://png.pngtree.com/png-clipart/20190920/original/pngtree-file-upload-icon-png-image_4646955.jpg'"
+          alt="Image Preview" class="w-full h-[250px] object-cover rounded-lg border border-gray-300" />
+        <input id="fileImage" type="file" accept="image/*"
+          class="mt-5 w-full h-[40px] text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50"
+          @change="onSelectFileImage" />
+      </div>
+
+      <!-- Form text input new reward -->
+      <div class="flex flex-col space-y-4 p-5">
+
+        <!-- reward name -->
+        <div>
+          <label class="block mb-2 mt-2 text-1xl font-medium text-gray-900">Name</label>
+          <input v-model="form.name" type="text"
+            class="w-full h-[40px] p-2.5 rounded-lg border text-sm bg-gray-50 border-gray-300" />
+        </div>
+
+        <!-- reward point -->
+        <div>
+          <label class="block mb-2 mt-2 text-1xl font-medium text-gray-900">Point</label>
+          <input v-model="form.point" type="text"
+            class="w-full h-[40px] p-2.5 rounded-lg border text-sm bg-gray-50 border-gray-300" />
+        </div>
+
+        <!-- reward amount -->
+        <div>
+          <label class="block mb-2 mt-2 text-1xl font-medium text-gray-900">Amount</label>
+          <input v-model="form.amount" type="text"
+            class="w-full h-[40px] p-2.5 rounded-lg border text-sm bg-gray-50 border-gray-300" />
+        </div>
+
+        <!-- reward type -->
+        <div>
+          <label class="block mb-2 mt-2 text-1xl font-medium text-gray-900">Type</label>
+          <select v-model="form.type"
+            class="w-full h-[40px] p-2.5 rounded-lg border text-sm bg-gray-50 border-gray-300">
+            <option value="reward">reward</option>
+          </select>
+        </div>
+
+        <!-- reward status -->
+        <div>
+          <label class="block mb-2 mt-2 text-1xl font-medium text-gray-900">Status</label>
+          <select v-model="form.status"
+            class="w-full h-[40px] p-2.5 rounded-lg border text-sm bg-gray-50 border-gray-300">
+            <option value="true">true</option>
+            <option value="false">false</option>
+          </select>
+        </div>
+
+        <!-- button event -->
+        <div class="flex justify-end space-x-4 mt-5">
+          <button @click="onSave" class="btn btn-primary">Save</button>
+          <button @click="onCancel" class="btn btn-danger">Cancel</button>
         </div>
       </div>
-      <div class="flex p-2">
-        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="grid-city">
-          Status:
-        </label>
-        <select v-model="form.status"
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 w-[100%] h-[40px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-          id="grid-state">
-          <option value="true">true</option>
-          <option value="false">false</option>
-        </select>
-      </div>
-    </div>
-    <div class="grid grid-cols-2">
-      <div class="flex p-2">
-        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="grid-city">
-          Name:
-        </label>
-        <input v-model="form.name"
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 w-[100%] h-[40px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-          id="grid-city" type="text" />
-      </div>
-      <div class="flex p-2">
-        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="grid-city">
-          Point:
-        </label>
-        <input v-model="form.point"
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 w-[100%] h-[40px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-          id="grid-city" type="text" />
-      </div>
-    </div>
-    <div class="grid grid-cols-2">
-      <div class="flex p-2">
-        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="grid-city">
-          Amount:
-        </label>
-        <input v-model="form.amount"
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 w-[100%] h-[40px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-          id="grid-city" type="text" />
-      </div>
-      <div class="flex p-2">
-        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="grid-city">
-          Type:
-        </label>
-        <select v-model="form.type"
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 w-[100%] h-[40px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-          id="grid-state">
-          <option value="reward">reward</option>
-        </select>
-      </div>
-    </div>
-    <div class="grid grid-cols-2">
-      <div class="flex p-2">
-        <button @click="onSave" class="btn btn-sm btn-primary">
-          save
-        </button>
-      </div>
-      <div class="flex p-2">
-        <button @click="onCancel" class="btn btn-sm btn-dargen">
-          cancel
-        </button>
-      </div>
-    </div>
 
+    </div>
   </div>
 
 </template>
-<style>
-.ibox-image {
-  width: 100%;
-  height: 50px;
-}
-</style>

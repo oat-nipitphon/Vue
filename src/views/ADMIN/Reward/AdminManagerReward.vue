@@ -4,6 +4,7 @@ import { RouterLink } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useAdminRewardStore } from '@/stores/admin.rewards'
 import AdminRewardModalUpdate from '@/components/Reward/AdminRewardModalUpdate.vue'
+import AdminRewardModalShow from '@/components/Reward/AdminRewardModalShow.vue'
 
 const rewardStore = useAdminRewardStore()
 const { storeRewards } = storeToRefs(rewardStore)
@@ -11,17 +12,15 @@ const { storeAdminAPIGetRewards, storeAdminUpdateReward, storeAdminDeleteReward 
 const rewards = ref([]);
 const rewardUpdate = ref([]);
 
-const formUpdate = reactive({
-  id: '',
-  name: '',
-  point: '',
-  amount: '',
-});
+
+
 
 onMounted(async () => {
   rewards.value = await rewardStore.storeAdminAPIGetRewards()
+  console.log('admin manager reward', rewards.value)
 })
 
+// function switch status reward
 const toggleStatus = async (reward) => {
   const rewardID = reward.id;
   const status = reward.status;
@@ -53,10 +52,7 @@ const toggleStatus = async (reward) => {
 
 }
 
-const onShowDetailReward = (reward) => {
-  console.log('onShowDetailReward', reward);
-}
-
+// // function show modal edit reward
 const onShowModalEditReward = (reward) => {
   rewardUpdate.value = reward
   if (rewardUpdate.value) {
@@ -67,6 +63,7 @@ const onShowModalEditReward = (reward) => {
   }
 }
 
+// // function update reward
 const onUpdateReward = async () => {
   const rewardID = formUpdate.id
   const res = await fetch(`/api/admin/rewards/manager/${rewardID}`, {
@@ -147,9 +144,11 @@ const onUpdateReward = async () => {
             <div class="inline-flex space-x-1">
               <div>
                 <button class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-xs"
-                  @click="onShowDetailReward(reward)">
+                data-bs-toggle="modal" data-bs-target="#modalAdminRewardModalShow">
                   Show
                 </button>
+                <AdminRewardModalShow  :rewardShow="reward" />
+                
               </div>
               <div>
                 <button class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-lg text-xs"

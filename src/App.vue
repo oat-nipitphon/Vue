@@ -1,11 +1,21 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import Navbar from './layouts/Navbar.vue'
+import NavbarNew from './layouts/NavbarNew.vue'
 </script>
 
 <template>
-  <Navbar />
-  <RouterView />
+  <div class="grid grid-rows-none">
+    <div class="grid">
+      <Navbar />
+    </div>
+    <!-- <div class="grid">
+      <NavbarNew />
+    </div> -->
+    <div class="grid">
+      <RouterView />
+    </div>
+  </div>
 </template>
 
 <style scoped>

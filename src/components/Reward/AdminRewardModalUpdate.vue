@@ -1,7 +1,19 @@
 <script setup>
+import { reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import axiosAPI from '@/services/axiosAPI'
+
 const props = defineProps({
     rewardUpdate: Object,
 })
+
+const formUpdate = reactive({
+    id: '',
+    name: '',
+    point: '',
+    amount: '',
+});
+
 </script>
 <template>
     <!-- modal edit reward -->
