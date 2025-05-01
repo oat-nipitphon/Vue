@@ -179,8 +179,10 @@ const isFollowing = (followersList, userId) => {
       </RouterLink>
     </div>
 
-    <div v-if="enrichedPosts.length > 0" class="bg-red-500 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2">
-      <div class="w-full mx-auto bg-white rounded-lg shadow-md p-6 space-y-4" v-for="(post, index) in enrichedPosts" :key="index">
+    <div v-if="enrichedPosts.length > 0" class="bg-white max-w-3/4">
+
+      <div class="lg:w-full md:w-md sm:w-sm lg:h-full md:h-md sm:h-sm shadow-md rounded-md p-5 mt-5 mb-5"
+        v-for="(post, index) in enrichedPosts" :key="index">
 
         <div class="grid grid-cols-2">
 
@@ -204,7 +206,7 @@ const isFollowing = (followersList, userId) => {
                   <div class="text-sm text-gray-500 dark:text-gray-400">
                     <div class="grid grid-cols-2">
 
-                      <!-- Post Pop Like -->
+                      <!-- Followers Profile create post  -->
                       <div class="flex justify-center">
                         <div class="grid grid-cols-2">
                           <div class="flex justify-center items-center">
@@ -238,7 +240,7 @@ const isFollowing = (followersList, userId) => {
                         </div>
                       </div>
 
-                      <!-- Post Dis Like -->
+                      <!-- Popularity Profile create post Dis Like -->
                       <div class="flex justify-center">
                         <div class="grid grid-cols-2">
                           <div class="flex justify-center items-center">
@@ -279,50 +281,53 @@ const isFollowing = (followersList, userId) => {
 
               </figcaption>
             </figure>
-
-            <!-- Show date time create post or update and recover -->
-            <label class="font-semibold text-sm text-gray-700 mt-2 ml-5">
-              สร้างโพสต์ วันที่ {{ formatDateTime(post.updatedAt) }}
-            </label>
-
           </div>
 
-          <!-- Post Menu dropdown Event -->
+
           <div class="flex justify-end">
-            <div v-if="post.userID === authStore.storeUser.user_login.id">
-              <div class="dropdown mr-5 mt-3">
-                <img class="size-6 mr-5 mt-3" src="../assets/icon/sliders.svg" alt="SettingPost"
-                  data-bs-toggle="dropdown" aria-expanded="false" />
-                <ul class="dropdown-menu">
-                  <li>
-                    <button class="dropdown-item" type="submit" @click="apiStorePost(post.id)">
-                      <label for="Event-Store" class="text-sm ml-2 text-gray-900">
-                        จัดเก็บ
-                      </label>
-                    </button>
-                  </li>
-                  <li>
-                    <RouterLink :to="{
-                      name: 'EditPostView',
-                      params: { id: post.id },
-                    }" class="dropdown-item">
-                      <label for="Event-Post-Edit" class="text-sm ml-2 text-gray-900">
-                        แก้ไข
-                      </label>
-                    </RouterLink>
-                  </li>
-                  <li>
-                    <button @click="apiDeletePost(post.id)" class="dropdown-item">
-                      <label for="Event-Post-Delete" class="text-sm ml-2 text-gray-900">
-                        ลบ
-                      </label>
-                    </button>
-                  </li>
-                </ul>
+
+            <div class="grid grid-rows-2">
+              <!-- Show date time create post or update and recover -->
+              <label class="font-semibold text-sm text-gray-700 mt-2 ml-5">
+                สร้างโพสต์ วันที่ {{ formatDateTime(post.updatedAt) }}
+              </label>
+
+              <!-- Post Menu dropdown Event -->
+              <div v-if="post.userID === authStore.storeUser.user_login.id">
+                <div class="dropdown mr-5 mt-3">
+                  <img class="size-6 mr-5 mt-3" src="../assets/icon/sliders.svg" alt="SettingPost"
+                    data-bs-toggle="dropdown" aria-expanded="false" />
+                  <ul class="dropdown-menu">
+                    <li>
+                      <button class="dropdown-item" type="submit" @click="apiStorePost(post.id)">
+                        <label for="Event-Store" class="text-sm ml-2 text-gray-900">
+                          จัดเก็บ
+                        </label>
+                      </button>
+                    </li>
+                    <li>
+                      <RouterLink :to="{
+                        name: 'EditPostView',
+                        params: { id: post.id },
+                      }" class="dropdown-item">
+                        <label for="Event-Post-Edit" class="text-sm ml-2 text-gray-900">
+                          แก้ไข
+                        </label>
+                      </RouterLink>
+                    </li>
+                    <li>
+                      <button @click="apiDeletePost(post.id)" class="dropdown-item">
+                        <label for="Event-Post-Delete" class="text-sm ml-2 text-gray-900">
+                          ลบ
+                        </label>
+                      </button>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
 
+          </div>
         </div>
 
         <!-- Post Image -->

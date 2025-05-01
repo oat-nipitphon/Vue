@@ -43,9 +43,32 @@ import DashboardRewardView from '@/views/Reward/DashboardRewardView.vue'
 import ReportReward from '@/views/Reward/ReportReward.vue'
 
 
+/////////////////////// Pages New //////////////////////////
+import Home_View from '@/pages/HomeView.vue'
+
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+
+    //////////////////////// Router New ///////////////////////
+    {
+      path: '/index_view',
+      name: 'index_view',
+      component: () => import('@/pages/IndexView.vue'),
+      meta: { guest: true }
+    },
+    {
+      path: '/Home_View',
+      name: 'Home_View',
+      component: Home_View,
+      meta: { auth: true }
+    },
+
+
+
+    
+    //////////////////////// Router Backup ///////////////////////
     {
       path: '/testCodeView',
       component: () => import('../views/TestCodeView.vue')
@@ -208,12 +231,10 @@ router.beforeEach(async (to, from) => {
   await authStore.apiAuthStore();
 
   if (!authStore.storeUser && to.meta.auth) {
-    // Redirect unauthenticated users trying to access protected routes
     return { name: 'IndexView' };
   }
 
   if (authStore.storeUser && to.meta.guest) {
-    // Redirect authenticated users trying to access guest routes
     return { name: 'HomeView' };
   }
 });
