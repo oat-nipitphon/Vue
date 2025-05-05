@@ -332,7 +332,7 @@ const isFollowing = (followersList, userId) => {
 
         <!-- Post Image -->
         <div class="w-full p-4 m-auto flex justify-center" v-for="postImage in post.postImage" :key="postImage.id">
-          <img class="size-9/12 mt-3 sm:bg-cover md:bg-contain lg:bg-auto xl:bg-cover"
+          <img class="h-60 w-full object-cover"
             :src="'data:image/png/jpg;base64,' + postImage.imageData" alt="Sunset in the mountains" />
         </div>
 
@@ -340,21 +340,9 @@ const isFollowing = (followersList, userId) => {
         <div class="p-2 ml-5 mr-5">
           <blockquote class="max-w-2xl mx-auto mb-4 text-gray-500 lg:mb-8 dark:text-gray-400">
 
-            <div class="grid grid-cols-2 mt-2">
-
-              <!-- Post title -->
-              <div class="flex">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                  {{ post.title }}
-                </h3>
-              </div>
-
-              <!-- Post Event Popularity -->
-              <div class="flex justify-end">
-                <div class="grid grid-cols-2">
-
+            <div class="grid grid-cols-2">
                   <!-- Post PopLike -->
-                  <div class="grid grid-cols-2">
+                  <div class="flex justify-center items-center">
                     <button
                       v-if="post.postPopularity.some(pop => pop.userID === authStore.storeUser.user_login.id && pop.status === 'Like')"
                       :disabled="isLoading" type="button" class="btn btn-lg m-auto"
@@ -378,7 +366,7 @@ const isFollowing = (followersList, userId) => {
                   </div>
 
                   <!-- Post DisLike -->
-                  <div class="grid grid-cols-2">
+                  <div class="flex justify-center items-center">
                     <button
                       v-if="post.postPopularity.some(pop => pop.userID === authStore.storeUser.user_login.id && pop.status === 'DisLike')"
                       :disabled="isLoading" type="button" class="btn btn-lg m-auto"
@@ -401,9 +389,6 @@ const isFollowing = (followersList, userId) => {
                       {{post.postPopularity.filter(pop => pop.status === 'DisLike').length || 0}}
                     </button>
                   </div>
-
-                </div>
-              </div>
             </div>
 
             <!-- Show sub content and Event button click show modal all content -->

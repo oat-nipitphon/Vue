@@ -12,9 +12,6 @@ const { storeAdminAPIGetRewards, storeAdminUpdateReward, storeAdminDeleteReward 
 const rewards = ref([]);
 const rewardUpdate = ref([]);
 
-
-
-
 onMounted(async () => {
   rewards.value = await rewardStore.storeAdminAPIGetRewards()
   console.log('admin manager reward', rewards.value)
@@ -52,20 +49,29 @@ const toggleStatus = async (reward) => {
 
 }
 
-// // function show modal edit reward
-const onShowModalEditReward = (reward) => {
+
+const formUpdate = reactive({
+  id: '',
+  name: '',
+  point: '',
+  amount: '',
+  status: '',
+});
+
+const onModalShowRewardEdit = (reward) => {
   rewardUpdate.value = reward
   if (rewardUpdate.value) {
-    formUpdate.id = reward.id || ''
-    formUpdate.name = reward.name || ''
-    formUpdate.point = reward.point || ''
-    formUpdate.amount = reward.amount || ''
+    formUpdate.id = rewardUpdate.value.id
+    formUpdate.name = rewardUpdate.value.name
+    formUpdate.point = rewardUpdate.value.point
+    formUpdate.amount = rewardUpdate.value.amount
+    formUpdate.status = rewardUpdate.value.status
   }
 }
 
 // // function update reward
 const onUpdateReward = async () => {
-  const rewardID = formUpdate.id
+  const rewardID = rewardUpdate.value.id
   const res = await fetch(`/api/admin/rewards/manager/${rewardID}`, {
     method: "PUT",
     headers: {
@@ -77,6 +83,7 @@ const onUpdateReward = async () => {
       name: formUpdate.name,
       point: formUpdate.point,
       amount: formUpdate.amount,
+      status: formUpdate.status,
     })
   });
 
@@ -84,11 +91,12 @@ const onUpdateReward = async () => {
 
   if (res.status === 200) {
     console.log('update success', data.reward)
-    window.location.reload()
+    // window.location.reload()
   } else {
     console.error('update reward false', res.data);
   }
 }
+
 
 </script>
 
@@ -140,22 +148,59 @@ const onUpdateReward = async () => {
             </button>
           </td>
 
-          <td class="text-center px-4 py-3">
+          <td class="">
             <div class="inline-flex space-x-1">
               <div>
                 <button class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-xs"
-                data-bs-toggle="modal" data-bs-target="#modalAdminRewardModalShow">
+                  data-bs-toggle="modal" data-bs-target="#modalAdminRewardModalShow">
                   Show
                 </button>
-                <AdminRewardModalShow  :rewardShow="reward" />
-                
+                <AdminRewardModalShow :rewardShow="reward" />
+
               </div>
               <div>
                 <button class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-lg text-xs"
-                  data-bs-toggle="modal" data-bs-target="#modalEditReward" @click="onShowModalEditReward(reward)">
+                  data-bs-toggle="modal" data-bs-target="#modalEditReward" @click="onModalShowRewardEdit(reward)">
                   Edit
                 </button>
-                <AdminRewardModalUpdate :rewardUpdate="reward" />
+                <!-- Mpdal Update Reward -->
+                <div class="modal fade" id="modalEditReward" tabindex="-1" aria-labelledby="exampleModalLabel"
+                  aria-hidden="true">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">update reward ID :: {{ rewardUpdate.id }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="grid">
+                          <label for="">name</label>
+                          <input type="text" v-model="formUpdate.name"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                          <label for="">point</label>
+                          <input type="text" v-model="formUpdate.point"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                          <label for="">amount</label>
+                          <input type="text" v-model="formUpdate.amount"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                            <select v-model="formUpdate.status"
+                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                              <option value="true">true</option>
+                              <option value="false">false</option>
+                            </select>
+                          </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-primary m-2" @click="onUpdateReward()">
+                          update
+                        </button>
+                        <button type="button" class="btn btn-sm btn-dargen m-2" data-bs-dismiss="modal">
+                          cancel
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div>
                 <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-xs"

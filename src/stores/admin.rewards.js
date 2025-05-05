@@ -83,6 +83,10 @@ export const useAdminRewardStore = defineStore('adminRewardStore', {
                         authorization: `Bearer ${localStorage.getItem('token')}`
                     }
                 });
+
+                window.location.reload()
+
+                
         
             } catch (error) {
                 console.error('storeAdminDeleteReward function error', error);

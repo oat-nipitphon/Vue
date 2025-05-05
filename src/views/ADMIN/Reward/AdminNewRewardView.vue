@@ -19,11 +19,17 @@ const imageFile = ref(null)
 const imageUrl = ref(null)
 
 const onSelectFileImage = event => {
-  imageFile.value = event.target.files[0]
-  imageUrl.value = URL.createObjectURL(imageFile.value)
+  const file = event.target.files[0]
+
+  if (file) {
+    imageFile.value = file
+    imageUrl.value = URL.createObjectURL(file)
+  }
+
 }
 
 const onSave = async () => {
+  console.log('imageFile', imageFile.value);
   const formData = new FormData()
   formData.append('name', form.value.name)
   formData.append('point', form.value.point)
@@ -54,16 +60,21 @@ const onSave = async () => {
         },
       })
 
-      if (response.status === 201) {
+      if (response.ok) {
         Swal.fire({
           title: 'สำเร็จ',
           text: 'เพิ่มรางวัลสำเร็จ',
           icon: 'success',
           timer: 1200
-        }).then(() => {
-          router.push({ name: 'AdminManagerReward' })
-        })
+        });
+
+        router.push({ name: 'AdminManagerReward' })
+      } else {
+        console.log('new reward', response.status);
       }
+
+
+
     } catch (error) {
       Swal.fire({
         title: 'เกิดข้อผิดพลาด',
@@ -81,28 +92,6 @@ const onCancel = () => {
 
 </script>
 <template>
-
-<div class="mx-auto max-w-md overflow-hidden rounded-xl bg-white shadow-md md:max-w-2xl">
-  <div class="md:flex">
-    <div class="md:shrink-0">
-      <img
-        class="h-48 w-full object-cover md:h-full md:w-48"
-        src="@/assets/icon/keyboard.jpg"
-        alt="Modern building architecture"
-      />
-    </div>
-    <div class="p-8">
-      <div class="text-sm font-semibold tracking-wide text-indigo-500 uppercase">Company retreats</div>
-      <a href="#" class="mt-1 block text-lg leading-tight font-medium text-black hover:underline">
-        Incredible accommodation for your team
-      </a>
-      <p class="mt-2 text-gray-500">
-        Looking to take your team away on a retreat to enjoy awesome food and take in some sunshine? We have a list of
-        places to do just that.
-      </p>
-    </div>
-  </div>
-</div>
 
   <div class="w-full max-w-[80%] bg-white m-auto rounded-lg shadow-lg mt-5">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

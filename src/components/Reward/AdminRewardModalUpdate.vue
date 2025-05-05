@@ -7,12 +7,42 @@ const props = defineProps({
     rewardUpdate: Object,
 })
 
+console.log('modal edit', props.rewardUpdate)
+
 const formUpdate = reactive({
-    id: '',
-    name: '',
-    point: '',
-    amount: '',
+    id: props.rewardUpdate.id,
+    name: props.rewardUpdate.name,
+    point: props.rewardUpdate.point,
+    amount: props.rewardUpdate.amount,
 });
+
+
+// // function update reward
+const onUpdateReward = async () => {
+  const rewardID = formUpdate.id
+  const res = await fetch(`/api/admin/rewards/manager/${rewardID}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem('token')}`
+    },
+    body: JSON.stringify({
+      id: formUpdate.id,
+      name: formUpdate.name,
+      point: formUpdate.point,
+      amount: formUpdate.amount,
+    })
+  });
+
+  const data = await res.json();
+
+  if (res.status === 200) {
+    console.log('update success', data.reward)
+    window.location.reload()
+  } else {
+    console.error('update reward false', res.data);
+  }
+}
 
 </script>
 <template>
