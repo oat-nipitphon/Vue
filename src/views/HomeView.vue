@@ -4,8 +4,7 @@ import { RouterLink } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '@/stores/auth'
 import { usePostStore } from '@/stores/post'
-import defaultImage from '@/assets/icon/icon-user-default.png'
-import QuickViewProfileCard from '@/components/QuickViewProfileCard.vue';
+
 
 
 const authStore = useAuthStore()
@@ -115,7 +114,7 @@ onMounted(async () => {
       </div> -->
     </div>
     <div class="m-auto">
-      <FormLogin />
+
     </div>
     <div class="mt-10 text-center">
       <!-- <Toggle v-model="isOn" /> -->

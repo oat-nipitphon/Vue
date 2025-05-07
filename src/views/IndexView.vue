@@ -2,25 +2,12 @@
 import { ref } from 'vue'
 import FormLogin from '@/views/LoginView.vue'
 
-// ตัวอย่างการสร้าง blob URL จากไฟล์วิดีโอที่อัปโหลด
-// blob:https://main.24playerhd.com/3f8cf8a5-24f3-4aa3-8f96-a0c9460c1b7f
-const videoBlobUrl = ref('') // ใส่ blob URL ที่ได้จาก JS
-videoBlobUrl.value = 'https://main.24playerhd.com/3f8cf8a5-24f3-4aa3-8f96-a0c9460c1b7f'
-
-// สมมุติว่าได้มาจาก input file
-function handleFileUpload(file) {
-  videoBlobUrl.value = URL.createObjectURL(file)
-}
-
 </script>
 <template>
   <div class="container">
     <div class="m-auto">
       <FormLogin />
     </div>
-    <!-- <div class="flex justify-center m-5">
-      <video controls :src="videoBlobUrl"></video>
-    </div> -->
   </div>
 </template>
 

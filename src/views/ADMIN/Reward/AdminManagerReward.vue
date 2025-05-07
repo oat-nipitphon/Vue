@@ -49,7 +49,6 @@ const toggleStatus = async (reward) => {
 
 }
 
-
 const formUpdate = reactive({
   id: '',
   name: '',

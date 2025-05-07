@@ -42,33 +42,9 @@ import ReportRecoverPostsView from '@/views/USER/Posts/ReportRecoverPostsView.vu
 import DashboardRewardView from '@/views/Reward/DashboardRewardView.vue'
 import ReportReward from '@/views/Reward/ReportReward.vue'
 
-
-/////////////////////// Pages New //////////////////////////
-import Home_View from '@/pages/HomeView.vue'
-
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-
-    //////////////////////// Router New ///////////////////////
-    {
-      path: '/index_view',
-      name: 'index_view',
-      component: () => import('@/pages/IndexView.vue'),
-      meta: { guest: true }
-    },
-    {
-      path: '/Home_View',
-      name: 'Home_View',
-      component: Home_View,
-      meta: { auth: true }
-    },
-
-
-
-    
-    //////////////////////// Router Backup ///////////////////////
     {
       path: '/testCodeView',
       component: () => import('../views/TestCodeView.vue')
@@ -77,6 +53,7 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       component: PageNotFound
     },
+
     {
       path: '/',
       name: 'IndexView',
@@ -225,7 +202,6 @@ const router = createRouter({
   ],
 })
 
-
 router.beforeEach(async (to, from) => {
   const authStore = useAuthStore();
   await authStore.apiAuthStore();
@@ -235,9 +211,8 @@ router.beforeEach(async (to, from) => {
   }
 
   if (authStore.storeUser && to.meta.guest) {
-    return { name: 'HomeView' };
+    return { name: 'DashboardView' };
   }
 });
-
 
 export default router

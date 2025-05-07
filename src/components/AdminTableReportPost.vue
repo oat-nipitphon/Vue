@@ -66,6 +66,7 @@ onMounted(async () => {
   posts.value = await adminAPIGETposts();
 });
 </script>
+
 <template>
   <div>
     <div class="w-full">
@@ -78,30 +79,30 @@ onMounted(async () => {
         </div>
       </div>
 
-      <div class="overflow-x-auto shadow-md sm:rounded-lg">
+      <div class="overflow-x-auto shadow-lg rounded-lg p-3">
         <table
-          class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+          class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mb-10"
         >
           <thead
             class="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400"
           >
             <tr>
-              <th class="w-2 p-3 text-center font-semibold">Post ID</th>
-              <th class="w-4 p-3 text-center font-semibold">Detail Post</th>
-              <th class="w-3 p-3 text-center font-semibold">Status Post</th>
-              <th class="w-4 p-3 text-center font-semibold">
-                User Create Post
-              </th>
-              <th class="w-5 p-3 text-center font-semibold">Events</th>
+              <th class="p-3 border-spacing-2 text-center font-bold">Counter</th>
+              <th class="p-3 border-spacing-2 text-center font-bold">Detail</th>
+              <th class="p-3 border-spacing-2 text-center font-bold">Creator</th>
+              <th class="p-3 border-spacing-2 text-center font-bold">Status</th>
+              <th class="p-3 border-spacing-2 text-center font-bold">Events</th>
             </tr>
           </thead>
           <tbody v-if="paginatedPosts.length > 0">
             <tr
               v-for="(post, index) in paginatedPosts"
               :key="index"
-              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 p-2"
             >
               <td class="py-2 text-center">{{ post.id }}</td>
+
+              <!-- post title button click event show modal detail content -->
               <td class="p-3">
                 <button
                   @click="modalValuePostContent(post)"
@@ -113,40 +114,46 @@ onMounted(async () => {
                   {{ post.post_title }}
                 </button>
               </td>
-              <td class="text-center">
-                <p
-                  v-if="
-                    post.deletetion_status === 'false' &&
-                    post.block_status === 'false'
-                  "
-                  class="text-green-500 text-sm"
-                >
-                  Normal
-                </p>
-                <p
-                  v-if="post.deletetion_status === 'true'"
-                  class="text-red-600 text-sm"
-                >
-                  Deletetion
-                </p>
-                <p
-                  v-if="post.block_status === 'true'"
-                  class="text-red-600 text-sm"
-                >
-                  ** Block Post **
-                </p>
-              </td>
-              <td class="text-center">
+              
+              <!-- post creator click event show modal detail user profile -->
+              <td class="flex justify-start ml-2 m-auto">
                 <button
                   @click="modalValueUserProfile(post.user.user_profile)"
                   type="button"
-                  class="text-blue-500 hover:text-blue-700"
+                  class="text-blue-500 hover:text-blue-700 m-auto"
                   data-bs-toggle="modal"
                   data-bs-target="#exampleModalUserProfile"
                 >
                   {{ post.user.user_profile.full_name }}
                 </button>
               </td>
+
+              <!-- post status now -->
+              <td class="text-center">
+                <p
+                  v-if="
+                    post.deletetion_status === 'false' &&
+                    post.block_status === 'false'
+                  "
+                  class="text-green-500 text-sm font-semibold"
+                >
+                  Active
+                </p>
+                <p
+                  v-if="post.deletetion_status === 'true'"
+                  class="text-red-600 text-sm font-semibold"
+                >
+                  Store
+                </p>
+                <p
+                  v-if="post.block_status === 'true'"
+                  class="text-red-600 text-sm font-semibold"
+                >
+                  ** Block Post **
+                </p>
+              </td>
+
+              <!-- button dropdown event -->
               <td class="text-center">
                 <div class="dropdown m-auto">
                   <button
