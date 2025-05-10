@@ -1,12 +1,12 @@
 <script setup>
 import { ref } from 'vue'
-import FormLogin from '@/views/LoginView.vue'
+import ModalFormLoginAndRegister from '@/components/auth/ModalFormLoginAndRegister.vue'
 
 </script>
 <template>
   <div class="container">
     <div class="m-auto">
-      <FormLogin />
+      <ModalFormLoginAndRegister />
     </div>
   </div>
 </template>
